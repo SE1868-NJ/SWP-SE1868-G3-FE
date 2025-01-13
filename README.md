@@ -31,3 +31,5 @@ npm install
 ```bash
 npm run dev
 ```
+
+The app will be available at: [localhost:5173](http://localhost:5173)
