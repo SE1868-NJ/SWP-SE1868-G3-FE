@@ -10,7 +10,8 @@ function Header() {
 						to='/'
 						className='text-danger fw-bold text-decoration-none me-3'
 					>
-						Chợ Làng
+						<i className='bi bi-bag-heart-fill me-2'></i>
+						<span>Chợ Làng</span>
 					</Link>
 					Kênh Người Bán
 				</div>
