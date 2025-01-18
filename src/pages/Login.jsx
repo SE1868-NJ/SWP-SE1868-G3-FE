@@ -9,7 +9,7 @@ function Login() {
 				<div className='container my-auto'>
 					<h2 className='text-danger fw-bold'>Bán hàng chuyên nghiệp</h2>
 					<p className='h4 mb-5'>
-						Quản lý shop của bạn một cách hiệu quả hơn với Kênh người bán hàng
+						Quản lý shop của bạn hiệu quả hơn với Kênh người bán hàng
 					</p>
 					<img src={loginImg} alt='Đăng nhập' className='img-fluid' />
 				</div>

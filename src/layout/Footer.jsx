@@ -1,11 +1,13 @@
+import Container from '../components/Container';
+
 function Footer() {
 	return (
 		<footer className='bg-body-tertiary border-1 border-top mt-auto'>
-			<div className='container-fluid container-lg'>
+			<Container fluid={'lg'}>
 				<div className='w-100 text-center py-3'>
 					© 2025 Chợ Làng. Tất cả các quyền được bảo lưu.
 				</div>
-			</div>
+			</Container>
 		</footer>
 	);
 }

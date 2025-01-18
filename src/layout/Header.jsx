@@ -1,10 +1,11 @@
 // import React from 'react';
 import { Link } from 'react-router';
+import Container from '../components/Container';
 
 function Header() {
 	return (
 		<nav className='navbar navbar-expand-lg bg-body-tertiary shadow-sm sticky-top border-bottom border-1'>
-			<div className='container-fluid container-lg'>
+			<Container fluid='lg'>
 				<div className='navbar-brand'>
 					<Link
 						to='/'
@@ -21,7 +22,7 @@ function Header() {
 				>
 					Bạn cần giúp đỡ?
 				</Link>
-			</div>
+			</Container>
 		</nav>
 	);
 }

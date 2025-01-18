@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 import Header from './Header.jsx';
 import Footer from './Footer.jsx';
+import Stack from '../components/Stack/index.jsx';
 
 function Layout({ children }) {
 	return (
-		<div className='vstack gap-5 min-vh-100'>
+		<Stack direction={`v`} gaps={5} className='min-vh-100'>
 			<Header />
 			{children}
 			<Footer />
-		</div>
+		</Stack>
 	);
 }
 
