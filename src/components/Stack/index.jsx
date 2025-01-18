@@ -1,7 +1,7 @@
 // import React from 'react';
 import PropTypes from 'prop-types';
 
-function Stack({ direction, gaps: gap, className, children }) {
+function Stack({ direction, gap, className, children }) {
 	let configs = 'stack';
 	if (direction) configs = direction + configs;
 	if (gap) configs += ` gap-${gap}`;
@@ -12,7 +12,7 @@ function Stack({ direction, gaps: gap, className, children }) {
 
 Stack.propTypes = {
 	direction: PropTypes.string,
-	gaps: PropTypes.number,
+	gap: PropTypes.number,
 	className: PropTypes.string,
 	children: PropTypes.node,
 };

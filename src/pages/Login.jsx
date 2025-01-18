@@ -74,7 +74,7 @@ function Login() {
 					<div className='card-footer'>
 						<div className='text-center'>
 							<span className='fw-bold'>Bạn mới đến Chợ Làng?</span>{' '}
-							<Link to='signup' className='fw-bold text-danger'>
+							<Link to='/signup' className='fw-bold text-danger'>
 								Đăng ký
 							</Link>
 						</div>

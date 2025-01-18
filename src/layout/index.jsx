@@ -5,7 +5,7 @@ import Stack from '../components/Stack/index.jsx';
 
 function Layout({ children }) {
 	return (
-		<Stack direction={`v`} gaps={5} className='min-vh-100'>
+		<Stack direction={`v`} gap={5} className='min-vh-100'>
 			<Header />
 			{children}
 			<Footer />
