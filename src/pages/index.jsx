@@ -4,7 +4,7 @@ import Test from './Test';
 
 function Pages() {
 	return (
-		<div className='container-fluid container-lg my-5'>
+		<div className='container-fluid container-lg'>
 			<Routes>
 				<Route path='/' element={<h1>Home</h1>} />
 				<Route path='/login' element={<Login />} />
