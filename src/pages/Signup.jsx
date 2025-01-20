@@ -1,3 +1,4 @@
+// import React from 'react';
 import { Link } from 'react-router';
 
 import Container from '../components/Container';
@@ -7,7 +8,7 @@ import Card from '../components/Card';
 
 import loginImg from '../assets/images/login.png';
 
-function Login() {
+function Signup() {
 	return (
 		<Row cols={1} md={2} className='g-0 g-md-5'>
 			<Col md={6} lg={7} className='d-none d-md-flex'>
@@ -22,12 +23,12 @@ function Login() {
 			<Col md={6} lg={5}>
 				<Card className='shadow-sm'>
 					<Card.Header>
-						<h1 className='text-center my-3'>Đăng nhập</h1>
+						<h1 className='text-center my-3'>Đăng ký</h1>
 					</Card.Header>
 					<Card.Body className='my-3'>
 						<Stack direction={'v'} gap={3}>
 							<div className='input-group'>
-								<i className='bi bi-envelope input-group-text'></i>
+								<i className='bi bi-envelope input-group-text' />
 								<input
 									type='email'
 									name='email'
@@ -46,7 +47,7 @@ function Login() {
 							</div>
 							<div className='w-100 d-flex flex-column gap-2'>
 								<button className='btn btn-lg btn-success w-100 fw-bold'>
-									Đăng nhập
+									Đăng ký
 								</button>
 								<Link
 									to='/forgot-password'
@@ -64,27 +65,27 @@ function Login() {
 									HOẶC
 								</div>
 							</div>
-							<div className='row row-cols-2'>
-								<div className='col'>
+							<Row cols={2}>
+								<Col>
 									<Link className='btn btn-light w-100 border fw-bold text-bg-danger'>
-										<i className='bi bi-google me-2 d-none d-sm-inline-block'></i>
+										<i className='bi bi-google me-2 d-none d-sm-inline-block' />
 										<span>Google</span>
 									</Link>
-								</div>
-								<div className='col'>
+								</Col>
+								<Col>
 									<Link className='btn btn-light w-100 border fw-bold text-bg-primary'>
 										<i className='bi bi-facebook me-2 d-none d-sm-inline-block' />
 										<span>Facebook</span>
 									</Link>
-								</div>
-							</div>
+								</Col>
+							</Row>
 						</Stack>
 					</Card.Body>
 					<Card.Footer>
 						<div className='text-center'>
-							<span className='fw-bold'>Bạn mới đến Chợ Làng?</span>{' '}
-							<Link to='/signup' className='fw-bold text-danger'>
-								Đăng ký
+							<span className='fw-bold'>Bạn đã có tài khoản?</span>{' '}
+							<Link to='/login' className='fw-bold text-danger'>
+								Đăng nhập
 							</Link>
 						</div>
 					</Card.Footer>
@@ -94,4 +95,4 @@ function Login() {
 	);
 }
 
-export default Login;
+export default Signup;
