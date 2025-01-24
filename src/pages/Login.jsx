@@ -5,9 +5,19 @@ import Stack from '../components/Stack';
 import { Row, Col } from '../components/Grid';
 import Card from '../components/Card';
 
+import { loginWithGoogle } from '../api';
 import loginImg from '../assets/images/login.png';
 
 function Login() {
+	const handleGoogleLogin = async () => {
+		try {
+			const data = await loginWithGoogle();
+			console.log('Login successful!', data);
+		} catch (error) {
+			console.error('Login falsed:', error);
+		}
+	};
+
 	return (
 		<Row cols={1} md={2} className='g-0 g-md-5'>
 			<Col md={6} lg={7} className='d-none d-md-flex'>
@@ -66,10 +76,14 @@ function Login() {
 							</div>
 							<div className='row row-cols-2'>
 								<div className='col'>
-									<Link className='btn btn-light w-100 border fw-bold text-bg-danger'>
+									<button
+										type='button'
+										onClick={handleGoogleLogin}
+										className='btn btn-light w-100 border fw-bold text-bg-danger'
+									>
 										<i className='bi bi-google me-2 d-none d-sm-inline-block'></i>
 										<span>Google</span>
-									</Link>
+									</button>
 								</div>
 								<div className='col'>
 									<Link className='btn btn-light w-100 border fw-bold text-bg-primary'>
