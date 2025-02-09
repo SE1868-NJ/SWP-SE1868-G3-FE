@@ -6,7 +6,6 @@ import { Row, Col } from '../components/Grid';
 import Card from '../components/Card';
 
 import { loginWithGoogle } from '../api';
-import loginImg from '../assets/images/login.png';
 
 function Login() {
 	const handleGoogleLogin = async () => {
