@@ -1,11 +1,19 @@
-import Card from '../components/Card';
+import { useState } from 'react';
+import Card from '../../components/Card';
+import AddSupplier from './AddSupplier';
 
 function Suppliers() {
+    const [showForm, setShowForm] = useState(false);
+
     const suppliers = [
         { id: 'VNSUP21069449274327216', name: 'Supplier Z (D)', deliveryTime: 3, address: 'Hà Nội', contactInfo: '1 Contact Information', note: '-', status: 'Active' },
         { id: 'VNSUP21068012216352816', name: 'Supplier B', deliveryTime: 10, address: 'Ho Chi Minh', contactInfo: '3 Contact Information', note: '-', status: 'Active' },
         { id: 'VNSUP21061096303083568', name: 'Supplier A', deliveryTime: 10, address: '-', contactInfo: '-', note: '-', status: 'Active' }
     ];
+
+    if (showForm) {
+        return <AddSupplier onClose={() => setShowForm(false)} />;
+    }
 
     return (
         <>
@@ -28,7 +36,7 @@ function Suppliers() {
                         Search
                     </button>
                 </div>
-                <button className='btn btn-danger'>
+                <button className='btn btn-danger' onClick={() => setShowForm(true)}>
                     + Add Supplier
                 </button>
             </div>

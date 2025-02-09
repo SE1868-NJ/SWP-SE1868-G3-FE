@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router';
 import Login from './Login';
 import Products from './Products';
-import Suppliers from './Suppliers';
+import Suppliers from './suppliers/Suppliers';
 import Container from '../components/Container';
 import Signup from './Signup';
 
