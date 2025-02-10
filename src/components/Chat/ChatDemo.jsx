@@ -4,17 +4,10 @@ import axios from "axios";
 
 const socket = io("http://localhost:3001");
 
-const ChatDemo = () => {
+const ChatDemo = ({ conversationId, userId }) => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const messagesEndRef = useRef(null);
-
-    // Config mẫu cho demo
-    const DEMO_CONFIG = {
-        conversationId: "1",
-        userId: 14,
-        shopId: 1
-    };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -23,48 +16,53 @@ const ChatDemo = () => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/api/message/getMessage/1?limit=20&offset=0`);
+                const response = await axios.get(`http://localhost:4000/api/message/getMessage/${conversationId}?limit=20&offset=0`);
                 setMessages(response.data.data.messages);
-                scrollToBottom();
+                // scrollToBottom();
             } catch (error) {
                 console.error("Lỗi khi lấy tin nhắn:", error);
             }
         };
-        // console.log("Messages", messages);
 
         fetchMessages();
-        console.log("Messages", messages);
 
         // Join conversation room khi component mount
-        socket.emit("join-conversation", DEMO_CONFIG.conversationId);
+        socket.emit("join-conversation", conversationId);
 
         // Lắng nghe tin nhắn mới
         socket.on("receive_message", (data) => {
-            setMessages((prev) => [...prev, data]);
-            scrollToBottom();
+            setMessages((prev) => {
+                const newMessages = [...prev, data];
+                return newMessages;
+            });
+            // scrollToBottom();
         });
 
         // Cleanup khi component unmount
         return () => {
-            socket.emit("leave-conversation", DEMO_CONFIG.conversationId);
+            socket.emit("leave-conversation", conversationId);
             socket.off("receive_message");
         };
     }, []);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     const sendMessage = () => {
         if (!message.trim()) return;
 
         const messageData = {
-            conversation_id: DEMO_CONFIG.conversationId,
-            sender_id: DEMO_CONFIG.userId,
+            conversation_id: conversationId,
+            sender_id: userId,
             sender_type: "user",
             message_text: message
         };
 
         socket.emit("send-message", messageData);
-        setMessages((prev) => [...prev, messageData]); // Cập nhật tin nhắn ngay lập tức
+        // setMessages((prev) => [...prev, messageData]); // Cập nhật tin nhắn ngay lập tức
         setMessage("");
-        scrollToBottom();
+        // scrollToBottom();
     };
 
     return (
@@ -81,16 +79,19 @@ const ChatDemo = () => {
                         {messages.map((msg, index) => (
                             <li
                                 key={index}
-                                className={`list-group-item border-0 d-flex ${
-                                    msg.sender_id === DEMO_CONFIG.userId ? "justify-content-end" : ""
-                                }`}
+                                className={`list-group-item border-0 d-flex ${msg.sender_id === userId ? "justify-content-end" : ""
+                                    }`}
                             >
                                 <span
-                                    className={`badge p-2 ${
-                                        msg.sender_id === DEMO_CONFIG.userId
+                                    className={`badge p-2 ${msg.sender_id === userId
                                             ? "bg-primary text-white"
                                             : "bg-secondary text-white"
-                                    }`}
+                                        }`}
+                                        style={{
+                                            whiteSpace: "normal", 
+                                            wordBreak: "break-word", 
+                                            maxWidth: "70%",
+                                        }}
                                 >
                                     {msg.message_text}
                                 </span>
