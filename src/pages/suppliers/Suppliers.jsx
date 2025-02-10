@@ -1,19 +1,17 @@
-import { useState } from 'react';
+import { Link } from 'react-router';
+import { useEffect } from 'react';
 import Card from '../../components/Card';
-import AddSupplier from './AddSupplier';
 
 function Suppliers() {
-    const [showForm, setShowForm] = useState(false);
-
     const suppliers = [
         { id: 'VNSUP21069449274327216', name: 'Supplier Z (D)', deliveryTime: 3, address: 'Hà Nội', contactInfo: '1 Contact Information', note: '-', status: 'Active' },
         { id: 'VNSUP21068012216352816', name: 'Supplier B', deliveryTime: 10, address: 'Ho Chi Minh', contactInfo: '3 Contact Information', note: '-', status: 'Active' },
         { id: 'VNSUP21061096303083568', name: 'Supplier A', deliveryTime: 10, address: '-', contactInfo: '-', note: '-', status: 'Active' }
     ];
 
-    if (showForm) {
-        return <AddSupplier onClose={() => setShowForm(false)} />;
-    }
+    useEffect(() => {
+        localStorage.setItem('suppliers', JSON.stringify(suppliers));
+    },);
 
     return (
         <>
@@ -26,30 +24,23 @@ function Suppliers() {
                     <select className='form-select'>
                         <option>Supplier</option>
                     </select>
-                    <input
-                        type='search'
-                        name='search'
-                        className='form-control'
-                        placeholder='Search'
-                    />
-                    <button type='submit' className='btn btn-danger'>
-                        Search
-                    </button>
+                    <input type='search' name='search' className='form-control' placeholder='Search' />
+                    <button type='submit' className='btn btn-danger'>Search</button>
                 </div>
-                <button className='btn btn-danger' onClick={() => setShowForm(true)}>
+                <Link to='/suppliers/add' className='btn btn-danger'>
                     + Add Supplier
-                </button>
+                </Link>
             </div>
             <Card>
                 <Card.Body>
-                    <table className='table'>
+                    <table className='table table-striped'>
                         <thead>
                             <tr>
                                 <th scope='col'>#</th>
                                 <th scope='col'>Supplier</th>
                                 <th scope='col'>Supplier ID</th>
                                 <th scope='col'>Delivery Time (Days)</th>
-                                <th scope='col'>Address</th>
+                                <th scope='col'>Supplier Address</th>
                                 <th scope='col'>Contact Information</th>
                                 <th scope='col'>Note</th>
                                 <th scope='col'>Status</th>
@@ -58,7 +49,7 @@ function Suppliers() {
                         </thead>
                         <tbody>
                             {suppliers.map((supplier, index) => (
-                                <tr key={index}>
+                                <tr key={supplier.id}>
                                     <th scope='row'>{index + 1}</th>
                                     <td>{supplier.name}</td>
                                     <td>{supplier.id}</td>
@@ -72,9 +63,14 @@ function Suppliers() {
                                         </span>
                                     </td>
                                     <td className='d-flex flex-column'>
-                                        <a href='#' className='text-primary'>Edit</a>
-                                        <a href='#' className='text-primary'>View More</a>
+                                        <Link to={`/suppliers/edit/${supplier.id}`} className='fw-bold text-decoration-none text-primary' style={{ whiteSpace: 'nowrap' }}>
+                                            Sửa
+                                        </Link>
+                                        <Link to={`/suppliers/view/${supplier.id}`} className='fw-bold text-decoration-none text-primary' style={{ whiteSpace: 'nowrap' }}>
+                                            Xem thêm
+                                        </Link>
                                     </td>
+
                                 </tr>
                             ))}
                         </tbody>
