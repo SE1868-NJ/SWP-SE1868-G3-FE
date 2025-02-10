@@ -4,31 +4,31 @@ import Card from '../../components/Card';
 
 function Suppliers() {
     const suppliers = [
-        { id: 'VNSUP21069449274327216', name: 'Supplier Z (D)', deliveryTime: 3, address: 'Hà Nội', contactInfo: '1 Contact Information', note: '-', status: 'Active' },
-        { id: 'VNSUP21068012216352816', name: 'Supplier B', deliveryTime: 10, address: 'Ho Chi Minh', contactInfo: '3 Contact Information', note: '-', status: 'Active' },
-        { id: 'VNSUP21061096303083568', name: 'Supplier A', deliveryTime: 10, address: '-', contactInfo: '-', note: '-', status: 'Active' }
+        { id: 'VNSUP21069449274327216', name: 'Nhà cung cấp Z (D)', deliveryTime: 3, address: 'Hà Nội', contactInfo: '1 Thông tin liên hệ', note: '-', status: 'Hoạt động' },
+        { id: 'VNSUP21068012216352816', name: 'Nhà cung cấp B', deliveryTime: 10, address: 'Hồ Chí Minh', contactInfo: '3 Thông tin liên hệ', note: '-', status: 'Hoạt động' },
+        { id: 'VNSUP21061096303083568', name: 'Nhà cung cấp A', deliveryTime: 10, address: '-', contactInfo: '-', note: '-', status: 'Ngừng Hoạt động' }
     ];
 
     useEffect(() => {
         localStorage.setItem('suppliers', JSON.stringify(suppliers));
-    },);
+    });
 
     return (
         <>
             <div className='mb-3'>
-                <h2 className='fw-bold'>Supplier Management</h2>
-                <p className='text-muted'>Manage supplier-related information. Only Management has access to this feature.</p>
+                <h2 className='fw-bold'>Quản lý nhà cung cấp</h2>
+                <p className='text-muted fst-italic'>Quản lý thông tin liên quan đến nhà cung cấp. Chỉ có quyền Quản lý mới có thể truy cập tính năng này.</p>
             </div>
             <div className='d-flex justify-content-between align-items-center mb-3'>
                 <div className='d-flex gap-2 w-50'>
                     <select className='form-select'>
-                        <option>Supplier</option>
+                        <option>Nhà cung cấp</option>
                     </select>
-                    <input type='search' name='search' className='form-control' placeholder='Search' />
-                    <button type='submit' className='btn btn-danger'>Search</button>
+                    <input type='search' name='search' className='form-control' placeholder='Nhập từ khóa tìm kiếm...' />
+                    <button type='submit' className='btn btn-danger'>Tìm kiếm</button>
                 </div>
                 <Link to='/suppliers/add' className='btn btn-danger'>
-                    + Add Supplier
+                    + Thêm nhà cung cấp
                 </Link>
             </div>
             <Card>
@@ -37,14 +37,14 @@ function Suppliers() {
                         <thead>
                             <tr>
                                 <th scope='col'>#</th>
-                                <th scope='col'>Supplier</th>
-                                <th scope='col'>Supplier ID</th>
-                                <th scope='col'>Delivery Time (Days)</th>
-                                <th scope='col'>Supplier Address</th>
-                                <th scope='col'>Contact Information</th>
-                                <th scope='col'>Note</th>
-                                <th scope='col'>Status</th>
-                                <th scope='col'>Actions</th>
+                                <th scope='col'>Nhà cung cấp</th>
+                                <th scope='col'>Mã nhà cung cấp</th>
+                                <th scope='col'>Thời gian giao hàng (Ngày)</th>
+                                <th scope='col'>Địa chỉ nhà cung cấp</th>
+                                <th scope='col'>Thông tin liên hệ</th>
+                                <th scope='col'>Ghi chú</th>
+                                <th scope='col'>Trạng thái</th>
+                                <th scope='col'>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -58,7 +58,7 @@ function Suppliers() {
                                     <td>{supplier.contactInfo}</td>
                                     <td>{supplier.note}</td>
                                     <td>
-                                        <span className={`badge ${supplier.status === 'Active' ? 'bg-success' : 'bg-danger'}`}>
+                                        <span className={`badge ${supplier.status === 'Hoạt động' ? 'bg-success' : 'bg-danger'}`}>
                                             {supplier.status}
                                         </span>
                                     </td>
