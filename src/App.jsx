@@ -1,13 +1,13 @@
-import Layout from "./layout/index.jsx";
-import Page from "./pages/index.jsx";
+import AppRoutes from './routes';
+import React from 'react';
+import ChatDemo from './components/Chat/ChatDemo';
 
 function App() {
-
     return (
-        <Layout>
-            <Page/>
-        </Layout>
-    )
+        <div className="App">
+            <ChatDemo />
+        </div>
+    );
 }
 
 export default App

@@ -1,0 +1,32 @@
+.chat-list {
+    height: calc(100vh - 160px);
+    overflow-y: auto;
+  }
+  
+  .chat-messages {
+    height: calc(100vh - 260px);
+    overflow-y: auto;
+  }
+  
+  .message-bubble {
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
