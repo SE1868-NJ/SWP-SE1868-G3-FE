@@ -9,10 +9,6 @@ import './index.css';
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-<<<<<<< HEAD
-			<App />
-=======
 		<App />
->>>>>>> main
 	</StrictMode>
 );

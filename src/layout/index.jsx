@@ -16,8 +16,4 @@ function Layout() {
 	);
 }
 
-<<<<<<< HEAD
 export default Layout;
-=======
-export default Layout;
->>>>>>> main
