@@ -4,6 +4,7 @@ import Stack from "../components/Stack";
 import { Row, Col } from "../components/Grid";
 import Card from "../components/Card";
 import avt from "../assets/images/avt.jpg";
+
 function Profile() {
   // Thông tin giả định của người dùng
   const [user, setUser] = useState({
@@ -11,8 +12,9 @@ function Profile() {
     name: "Nguyễn Văn A",
     email: "nguyenvana@example.com",
     phone: "0987654321",
+    gender: "nu",
     address: "123 Đường ABC, Hà Nội",
-
+    role: "nguoi ban",
   });
 
   // Trạng thái chỉnh sửa
@@ -33,7 +35,7 @@ function Profile() {
   return (
     <Container>
       <h2 className="text-danger fw-bold text-center">
-         Quản lý Thông tin Cá nhân
+        Quản lý Thông tin Cá nhân
       </h2>
 
       <Row className="justify-content-center">
@@ -85,7 +87,39 @@ function Profile() {
                   )}
                 </div>
 
-                
+                <div>
+                  <label className="fw-bold">Giới tính</label>
+                  {isEditing ? (
+                    <>
+                      <label htmlFor="nam" style={{ marginRight: "10px" }}>
+                        <input
+                          type="radio"
+                          id="nam"
+                          name="gender"
+                          value="nam"
+                          checked={updatedUser.gender === "nam"}
+                          onChange={handleChange}
+                        />
+                        Nam
+                      </label>
+                      <label htmlFor="nu">
+                        <input
+                          type="radio"
+                          id="nu"
+                          name="gender"
+                          value="nu"
+                          checked={updatedUser.gender === "nu"}
+                          onChange={handleChange}
+                        />
+                        Nữ
+                      </label>
+                    </>
+                  ) : (
+                    <p className="m-0">
+                      {user.gender === "nam" ? "Nam" : "Nữ"}
+                    </p>
+                  )}
+                </div>
 
                 <div>
                   <label className="fw-bold">Địa chỉ</label>
@@ -101,8 +135,6 @@ function Profile() {
                     <p>{user.address}</p>
                   )}
                 </div>
-
-               
 
                 <div className="text-center">
                   {isEditing ? (
