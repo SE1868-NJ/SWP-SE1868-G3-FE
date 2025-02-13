@@ -1,185 +1,188 @@
 import React, { useState } from "react";
-import Container from "../components/Container";
-import Stack from "../components/Stack";
-import { Row, Col } from "../components/Grid";
-import Card from "../components/Card";
-import avt from "../assets/images/avt.jpg";
-function Profile() {
-  // Thông tin giả định của người dùng
-  const [user, setUser] = useState({
-    avatar: "https://via.placeholder.com/100",
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@example.com",
-    phone: "0987654321",
-    gender: "nu",
-    address: "123 Đường ABC, Hà Nội",
-    role: "nguoi ban"
+import avt1 from "../assets/images/avt1.png";
+
+const Profile = () => {
+  const [userData, setUserData] = useState({
+    username: "pthuan8324",
+    name: "pho mai que",
+    email: "ph**********@gmail.com",
+    phone: "*****16",
+    gender: "male",
   });
-
-
-  // Trạng thái chỉnh sửa
+  
   const [isEditing, setIsEditing] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState({ ...user });
+  const [errors, setErrors] = useState({});
 
-
-  // Xử lý thay đổi dữ liệu nhập vào
   const handleChange = (e) => {
-    setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
   };
 
+  const validate = () => {
+    let newErrors = {};
+    if (userData.name.length > 30) {
+      newErrors.name = "Tên không được quá 30 kí tự";
+    }
+    if (!userData.email.endsWith("@gmail.com")) {
+      newErrors.email = "Sai định dạng Email";
+    }
+    if (userData.phone.length !== 10 || isNaN(userData.phone)) {
+      newErrors.phone = "Số điện thoại phải có đúng 10 chữ số";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  // Lưu thông tin cập nhật
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
   const handleSave = () => {
-    setUser(updatedUser);
-    setIsEditing(false);
+    if (validate()) {
+      setIsEditing(false);
+      // Thêm logic lưu thông tin vào database tại đây nếu cần
+    }
   };
-
 
   return (
-    <Container>
-      <h2 className="text-danger fw-bold text-center">
-         Quản lý Thông tin Cá nhân
-      </h2>
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-md-3">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">{userData.username}</h5>
+              <button className="btn btn-danger btn-sm">Sửa Hồ Sơ</button>
+              <ul className="list-group list-group-flush mt-3">
+                <li className="list-group-item">Tài Khoản Của Tôi</li>
+                <li className="list-group-item">Hồ Sơ</li>
+                <li className="list-group-item">Ngân Hàng</li>
+                <li className="list-group-item">Địa Chỉ</li>
+                <li className="list-group-item">Đổi Mật Khẩu</li>
+              </ul>
+              <ul className="list-group list-group-flush mt-3">
+                <li className="list-group-item">Đơn Mua</li>
+                <li className="list-group-item">Kho Voucher</li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-
-      <Row className="justify-content-center">
-        <Col md={6}>
-          <Card className="shadow-sm">
-            <Card.Body>
-              <div className="text-center">
+        <div className="col-md-9">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">Hồ Sơ Của Tôi</h5>
+              <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+              <div className="mb-3 text-center">
                 <img
-                  src={avt}
+                  src={avt1}
                   alt="Avatar"
-                  className="rounded-circle mb-3"
-                  style={{ width: "100px" }}
+                  className="rounded-circle"
+                  style={{ width: "100px", height: "100px" }}
                 />
               </div>
-
-
-              <Stack direction="v" gap={3}>
-                <div>
-                  <label className="fw-bold">Họ và Tên</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="name"
-                      value={updatedUser.name}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <p>{user.name}</p>
-                  )}
-                </div>
-
-
-                <div>
-                  <label className="fw-bold">Email</label>
-                  <p>{user.email}</p>
-                </div>
-
-
-                <div>
-                  <label className="fw-bold">Số điện thoại</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="phone"
-                      value={updatedUser.phone}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <p>{user.phone}</p>
-                  )}
-                </div>
-
-
-                <div>
-                  <label className="fw-bold">Giới tính</label>
-                  {isEditing ? (
-                    <>
-                      <label htmlFor="nam" style={{ marginRight: "10px" }}>
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td>Tên đăng nhập</td>
+                    <td>{userData.username}</td>
+                  </tr>
+                  <tr>
+                    <td>Tên</td>
+                    <td>
+                      <input
+                        type="text"
+                        name="name"
+                        value={userData.name}
+                        onChange={handleChange}
+                        className="form-control"
+                        disabled={!isEditing}
+                      />
+                      {errors.name && <p className="text-danger">{errors.name}</p>}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Email</td>
+                    <td>
+                      <input
+                        type="email"
+                        name="email"
+                        value={userData.email}
+                        onChange={handleChange}
+                        className="form-control"
+                        disabled={!isEditing}
+                      />
+                      {errors.email && <p className="text-danger">{errors.email}</p>}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Số điện thoại</td>
+                    <td>
+                      <input
+                        type="text"
+                        name="phone"
+                        value={userData.phone}
+                        onChange={handleChange}
+                        className="form-control"
+                        disabled={!isEditing}
+                      />
+                      {errors.phone && <p className="text-danger">{errors.phone}</p>}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Giới tính</td>
+                    <td>
+                      <div className="form-check">
                         <input
+                          className="form-check-input"
                           type="radio"
-                          id="nam"
                           name="gender"
-                          value="nam"
-                          checked={updatedUser.gender === "nam"}
+                          value="male"
+                          checked={userData.gender === "male"}
                           onChange={handleChange}
+                          disabled={!isEditing}
                         />
-                        Nam
-                      </label>
-                      <label htmlFor="nu">
+                        <label className="form-check-label">Nam</label>
+                      </div>
+                      <div className="form-check">
                         <input
+                          className="form-check-input"
                           type="radio"
-                          id="nu"
                           name="gender"
-                          value="nu"
-                          checked={updatedUser.gender === "nu"}
+                          value="female"
+                          checked={userData.gender === "female"}
                           onChange={handleChange}
+                          disabled={!isEditing}
                         />
-                        Nữ
-                      </label>
-                    </>
-                  ) : (
-                    <p className="m-0">
-                      {user.gender === "nam" ? "Nam" : "Nữ"}
-                    </p>
-                  )}
-                </div>
-
-
-                <div>
-                  <label className="fw-bold">Địa chỉ</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="address"
-                      value={updatedUser.address}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <p>{user.address}</p>
-                  )}
-                </div>
-
-                <div className="text-center">
-                  {isEditing ? (
-                    <>
-                      <button
-                        className="btn btn-success me-2"
-                        onClick={handleSave}
-                      >
-                        Lưu
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => setIsEditing(false)}
-                      >
-                        Hủy
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => setIsEditing(true)}
-                    >
-                      Chỉnh sửa
-                    </button>
-                  )}
-                </div>
-              </Stack>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                        <label className="form-check-label">Nữ</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="gender"
+                          value="other"
+                          checked={userData.gender === "other"}
+                          onChange={handleChange}
+                          disabled={!isEditing}
+                        />
+                        <label className="form-check-label">Khác</label>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button className="btn btn-secondary me-2" onClick={handleEdit} disabled={isEditing}>
+                Cập Nhật
+              </button>
+              <button className="btn btn-danger" onClick={handleSave} disabled={!isEditing}>
+                Lưu
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
-}
-
+};
 
 export default Profile;
-
-
