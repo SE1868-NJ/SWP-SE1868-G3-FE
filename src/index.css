@@ -1,5 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap");
 
 * {
-    font-family: 'Jura', sans-serif;
+  font-family: "Jura", sans-serif;
+}
+.product-image {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px; /* Bo góc nhẹ */
 }
