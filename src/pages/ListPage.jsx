@@ -14,6 +14,7 @@ import {
 } from "react-bootstrap";
 import { BsCart } from "react-icons/bs";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import ChatPopup from '../components/Chats/ChatPopup.jsx';
 
 const categories = ["Đồ ăn", "Đồ uống", "Đồ tươi sống", "Đồ chay"];
 
@@ -23,6 +24,8 @@ const products = Array.from({ length: 50 }, (_, i) => ({
   img: "https://vnaroma.com/wp-content/uploads/2020/10/bi-quyet-chuan-bi-gia-vi-nau-bun-bo-hue-chuan-vi-01.jpg",
   category: categories[Math.floor(Math.random() * categories.length)],
 }));
+
+const mockUserId = 15;
 
 const itemsPerPage = 8;
 const flashSaleItems = 4;
@@ -215,6 +218,7 @@ function ListPage() {
           </Pagination.Next>
         </Pagination>
       </Container>
+      <ChatPopup userId={mockUserId} />
     </>
   );
 }
