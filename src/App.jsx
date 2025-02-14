@@ -2,23 +2,22 @@
 import React from 'react';
 import ChatDemo from './components/Chat/ChatDemo';
 import { BrowserRouter as Router, Route, Routes, useParams } from "react-router-dom";
+import ChatApp from './components/Chat/ChatApp';
 // import { useParams } from 'react-router-dom';
 
 function App() {
     return (
         <Router>
             <Routes>
-                {/* Định tuyến đến trang chat với conversationId và userId */}
-                <Route path="/chat/:conversationId/:userId" element={<ChatWrapper />} />
+                <Route path="/chat/:userId" element={<ChatWrapper />} />
             </Routes>
         </Router>
     );
 }
 
 const ChatWrapper = () => {
-    const { conversationId, userId } = useParams();
-    
-    return <ChatDemo conversationId={parseInt(conversationId)} userId={parseInt(userId)} />;
+    const { userId } = useParams();
+    return <ChatApp userId={parseInt(userId)} />;
 };
 
 
