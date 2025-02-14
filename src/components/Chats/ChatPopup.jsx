@@ -146,7 +146,7 @@ const ChatPopup = ({ userId }) => {
           <IoMdChatboxes size={24} />
         </Button>
       ) : (
-        <Card style={{ width: '350px' }}>
+        <Card style={{ minWidth: '642px', minHeight: '582px' }}>
           <Card.Header className="bg-danger text-white d-flex justify-content-between align-items-center">
             <span>Messages</span>
             <Button 
