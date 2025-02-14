@@ -107,6 +107,45 @@ function App() {
           ))}
         </Row>
 
+        <h4 className="mt-4 d-flex justify-content-between align-items-center">
+          Flash Sale
+          <div>
+            <Button variant="outline-danger" onClick={handleFlashSalePrev}>
+              <FaChevronLeft />
+            </Button>
+            <Button
+              variant="outline-danger"
+              onClick={handleFlashSaleNext}
+              className="ms-2"
+            >
+              <FaChevronRight />
+            </Button>
+          </div>
+        </h4>
+        <Row>
+          {products
+            .slice(flashSaleIndex, flashSaleIndex + flashSaleItems)
+            .map((product, index) => (
+              <Col key={index} xs={6} md={3} className="mb-3">
+                <Card>
+                  <Card.Img variant="top" src={product.img} />
+                  <Card.Body>
+                    <Card.Title>{product.name}</Card.Title>
+                    <Card.Text>{product.price} VND</Card.Text>
+                    <div className="d-flex justify-content-between">
+                      <Button variant="danger" size="sm">
+                        Mua Ngay
+                      </Button>
+                      <Button variant="outline-danger" size="sm">
+                        Thêm vào giỏ hàng
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+        </Row>
+
         <h4 className="mt-4">Tất Cả Sản Phẩm</h4>
         <Row>
           {displayedProducts.map((product, index) => (
