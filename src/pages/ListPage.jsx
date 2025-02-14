@@ -1,222 +1,163 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState } from "react";
-import foodImage from "../assets/images/Food.jpg";
-import Card from "../components/Card";
-import Container from "../components/Container";
-import { Col, Row } from "../components/Grid";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  FormControl,
+  Navbar,
+  Pagination,
+  Row,
+} from "react-bootstrap";
+import { BsCart } from "react-icons/bs";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const productsData = [
-  {
-    id: 1,
-    name: "Bún chả Hà Nội",
-    price: 30000,
-    category: "Đồ ăn",
-    img: foodImage,
-  },
-  {
-    id: 2,
-    name: "Nước ép cam nguyên chất",
-    price: 15000,
-    category: "Đồ uống",
-    img: "https://via.placeholder.com/150",
-  },
-  {
-    id: 3,
-    name: "Bánh mì chay",
-    price: 20000,
-    category: "Đồ ăn chay",
-    img: "https://via.placeholder.com/150",
-  },
-  {
-    id: 4,
-    name: "Thịt lợn",
-    price: 150000,
-    category: "Đồ tươi sống",
-    img: "https://via.placeholder.com/150",
-  },
-  {
-    id: 5,
-    name: "Bún bò Huế",
-    price: 35000,
-    category: "Đồ ăn",
-    img: "https://via.placeholder.com/150",
-  },
-  {
-    id: 6,
-    name: "Coca Cola",
-    price: 10000,
-    category: "Đồ uống",
-    img: "https://via.placeholder.com/150",
-  },
-  {
-    id: 7,
-    name: "Chả giò chay",
-    price: 40000,
-    category: "Đồ ăn chay",
-    img: "https://via.placeholder.com/150",
-  },
-  {
-    id: 8,
-    name: "Cá thu",
-    price: 120000,
-    category: "Đồ tươi sống",
-    img: "https://via.placeholder.com/150",
-  },
-];
+const categories = ["Đồ ăn", "Đồ uống", "Đồ tươi sống", "Đồ chay"];
 
-const categories = ["Tất cả", "Đồ ăn", "Đồ ăn chay", "Đồ uống", "Đồ tươi sống"];
-const priceRanges = [
-  "Tất cả",
-  "Dưới 50k",
-  "50k - 100k",
-  "100k - 200k",
-  "Trên 200k",
-];
+const products = Array.from({ length: 50 }, (_, i) => ({
+  name: `Sản phẩm ${i + 1}`,
+  price: parseFloat((Math.random() * 900 + 100).toFixed(3)),
+  img: "https://vnaroma.com/wp-content/uploads/2020/10/bi-quyet-chuan-bi-gia-vi-nau-bun-bo-hue-chuan-vi-01.jpg",
+  category: categories[Math.floor(Math.random() * categories.length)],
+}));
 
-function ListPage() {
+const itemsPerPage = 8;
+const flashSaleItems = 4;
+
+function App() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
-  const [selectedPriceRange, setSelectedPriceRange] = useState("Tất cả");
-  const [searchTerm, setSearchTerm] = useState(""); // 🔍 Thêm state cho thanh tìm kiếm
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [flashSaleIndex, setFlashSaleIndex] = useState(0);
 
-  const itemsPerPage = 4;
+  const totalPages = Math.ceil(products.length / itemsPerPage);
 
-  // Lọc sản phẩm theo danh mục
-  const filteredProducts = productsData.filter(
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleFlashSaleNext = () => {
+    if (flashSaleIndex + flashSaleItems < products.length) {
+      setFlashSaleIndex(flashSaleIndex + 1);
+    }
+  };
+
+  const handleFlashSalePrev = () => {
+    if (flashSaleIndex > 0) {
+      setFlashSaleIndex(flashSaleIndex - 1);
+    }
+  };
+
+  const filteredProducts = products.filter(
     (product) =>
-      (selectedCategory === "Tất cả" ||
-        product.category === selectedCategory) &&
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) // 🔍 Lọc theo tên sản phẩm
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (!selectedCategory || product.category === selectedCategory) &&
+      product.price >= priceRange[0] &&
+      product.price <= priceRange[1]
   );
 
-  // Lọc sản phẩm theo giá
-  const sortedProducts = filteredProducts.filter((product) => {
-    if (selectedPriceRange === "Tất cả") return true;
-    if (selectedPriceRange === "Dưới 50k") return product.price < 50000;
-    if (selectedPriceRange === "50k - 100k")
-      return product.price >= 50000 && product.price < 100000;
-    if (selectedPriceRange === "100k - 200k")
-      return product.price >= 100000 && product.price < 200000;
-    if (selectedPriceRange === "Trên 200k") return product.price >= 200000;
-  });
-
-  // Tính toán sản phẩm hiển thị trên mỗi trang
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = sortedProducts.slice(
-    indexOfFirstItem,
-    indexOfLastItem
+  const displayedProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
-
-  // Chuyển trang
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <Container>
-      <h2 className="text-danger fw-bold text-center">🛍️ Sản phẩm nổi bật</h2>
+    <>
+      <Navbar bg="danger" variant="dark" expand="lg" className="px-3">
+        <Navbar.Brand href="#">Chợ Làng</Navbar.Brand>
+        <Form className="d-flex ms-auto">
+          <FormControl
+            type="search"
+            placeholder="Tìm sản phẩm..."
+            className="me-2"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Button variant="outline-light">Tìm</Button>
+        </Form>
+        <Button variant="outline-light" className="ms-3">
+          <BsCart size={24} />
+        </Button>
+      </Navbar>
 
-      {/* 🔍 Thanh tìm kiếm */}
-      <div className="mb-3 text-center">
-        <input
-          type="text"
-          className="form-control w-50 mx-auto"
-          placeholder="🔍 Nhập tên sản phẩm..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1); // Reset về trang đầu khi tìm kiếm
-          }}
-        />
-      </div>
+      <Container className="mt-4">
+        <h4>Danh Mục</h4>
+        <Row>
+          {categories.map((category, index) => (
+            <Col key={index} xs={6} md={3} className="mb-3">
+              <Button
+                variant={
+                  selectedCategory === category ? "danger" : "outline-danger"
+                }
+                className="w-100"
+                onClick={() =>
+                  setSelectedCategory(
+                    category === selectedCategory ? "" : category
+                  )
+                }
+              >
+                {category}
+              </Button>
+            </Col>
+          ))}
+        </Row>
 
-      {/* Bộ lọc danh mục */}
-      <div className="mb-4 text-center">
-        {categories.map((category) => (
-          <button
-            key={category}
-            className={`btn mx-2 ${
-              selectedCategory === category
-                ? "btn-primary"
-                : "btn-outline-primary"
-            }`}
-            onClick={() => {
-              setSelectedCategory(category);
-              setCurrentPage(1); // Reset trang khi thay đổi danh mục
-            }}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-
-      {/* Bộ lọc giá */}
-      <div className="mb-4 text-center">
-        {priceRanges.map((priceRange) => (
-          <button
-            key={priceRange}
-            className={`btn mx-2 ${
-              selectedPriceRange === priceRange
-                ? "btn-primary"
-                : "btn-outline-primary"
-            }`}
-            onClick={() => {
-              setSelectedPriceRange(priceRange);
-              setCurrentPage(1); // Reset trang khi thay đổi giá
-            }}
-          >
-            {priceRange}
-          </button>
-        ))}
-      </div>
-
-      {/* Hiển thị sản phẩm */}
-      <Row>
-        {currentProducts.length > 0 ? (
-          currentProducts.map((product) => (
-            <Col key={product.id} md={3}>
-              <Card className="shadow-sm mb-4">
-                <img
-                  src={product.img}
-                  alt={product.name}
-                  className="card-img-top"
-                />
+        <h4 className="mt-4">Tất Cả Sản Phẩm</h4>
+        <Row>
+          {displayedProducts.map((product, index) => (
+            <Col key={index} xs={6} md={3} className="mb-3">
+              <Card>
+                <Card.Img variant="top" src={product.img} />
                 <Card.Body>
-                  <h5 className="card-title">{product.name}</h5>
-                  <p className="card-text">
-                    Giá: {product.price.toLocaleString()} VNĐ
-                  </p>
-                  <button className="btn btn-success w-100">Mua ngay</button>
+                  <Card.Title>{product.name}</Card.Title>
+                  <Card.Text>{product.price} VND</Card.Text>
+                  <div className="d-flex justify-content-between">
+                    <Button variant="danger" size="sm">
+                      Mua Ngay
+                    </Button>
+                    <Button variant="outline-danger" size="sm">
+                      Thêm vào giỏ hàng
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
-          ))
-        ) : (
-          <p className="text-center text-muted">
-            ❌ Không tìm thấy sản phẩm nào!
-          </p>
-        )}
-      </Row>
-
-      {/* Phân trang */}
-      <nav className="mt-4">
-        <ul className="pagination justify-content-center">
-          {Array.from({
-            length: Math.ceil(sortedProducts.length / itemsPerPage),
-          }).map((_, index) => (
-            <li
-              key={index}
-              className={`page-item ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
-            >
-              <button className="page-link" onClick={() => paginate(index + 1)}>
-                {index + 1}
-              </button>
-            </li>
           ))}
-        </ul>
-      </nav>
-    </Container>
+        </Row>
+
+        <Pagination className="mt-3 justify-content-center">
+          <Pagination.Prev
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <FaChevronLeft />
+          </Pagination.Prev>
+          {[...Array(totalPages).keys()].map((num) =>
+            num + 1 <= currentPage + 2 && num + 1 >= currentPage - 2 ? (
+              <Pagination.Item
+                key={num + 1}
+                active={num + 1 === currentPage}
+                onClick={() => handlePageChange(num + 1)}
+              >
+                {num + 1}
+              </Pagination.Item>
+            ) : null
+          )}
+          <Pagination.Next
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            <FaChevronRight />
+          </Pagination.Next>
+        </Pagination>
+      </Container>
+    </>
   );
 }
 
-export default ListPage;
+export default App;
