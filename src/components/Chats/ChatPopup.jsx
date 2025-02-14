@@ -7,6 +7,7 @@ import io from 'socket.io-client';
 import ConversationItem from './ConversationItem';
 import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
+import { chatService } from '../../services/chatService';
 
 const socket = io("http://localhost:3001");
 
@@ -26,12 +27,8 @@ const ChatPopup = ({ userId }) => {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/api/conversation/user/${userId}`
-        );
-        if (response.data?.data) {
-          setConversations(response.data.data);
-        }
+        const data = await chatService.getConversations(userId);
+        setConversations(data);
       } catch (error) {
         console.error('Error fetching conversations:', error);
       }
@@ -47,10 +44,8 @@ const ChatPopup = ({ userId }) => {
     if (selectedConversation) {
       const fetchMessages = async () => {
         try {
-          const response = await axios.get(
-            `http://localhost:4000/api/message/getMessage/${selectedConversation}?limit=20&offset=0`
-          );
-          setMessages(response.data.data.messages);
+          const data = await chatService.getMessages(selectedConversation);
+          setMessages(data.messages);
         } catch (error) {
           console.error('Error fetching messages:', error);
         }
@@ -96,10 +91,7 @@ const ChatPopup = ({ userId }) => {
       formData.append('shopName', 'shop1');
 
       try {
-        const response = await axios.post(
-          'http://localhost:4000/api/file/upload',
-          formData
-        );
+        const data = await chatService.uploadFile(formData);
         
         const messageData = {
           conversation_id: selectedConversation,
@@ -107,7 +99,7 @@ const ChatPopup = ({ userId }) => {
           sender_type: 'user',
           message_text: '',
           message_type: 'file',
-          media_url: response.data.data.url,
+          media_url: data.url,
         };
 
         socket.emit('send-message', messageData);
@@ -160,7 +152,7 @@ const ChatPopup = ({ userId }) => {
 
           <Card.Body className="p-0 d-flex">
             {/* Conversations List */}
-            <div className="border-end" style={{ width: '130px', overflowY: 'auto' }}>
+            <div className="border-end" style={{ minWidth: '130px', overflowY: 'auto', maxWidth: '200px' }}>
               {conversations.map(conv => (
                 <ConversationItem
                   key={conv.id || conv.conversation_id}

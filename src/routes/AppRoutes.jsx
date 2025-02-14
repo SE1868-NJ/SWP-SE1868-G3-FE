@@ -28,18 +28,18 @@ const router = createBrowserRouter([
         path: "/listpage",
         element: <ListPage />,
       },
-	  {
-		path: '/profile',
-		element: <Profile/>
-    },
-      			{
-				path: '/cart',
-                element: <Cart/>
-			},
-			{
-				path: '/checkout',
-				element: <Checkout/>
-			}
+      {
+        path: '/profile',
+        element: <Profile />
+      },
+      {
+        path: '/cart',
+        element: <Cart />
+      },
+      {
+        path: '/checkout',
+        element: <Checkout />
+      }
     ],
   },
 
