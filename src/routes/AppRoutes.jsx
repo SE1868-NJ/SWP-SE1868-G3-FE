@@ -29,9 +29,18 @@ const router = createBrowserRouter([
 	  {
 		path: '/profile',
 		element: <Profile/>
-}
+    },
+      			{
+				path: '/cart',
+                element: <Cart/>
+			},
+			{
+				path: '/checkout',
+				element: <Checkout/>
+			}
     ],
   },
+
 ]);
 
 function AppRoutes() {
