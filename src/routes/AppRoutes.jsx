@@ -5,6 +5,8 @@ import ListPage from "../pages/ListPage";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Profile from "../pages/Profile";
+import Cart from "../pages/Cart";
+import Checkout from "../pages/Checkout";
 const router = createBrowserRouter([
   {
     path: "/",
