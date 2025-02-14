@@ -2,14 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { IoMdChatboxes } from 'react-icons/io';
 import { FaTimes } from 'react-icons/fa';
-import axios from 'axios';
-import io from 'socket.io-client';
-import ConversationItem from './ConversationItem';
+import UserConversationItem from './UserConversationItem';
 import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
 import { chatService } from '../../services/chatService';
-
-const socket = io("http://localhost:3001");
+import { Socket } from '../../services/socket';
 
 const ChatPopup = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,10 +15,29 @@ const ChatPopup = ({ userId }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [file, setFile] = useState(null);
-  
+
   const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
   const isAutoScrolling = useRef(true);
+
+  const name = "user_name1"
+
+  const setupSocketHandlers = (conversationId) => {
+    // Remove all existing listeners first
+    Socket.removeAllListeners();
+
+    // Join new conversation
+    Socket.emit('join-conversation', conversationId);
+
+    // Setup new listeners
+    Socket.on('receive_message', (newMessage) => {
+      setMessages(prev => [...prev, newMessage]);
+    });
+
+    Socket.on('error', (error) => {
+      console.error('Socket error:', error);
+    });
+  };
 
   // Fetch conversations
   useEffect(() => {
@@ -46,21 +62,23 @@ const ChatPopup = ({ userId }) => {
         try {
           const data = await chatService.getMessages(selectedConversation);
           setMessages(data.messages);
+          setupSocketHandlers(selectedConversation);
         } catch (error) {
           console.error('Error fetching messages:', error);
         }
       };
 
       fetchMessages();
-      socket.emit('join-conversation', selectedConversation);
+      // Socket.emit('join-conversation', selectedConversation);
 
-      socket.on('receive_message', (newMessage) => {
-        setMessages(prev => [...prev, newMessage]);
-      });
+      // Socket.on('receive_message', (newMessage) => {
+      //   setMessages(prev => [...prev, newMessage]);
+      // });
 
       return () => {
-        socket.emit('leave-conversation', selectedConversation);
-        socket.off('receive_message');
+        Socket.removeAllListeners();
+        Socket.emit('leave-conversation', selectedConversation);
+        setMessages([]);
       };
     }
   }, [selectedConversation]);
@@ -83,55 +101,60 @@ const ChatPopup = ({ userId }) => {
 
   const handleFileSelect = async (e) => {
     const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      
+    if (!selectedFile) return;
+
+    try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('shopName', 'shop1');
+      formData.append('prefix_name', name);
 
-      try {
-        const data = await chatService.uploadFile(formData);
-        
-        const messageData = {
-          conversation_id: selectedConversation,
-          sender_id: userId,
-          sender_type: 'user',
-          message_text: '',
-          message_type: 'file',
-          media_url: data.url,
-        };
+      const { url } = await chatService.uploadFile(formData);
 
-        socket.emit('send-message', messageData);
-        setFile(null);
-      } catch (error) {
-        console.error('Error uploading file:', error);
-        setFile(null);
-      }
+      Socket.emit('send-message', {
+        conversation_id: selectedConversation,
+        sender_id: userId,
+        sender_type: 'user',
+        message_text: '',
+        message_type: 'file',
+        media_url: url,
+      });
+    } catch (error) {
+      console.error('❌ Error uploading file:', error);
+    } finally {
+      setFile(null);
     }
   };
 
   const handleSendMessage = () => {
     if (!message.trim() || !selectedConversation) return;
 
-    const messageData = {
+    Socket.emit('send-message', {
       conversation_id: selectedConversation,
       sender_id: userId,
       sender_type: 'user',
       message_text: message.trim(),
       message_type: 'text',
       media_url: '',
-    };
+    });
 
-    socket.emit('send-message', messageData);
     setMessage('');
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    Socket.removeAllListeners();
+    if (selectedConversation) {
+      Socket.emit('leave-conversation', selectedConversation);
+    }
+    setSelectedConversation(null);
+    setMessages([]);
   };
 
   return (
     <div className="position-fixed bottom-0 end-0 mb-3 me-3" style={{ zIndex: 1050 }}>
       {!isOpen ? (
-        <Button 
-          variant="danger" 
+        <Button
+          variant="danger"
           className="rounded-circle p-3"
           onClick={() => setIsOpen(true)}
         >
@@ -141,10 +164,10 @@ const ChatPopup = ({ userId }) => {
         <Card style={{ minWidth: '642px', minHeight: '582px' }}>
           <Card.Header className="bg-danger text-white d-flex justify-content-between align-items-center">
             <span>Messages</span>
-            <Button 
-              variant="link" 
+            <Button
+              variant="link"
               className="text-white p-0"
-              onClick={() => setIsOpen(false)}
+              onClick={handleClose}
             >
               <FaTimes />
             </Button>
@@ -154,7 +177,7 @@ const ChatPopup = ({ userId }) => {
             {/* Conversations List */}
             <div className="border-end" style={{ minWidth: '130px', overflowY: 'auto', maxWidth: '200px' }}>
               {conversations.map(conv => (
-                <ConversationItem
+                <UserConversationItem
                   key={conv.id || conv.conversation_id}
                   conversation={conv}
                   isSelected={selectedConversation === (conv.id || conv.conversation_id)}

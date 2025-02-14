@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ConversationItem = ({ conversation, isSelected, onClick, userId }) => {
+const UserConversationItem = ({ conversation, isSelected, onClick, userId }) => {
   const otherParty = conversation.user_id === userId ? conversation.shop_id : conversation.user_id;
 
   return (
@@ -36,4 +36,4 @@ const ConversationItem = ({ conversation, isSelected, onClick, userId }) => {
   );
 };
 
-export default ConversationItem;
+export default UserConversationItem;
