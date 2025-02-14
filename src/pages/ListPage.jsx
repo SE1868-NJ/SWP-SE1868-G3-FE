@@ -26,7 +26,7 @@ const products = Array.from({ length: 50 }, (_, i) => ({
 const itemsPerPage = 8;
 const flashSaleItems = 4;
 
-function App() {
+function ListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -160,4 +160,4 @@ function App() {
   );
 }
 
-export default App;
+export default ListPage;
