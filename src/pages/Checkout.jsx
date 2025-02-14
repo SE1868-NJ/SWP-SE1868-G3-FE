@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import avt from "../assets/images/avt.jpg";
 
 const Checkout = () => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showShippingModal, setShowShippingModal] = useState(false);
-  const [selectedVoucher, setSelectedVoucher] = useState('');
+  const [selectedVoucher, setSelectedVoucher] = useState("");
   const [products] = useState([
-    { name: 'MeXueMeILin Ao sweater', price: 150000, quantity: 1 },
+    { name: "MeXueMeILin Ao sweater", price: 150000, quantity: 1 },
   ]);
   const [shippingFee, setShippingFee] = useState(432800);
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
   };
 
-  const totalAmount = products.reduce((sum, item) => sum + item.price * item.quantity, 0) + shippingFee;
+  const totalAmount =
+    products.reduce((sum, item) => sum + item.price * item.quantity, 0) +
+    shippingFee;
 
   const handlePlaceOrder = () => {
-    alert('Đặt hàng thành công!');
+    alert("Đặt hàng thành công!");
   };
 
   return (
@@ -26,7 +32,7 @@ const Checkout = () => {
         <div className="card-body">
           <div className="d-flex justify-content-between align-items-start mb-3">
             <div>
-              <h2 className="h4 mb-2 fw-bold text-primary">Địa Chỉ Nhận Hàng</h2>
+              <h2 className="h4 mb-2 fw-bold text-dark">Địa Chỉ Nhận Hàng</h2>
               <div className="text-dark">
                 <p className="mb-1 fw-semibold">Thu An (+84) 963780216</p>
                 <p className="text-muted small">
@@ -37,11 +43,11 @@ const Checkout = () => {
               </div>
             </div>
             <div>
-              <button className="btn btn-outline-primary btn-sm me-2" disabled>
+              <button className="btn btn-outline-danger btn-sm me-2" disabled>
                 Mặc Định
               </button>
-              <button 
-                className="btn btn-primary btn-sm"
+              <button
+                className="btn btn-danger btn-sm"
                 onClick={() => setShowAddressModal(true)}
               >
                 Thay Đổi
@@ -52,16 +58,28 @@ const Checkout = () => {
           <hr className="my-4" />
 
           {/* Danh sách sản phẩm */}
-          <h5 className="h5 mb-3 fw-bold text-primary">Sản phẩm</h5>
+          <h5 className="h5 mb-3 fw-bold text-dark">Sản phẩm</h5>
           <div className="list-group">
             {products.map((product, index) => (
               <div key={index} className="list-group-item border-0 px-0 py-3">
                 <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 className="mb-1 fw-semibold">{product.name}</h6>
-                    <small className="text-muted">Số lượng: {product.quantity}</small>
+                  <div className="d-flex align-items-center">
+                    <img
+                      src={avt}
+                      alt="product"
+                      className="img-fluid me-3"
+                      style={{ width: "5em" }}
+                    />
+                    <div>
+                      <h6 className="mb-1 fw-semibold">{product.name}</h6>
+                      <small className="text-muted">
+                        Số lượng: {product.quantity}
+                      </small>
+                    </div>
                   </div>
-                  <span className="text-danger fw-bold">{formatCurrency(product.price)}</span>
+                  <span className="text-danger fw-bold">
+                    {formatCurrency(product.price)}
+                  </span>
                 </div>
               </div>
             ))}
@@ -71,8 +89,10 @@ const Checkout = () => {
           <div className="row mt-4 g-3">
             <div className="col-md-6">
               <div className="mb-3">
-                <label className="form-label fw-semibold">Voucher của Shop</label>
-                <select 
+                <label className="form-label fw-semibold">
+                  Voucher của Shop
+                </label>
+                <select
                   className="form-select"
                   value={selectedVoucher}
                   onChange={(e) => setSelectedVoucher(e.target.value)}
@@ -83,7 +103,7 @@ const Checkout = () => {
                 </select>
               </div>
             </div>
-            
+
             <div className="col-md-6">
               <div className="border p-3 rounded">
                 <div className="d-flex justify-content-between align-items-center">
@@ -92,8 +112,10 @@ const Checkout = () => {
                     <small className="text-success fw-semibold">Nhanh</small>
                   </div>
                   <div>
-                    <span className="text-danger fw-bold me-3">{formatCurrency(shippingFee)}</span>
-                    <button 
+                    <span className="text-danger fw-bold me-3">
+                      {formatCurrency(shippingFee)}
+                    </span>
+                    <button
                       className="btn btn-link p-0 text-decoration-none"
                       onClick={() => setShowShippingModal(true)}
                     >
@@ -111,7 +133,9 @@ const Checkout = () => {
               <div className="bg-light p-3 rounded">
                 <h4 className="fw-bold">
                   Tổng thanh toán ({products.length} sản phẩm):
-                  <span className="text-danger ms-2">{formatCurrency(totalAmount)}</span>
+                  <span className="text-danger ms-2">
+                    {formatCurrency(totalAmount)}
+                  </span>
                 </h4>
               </div>
             </div>
@@ -122,19 +146,22 @@ const Checkout = () => {
       {/* Phần Thanh toán */}
       <div className="card shadow-sm">
         <div className="card-body">
-          <h2 className="h4 mb-4 fw-bold text-primary">Phương thức thanh toán</h2>
-          
+          <h2 className="h4 mb-4 fw-bold text-dark">Phương thức thanh toán</h2>
+
           <div className="mb-4">
             <div className="border rounded p-3 mb-3">
               <div className="form-check">
-                <input 
-                  className="form-check-input" 
-                  type="radio" 
-                  name="payment" 
-                  id="shopeePay" 
-                  defaultChecked 
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="payment"
+                  id="shopeePay"
+                  defaultChecked
                 />
-                <label className="form-check-label fw-semibold" htmlFor="shopeePay">
+                <label
+                  className="form-check-label fw-semibold"
+                  htmlFor="shopeePay"
+                >
                   Ví ShopeePay
                 </label>
                 <p className="text-muted small mb-0">Thẻ Tín dụng/Ghi nợ</p>
@@ -143,7 +170,12 @@ const Checkout = () => {
 
             <div className="border rounded p-3">
               <div className="form-check">
-                <input className="form-check-input" type="radio" name="payment" id="cod" />
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="payment"
+                  id="cod"
+                />
                 <label className="form-check-label fw-semibold" htmlFor="cod">
                   Thanh toán khi nhận hàng
                 </label>
@@ -151,33 +183,36 @@ const Checkout = () => {
             </div>
           </div>
 
-          <button 
+          <button
             className="btn btn-danger w-100 fw-bold py-3"
             onClick={handlePlaceOrder}
           >
             Đặt hàng
           </button>
-          
+
           <p className="text-muted small mt-3 text-center">
-            Nhấn “Đặt hàng” đồng nghĩa với việc bạn đồng ý tuân theo 
-            <a href="#terms" className="text-decoration-none"> Điều khoản Shopee</a>
+            Nhấn “Đặt hàng” đồng nghĩa với việc bạn đồng ý tuân theo
+            <a href="#terms" className="text-decoration-none">
+              {" "}
+              Điều khoản Shopee
+            </a>
           </p>
         </div>
       </div>
 
       {/* Modals */}
-      <div 
-        className={`modal ${showAddressModal ? 'show' : ''}`} 
-        style={{ display: showAddressModal ? 'block' : 'none' }}
+      <div
+        className={`modal ${showAddressModal ? "show" : ""}`}
+        style={{ display: showAddressModal ? "block" : "none" }}
         tabIndex="-1"
       >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">Thay đổi địa chỉ</h5>
-              <button 
-                type="button" 
-                className="btn-close" 
+              <button
+                type="button"
+                className="btn-close"
                 onClick={() => setShowAddressModal(false)}
               ></button>
             </div>
@@ -193,33 +228,33 @@ const Checkout = () => {
           </div>
         </div>
       </div>
-      <div 
-        className={`modal-backdrop fade ${showAddressModal ? 'show' : ''}`} 
-        style={{ display: showAddressModal ? 'block' : 'none' }}
+      <div
+        className={`modal-backdrop fade ${showAddressModal ? "show" : ""}`}
+        style={{ display: showAddressModal ? "block" : "none" }}
       ></div>
 
-      <div 
-        className={`modal ${showShippingModal ? 'show' : ''}`} 
-        style={{ display: showShippingModal ? 'block' : 'none' }}
+      <div
+        className={`modal ${showShippingModal ? "show" : ""}`}
+        style={{ display: showShippingModal ? "block" : "none" }}
         tabIndex="-1"
       >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">Chọn phương thức vận chuyển</h5>
-              <button 
-                type="button" 
-                className="btn-close" 
+              <button
+                type="button"
+                className="btn-close"
                 onClick={() => setShowShippingModal(false)}
               ></button>
             </div>
             <div className="modal-body">
               <div className="form-check">
-                <input 
-                  className="form-check-input" 
-                  type="radio" 
-                  name="shipping" 
-                  id="fast" 
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="shipping"
+                  id="fast"
                   defaultChecked
                   onChange={() => setShippingFee(432800)}
                 />
@@ -228,10 +263,10 @@ const Checkout = () => {
                 </label>
               </div>
               <div className="form-check">
-                <input 
-                  className="form-check-input" 
-                  type="radio" 
-                  name="shipping" 
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="shipping"
                   id="standard"
                   onChange={() => setShippingFee(320000)}
                 />
@@ -243,9 +278,9 @@ const Checkout = () => {
           </div>
         </div>
       </div>
-      <div 
-        className={`modal-backdrop fade ${showShippingModal ? 'show' : ''}`} 
-        style={{ display: showShippingModal ? 'block' : 'none' }}
+      <div
+        className={`modal-backdrop fade ${showShippingModal ? "show" : ""}`}
+        style={{ display: showShippingModal ? "block" : "none" }}
       ></div>
     </div>
   );

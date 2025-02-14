@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import avt from "../assets/images/avt.jpg";
-
+import { Link } from "react-router-dom"; 
 const Cart = () => {
   const [products, setProducts] = useState([
     { id: 1, name: "Bún Cá", price: 59600, originalPrice: 85000, quantity: 1, selected: false },
@@ -103,7 +103,7 @@ const Cart = () => {
 
             <h5 className="fw-bold">Tổng tiền thanh toán</h5>
             <p className="text-danger fs-5 fw-bold">{total > 0 ? `${totalAfterDiscount.toLocaleString()}đ` : "Vui lòng chọn sản phẩm"}</p>
-            <button className="btn btn-danger w-100" disabled={total === 0}>Mua Hàng ({products.filter(p => p.selected).length})</button>
+            <Link to={`/checkout`} className="btn btn-danger w-100" disabled={total === 0}>Mua Hàng ({products.filter(p => p.selected).length})</Link>
           </div>
         </div>
       </div>
