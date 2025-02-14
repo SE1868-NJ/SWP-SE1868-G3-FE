@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Card } from 'react-bootstrap';
 import Message from './Message';
 import MessageInput from './MessageInput';
@@ -11,16 +11,40 @@ const ShopChatWindow = ({
     setMessage,
     onSendMessage,
     onFileSelect,
-    chatContainerRef,
-    conversations, 
+    conversations,
     fileInputRef
 }) => {
+    const chatContainerRef = useRef(null);
+    const messagesEndRef = useRef(null);
+    const isAutoScrolling = useRef(true);
+
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    // Scroll khi có tin nhắn mới hoặc chọn conversation mới
+    useEffect(() => {
+        if (isAutoScrolling.current) {
+            scrollToBottom();
+        }
+    }, [messages]);
+
+    const handleScroll = () => {
+        if (chatContainerRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+            const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 50;
+            isAutoScrolling.current = isAtBottom;
+        }
+    };
+
     return (
         <Card className="h-100">
             <Card.Header>
                 <h5 className="mb-0">
                     {selectedConversation
-                        ? `Chat with User #${conversations.find(c => c.conversation_id === selectedConversation)?.user_id}`
+                        ? `Chat with User #${conversations.find(c => c.conversation_id === selectedConversation)?.user.name}`
                         : 'Select a conversation'
                     }
                 </h5>
@@ -29,8 +53,9 @@ const ShopChatWindow = ({
                 {selectedConversation ? (
                     <>
                         <div
-                            className="flex-grow-1 overflow-auto"
+                            className="flex-grow-1 overflow-auto p-3"
                             ref={chatContainerRef}
+                            onScroll={handleScroll}
                         >
                             {messages.map((msg, index) => (
                                 <Message
@@ -39,6 +64,7 @@ const ShopChatWindow = ({
                                     isOwnMessage={msg.sender_id === shopId}
                                 />
                             ))}
+                            <div ref={messagesEndRef} /> 
                         </div>
                         <MessageInput
                             message={message}

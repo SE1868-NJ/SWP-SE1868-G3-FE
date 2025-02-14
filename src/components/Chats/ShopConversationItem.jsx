@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ShopConversationItem = ({ conversation, isSelected, onClick, shopId }) => {
+const ShopConversationItem = ({ conversation, isSelected, onClick }) => {
     return (
         <div
             className={`p-3 border-bottom ${isSelected ? 'bg-light' : ''}`}
@@ -9,7 +9,7 @@ const ShopConversationItem = ({ conversation, isSelected, onClick, shopId }) => 
         >
             <div className="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 className="mb-1">User #{conversation.user_id}</h6>
+                    <h6 className="mb-1">User #{conversation.user.name}</h6>
                     <p className="text-muted small mb-0">
                         {conversation.last_message || 'No messages yet'}
                     </p>

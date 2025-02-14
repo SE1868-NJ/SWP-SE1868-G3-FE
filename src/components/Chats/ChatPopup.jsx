@@ -22,6 +22,23 @@ const ChatPopup = ({ userId }) => {
 
   const name = "user_name1"
 
+  const setupSocketHandlers = (conversationId) => {
+    // Remove all existing listeners first
+    Socket.removeAllListeners();
+
+    // Join new conversation
+    Socket.emit('join-conversation', conversationId);
+
+    // Setup new listeners
+    Socket.on('receive_message', (newMessage) => {
+      setMessages(prev => [...prev, newMessage]);
+    });
+
+    Socket.on('error', (error) => {
+      console.error('Socket error:', error);
+    });
+  };
+
   // Fetch conversations
   useEffect(() => {
     const fetchConversations = async () => {
@@ -45,21 +62,23 @@ const ChatPopup = ({ userId }) => {
         try {
           const data = await chatService.getMessages(selectedConversation);
           setMessages(data.messages);
+          setupSocketHandlers(selectedConversation);
         } catch (error) {
           console.error('Error fetching messages:', error);
         }
       };
 
       fetchMessages();
-      Socket.emit('join-conversation', selectedConversation);
+      // Socket.emit('join-conversation', selectedConversation);
 
-      Socket.on('receive_message', (newMessage) => {
-        setMessages(prev => [...prev, newMessage]);
-      });
+      // Socket.on('receive_message', (newMessage) => {
+      //   setMessages(prev => [...prev, newMessage]);
+      // });
 
       return () => {
+        Socket.removeAllListeners();
         Socket.emit('leave-conversation', selectedConversation);
-        Socket.off('receive_message');
+        setMessages([]);
       };
     }
   }, [selectedConversation]);
@@ -121,6 +140,16 @@ const ChatPopup = ({ userId }) => {
     setMessage('');
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+    Socket.removeAllListeners();
+    if (selectedConversation) {
+      Socket.emit('leave-conversation', selectedConversation);
+    }
+    setSelectedConversation(null);
+    setMessages([]);
+  };
+
   return (
     <div className="position-fixed bottom-0 end-0 mb-3 me-3" style={{ zIndex: 1050 }}>
       {!isOpen ? (
@@ -138,7 +167,7 @@ const ChatPopup = ({ userId }) => {
             <Button
               variant="link"
               className="text-white p-0"
-              onClick={() => setIsOpen(false)}
+              onClick={handleClose}
             >
               <FaTimes />
             </Button>

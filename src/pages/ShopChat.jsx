@@ -6,8 +6,7 @@ import { chatService } from '../services/chatService';
 import { Socket } from '../services/socket';
 
 const ShopChat = () => {
-    // State management
-    const shopId = 1; // From authentication
+    const shopId = 2; // From authentication
     const [conversations, setConversations] = useState([]);
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -36,7 +35,6 @@ const ShopChat = () => {
                 try {
                     const data = await chatService.getMessages(selectedConversation);
                     setMessages(data.messages);
-                    scrollToBottom();
                 } catch (error) {
                     console.error('Error:', error);
                 }
@@ -56,14 +54,8 @@ const ShopChat = () => {
     // Handlers
     const handleNewMessage = (newMessage) => {
         setMessages(prev => [...prev, newMessage]);
-        scrollToBottom();
     };
 
-    const scrollToBottom = () => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    };
 
     const handleSendMessage = async () => {
         if (!message.trim() || !selectedConversation) return;
@@ -90,16 +82,15 @@ const ShopChat = () => {
             formData.append('file', selectedFile);
             formData.append('prefix_name', "Shop");
             const fileUrl = await chatService.uploadFile(formData);
-            const messageData = {
+
+            Socket.emit('send-message', {
                 conversation_id: selectedConversation,
                 sender_id: shopId,
                 sender_type: 'shop',
                 message_text: '',
                 message_type: 'file',
-                media_url: fileUrl,
-            };
-
-            Socket.emit('send-message', messageData);
+                media_url: fileUrl.url,
+            });
         } catch (error) {
             console.error('Error:', error);
         }
@@ -108,15 +99,14 @@ const ShopChat = () => {
     return (
         <Container fluid className="py-4">
             <Row className="h-100" style={{ minHeight: 'calc(100vh - 100px)' }}>
-                <Col md={4} className="mb-3">
+                <Col md={3} className="mb-3">
                     <ShopChatList
                         conversations={conversations}
                         selectedConversation={selectedConversation}
                         onSelectConversation={setSelectedConversation}
-                        shopId={shopId}
                     />
                 </Col>
-                <Col md={8}>
+                <Col md={9} className="mb-3">
                     <ShopChatWindow
                         selectedConversation={selectedConversation}
                         messages={messages}

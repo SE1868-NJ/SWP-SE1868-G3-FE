@@ -6,7 +6,6 @@ const ShopChatList = ({
     conversations,
     selectedConversation,
     onSelectConversation,
-    shopId
 }) => {
     return (
         <Card className="h-100">
@@ -21,7 +20,6 @@ const ShopChatList = ({
                             conversation={conv}
                             isSelected={selectedConversation === conv.conversation_id}
                             onClick={() => onSelectConversation(conv.conversation_id)}
-                            shopId={shopId}
                         />
                     ))}
                 </div>
