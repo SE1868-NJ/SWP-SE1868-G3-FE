@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 import ChatPopup from "../components/Chats/ChatPopup";
 import Advertisement from "../components/Products/Advertisement";
 import Categories from "../components/Products/Categories";
@@ -15,7 +16,6 @@ const images = [
   "https://www.eamgroup.vn/Huu-ich/Images/Post/49OAqx2503.jpg",
   "https://i.ytimg.com/vi/C1P1Cw9J1-I/maxresdefault.jpg",
   "https://example.com/image3.jpg",
-  // Thêm các URL ảnh khác vào đây
 ];
 
 const products = Array.from({ length: 50 }, (_, i) => ({
@@ -37,10 +37,17 @@ const itemsPerPage = 8;
 const flashSaleItems = 4;
 const topSearchItems = 4;
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function ListPage() {
+  const query = useQuery();
+  const navigate = useNavigate();
+  const selectedCategory = query.get("category") || "";
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  //const [selectedCategory, setSelectedCategory] = useState("");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [flashSaleIndex, setFlashSaleIndex] = useState(0);
   const [topSearchIndex, setTopSearchIndex] = useState(0);
@@ -80,6 +87,10 @@ function ListPage() {
     );
   };
 
+  const handleCategorySelect = (category) => {
+    navigate(`/products?category=${encodeURIComponent(category)}`);
+  };
+
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -110,7 +121,7 @@ function ListPage() {
         <Categories
           categories={categories}
           selectedCategory={selectedCategory}
-          onCategorySelect={setSelectedCategory}
+          onCategorySelect={handleCategorySelect}
         />
 
         <FlashSale
