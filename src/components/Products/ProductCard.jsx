@@ -1,11 +1,23 @@
 import React from 'react';
 import { Card, Button, CardFooter } from 'react-bootstrap';
 import { FaSearchPlus } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product, onZoom }) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(`/product/${product.id}`);
+  };
+
   return (
     <Card className="position-relative">
-      <Card.Img variant="top" src={product.img} style={{ cursor: "pointer" }} />
+      <Card.Img
+        variant="top"
+        src={product.img}
+        style={{ cursor: "pointer" }}
+        onClick={handleNavigate}
+      />
       <Card.Footer>
         <div
           className="position-absolute top-0 end-0 p-2 bg-danger text-white rounded-circle"
@@ -16,7 +28,9 @@ const ProductCard = ({ product, onZoom }) => {
         </div>
       </Card.Footer>
       <Card.Body>
-        <Card.Title>{product.name}</Card.Title>
+        <Card.Title onClick={handleNavigate} style={{ cursor: "pointer" }}>
+          {product.name}
+        </Card.Title>
         <Card.Text>{product.price} VND</Card.Text>
         <div className="d-flex justify-content-between">
           <Button variant="danger" size="sm">
