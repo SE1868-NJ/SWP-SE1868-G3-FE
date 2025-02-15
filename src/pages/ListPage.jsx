@@ -1,15 +1,31 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
-import Header from "../components/Products/Header";
+import ChatPopup from "../components/Chats/ChatPopup";
+import Advertisement from "../components/Products/Advertisement";
 import Categories from "../components/Products/Categories";
-import FlashSale from "../components/Products/FlashSale";
-import ProductList from "../components/Products/ProductList";
 import CustomPagination from "../components/Products/CustomPagination";
-import ChatPopup from '../components/Chats/ChatPopup';
+import FlashSale from "../components/Products/FlashSale";
+import Header from "../components/Products/Header";
+import ProductList from "../components/Products/ProductList";
+import TopSearch from "../components/Products/TopSearch";
 
 const categories = ["Đồ ăn", "Đồ uống", "Đồ tươi sống", "Đồ chay"];
 
+const images = [
+  "https://www.eamgroup.vn/Huu-ich/Images/Post/49OAqx2503.jpg",
+  "https://i.ytimg.com/vi/C1P1Cw9J1-I/maxresdefault.jpg",
+  "https://example.com/image3.jpg",
+  // Thêm các URL ảnh khác vào đây
+];
+
 const products = Array.from({ length: 50 }, (_, i) => ({
+  name: `Sản phẩm ${i + 1}`,
+  price: parseFloat((Math.random() * 900 + 100).toFixed(3)),
+  img: "https://vnaroma.com/wp-content/uploads/2020/10/bi-quyet-chuan-bi-gia-vi-nau-bun-bo-hue-chuan-vi-01.jpg",
+  category: categories[Math.floor(Math.random() * categories.length)],
+}));
+
+const topSearchProducts = Array.from({ length: 8 }, (_, i) => ({
   name: `Sản phẩm ${i + 1}`,
   price: parseFloat((Math.random() * 900 + 100).toFixed(3)),
   img: "https://vnaroma.com/wp-content/uploads/2020/10/bi-quyet-chuan-bi-gia-vi-nau-bun-bo-hue-chuan-vi-01.jpg",
@@ -19,6 +35,7 @@ const products = Array.from({ length: 50 }, (_, i) => ({
 const mockUserId = 15;
 const itemsPerPage = 8;
 const flashSaleItems = 4;
+const topSearchItems = 4;
 
 function ListPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,6 +43,8 @@ function ListPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [flashSaleIndex, setFlashSaleIndex] = useState(0);
+  const [topSearchIndex, setTopSearchIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleFlashSaleNext = () => {
     if (flashSaleIndex + flashSaleItems < products.length) {
@@ -37,6 +56,28 @@ function ListPage() {
     if (flashSaleIndex > 0) {
       setFlashSaleIndex(flashSaleIndex - 1);
     }
+  };
+
+  const handleTopSearchNext = () => {
+    if (topSearchIndex + topSearchItems < topSearchProducts.length) {
+      setTopSearchIndex(topSearchIndex + 1);
+    }
+  };
+
+  const handleTopSearchPrev = () => {
+    if (topSearchIndex > 0) {
+      setTopSearchIndex(topSearchIndex - 1);
+    }
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex(
+      (prevIndex) => (prevIndex - 1 + images.length) % images.length
+    );
   };
 
   const filteredProducts = products.filter(
@@ -56,12 +97,16 @@ function ListPage() {
 
   return (
     <>
-      <Header
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-      />
+      <Header searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
       <Container className="mt-4">
+        <Advertisement
+          images={images}
+          currentImageIndex={currentImageIndex}
+          onNext={handleNextImage}
+          onPrev={handlePrevImage}
+        />
+
         <Categories
           categories={categories}
           selectedCategory={selectedCategory}
@@ -69,9 +114,20 @@ function ListPage() {
         />
 
         <FlashSale
-          products={products.slice(flashSaleIndex, flashSaleIndex + flashSaleItems)}
+          products={products.slice(
+            flashSaleIndex,
+            flashSaleIndex + flashSaleItems
+          )}
           onPrev={handleFlashSalePrev}
           onNext={handleFlashSaleNext}
+        />
+        <TopSearch
+          topSearchProducts={topSearchProducts.slice(
+            topSearchIndex,
+            topSearchIndex + topSearchItems
+          )}
+          onPrev={handleTopSearchPrev}
+          onNext={handleTopSearchNext}
         />
 
         <ProductList
