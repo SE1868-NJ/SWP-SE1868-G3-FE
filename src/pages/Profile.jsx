@@ -3,15 +3,14 @@ import avt1 from "../assets/images/avt1.png";
 
 const Profile = () => {
   const [userData, setUserData] = useState({
-    username: "pthuan8324",
-    name: "pho mai que",
-    email: "ph**********@gmail.com",
-    phone: "*****16",
-    gender: "male",
+    name: "",
+    email: "",
+    phone: "",
+    gender: "",
   });
-  
-  const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [avatar, setAvatar] = useState(avt1);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,10 +20,10 @@ const Profile = () => {
   const validate = () => {
     let newErrors = {};
     if (userData.name.length > 30) {
-      newErrors.name = "Tên không được quá 30 kí tự";
+      newErrors.name = "Tên không được quá 30 chữ";
     }
     if (!userData.email.endsWith("@gmail.com")) {
-      newErrors.email = "Sai định dạng Email";
+      newErrors.email = "Email phải theo định dạng @gmail.com";
     }
     if (userData.phone.length !== 10 || isNaN(userData.phone)) {
       newErrors.phone = "Số điện thoại phải có đúng 10 chữ số";
@@ -33,152 +32,149 @@ const Profile = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
+  const handleEditSave = () => {
+    if (isEditing) {
+      if (validate()) {
+        setIsEditing(false);
+      }
+    } else {
+      setIsEditing(true);
+    }
   };
 
-  const handleSave = () => {
-    if (validate()) {
-      setIsEditing(false);
-      // Thêm logic lưu thông tin vào database tại đây nếu cần
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatar(URL.createObjectURL(file));
     }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col-md-3">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">{userData.username}</h5>
-              <button className="btn btn-danger btn-sm">Sửa Hồ Sơ</button>
-              <ul className="list-group list-group-flush mt-3">
-                <li className="list-group-item">Tài Khoản Của Tôi</li>
-                <li className="list-group-item">Hồ Sơ</li>
-                <li className="list-group-item">Ngân Hàng</li>
-                <li className="list-group-item">Địa Chỉ</li>
-                <li className="list-group-item">Đổi Mật Khẩu</li>
-              </ul>
-              <ul className="list-group list-group-flush mt-3">
-                <li className="list-group-item">Đơn Mua</li>
-                <li className="list-group-item">Kho Voucher</li>
-              </ul>
-            </div>
+    <div className="container mt-5 d-flex">
+      {/* Sidebar */}
+      <div className="col-md-3">
+        <h5 className="d-flex align-items-center">
+          <img
+            src={avatar}
+            alt="Avatar"
+            className="rounded-circle me-2"
+            style={{ width: "40px", height: "40px", objectFit: "cover" }}
+          />
+          {userData.name || "Tên User"}
+        </h5>
+        <ul className="list-group list-group-flush margin-right-10">
+          <li className="list-group-item border-0">
+            Tài khoản của tôi
+            <ul>
+              <li className="list-group-item border-0">Hồ sơ</li>
+              <li className="list-group-item border-0">Ngân hàng</li>
+              <li className="list-group-item border-0">Địa chỉ</li>
+              <li className="list-group-item border-0">Đổi mật khẩu</li>
+            </ul>
+          </li>
+          <li className="list-group-item border-0">Đơn mua</li>
+          <li className="list-group-item border-0">Kho voucher</li>
+        </ul>
+      </div>
+
+      {/* Profile Form */}
+      <div className="col-md-6 border p-3">
+        <h4>Hồ sơ của tôi</h4>
+        <div className="form-group">
+          <label>Họ và tên:</label>
+          <input
+            type="text"
+            name="name"
+            className="form-control"
+            value={userData.name}
+            onChange={handleChange}
+            disabled={!isEditing}
+          />
+          {errors.name && <p className="text-danger">{errors.name}</p>}
+        </div>
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            className="form-control"
+            value={userData.email}
+            onChange={handleChange}
+            disabled={!isEditing}
+          />
+          {errors.email && <p className="text-danger">{errors.email}</p>}
+        </div>
+        <div className="form-group">
+          <label>Số điện thoại:</label>
+          <input
+            type="text"
+            name="phone"
+            className="form-control"
+            value={userData.phone}
+            onChange={handleChange}
+            disabled={!isEditing}
+          />
+          {errors.phone && <p className="text-danger">{errors.phone}</p>}
+        </div>
+        <div className="form-group">
+          <label>Giới tính:</label>
+          <div>
+            <input
+              type="radio"
+              name="gender"
+              value="Nam"
+              checked={userData.gender === "Nam"}
+              onChange={handleChange}
+              disabled={!isEditing}
+            />{" "}
+            Nam
+            <input
+              type="radio"
+              name="gender"
+              value="Nữ"
+              checked={userData.gender === "Nữ"}
+              onChange={handleChange}
+              className="ms-3"
+              disabled={!isEditing}
+            />{" "}
+            Nữ
+            <input
+              type="radio"
+              name="gender"
+              value="Khác"
+              checked={userData.gender === "Khác"}
+              onChange={handleChange}
+              className="ms-3"
+              disabled={!isEditing}
+            />{" "}
+            Khác
           </div>
         </div>
+        <button className="btn btn-danger mt-3" onClick={handleEditSave}>
+          {isEditing ? "Lưu" : "Cập nhật"}
+        </button>
+      </div>
 
-        <div className="col-md-9">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Hồ Sơ Của Tôi</h5>
-              <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
-              <div className="mb-3 text-center">
-                <img
-                  src={avt1}
-                  alt="Avatar"
-                  className="rounded-circle"
-                  style={{ width: "100px", height: "100px" }}
-                />
-              </div>
-              <table className="table">
-                <tbody>
-                  <tr>
-                    <td>Tên đăng nhập</td>
-                    <td>{userData.username}</td>
-                  </tr>
-                  <tr>
-                    <td>Tên</td>
-                    <td>
-                      <input
-                        type="text"
-                        name="name"
-                        value={userData.name}
-                        onChange={handleChange}
-                        className="form-control"
-                        disabled={!isEditing}
-                      />
-                      {errors.name && <p className="text-danger">{errors.name}</p>}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Email</td>
-                    <td>
-                      <input
-                        type="email"
-                        name="email"
-                        value={userData.email}
-                        onChange={handleChange}
-                        className="form-control"
-                        disabled={!isEditing}
-                      />
-                      {errors.email && <p className="text-danger">{errors.email}</p>}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Số điện thoại</td>
-                    <td>
-                      <input
-                        type="text"
-                        name="phone"
-                        value={userData.phone}
-                        onChange={handleChange}
-                        className="form-control"
-                        disabled={!isEditing}
-                      />
-                      {errors.phone && <p className="text-danger">{errors.phone}</p>}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Giới tính</td>
-                    <td>
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="gender"
-                          value="male"
-                          checked={userData.gender === "male"}
-                          onChange={handleChange}
-                          disabled={!isEditing}
-                        />
-                        <label className="form-check-label">Nam</label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="gender"
-                          value="female"
-                          checked={userData.gender === "female"}
-                          onChange={handleChange}
-                          disabled={!isEditing}
-                        />
-                        <label className="form-check-label">Nữ</label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="gender"
-                          value="other"
-                          checked={userData.gender === "other"}
-                          onChange={handleChange}
-                          disabled={!isEditing}
-                        />
-                        <label className="form-check-label">Khác</label>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <button className="btn btn-secondary me-2" onClick={handleEdit} disabled={isEditing}>
-                Cập Nhật
-              </button>
-              <button className="btn btn-danger" onClick={handleSave} disabled={!isEditing}>
-                Lưu
-              </button>
-            </div>
-          </div>
+      {/* Avatar Upload */}
+      <div className="col-md-3 text-center">
+        <div className="position-relative d-inline-block ">
+          <img
+            src={avatar}
+            alt="Avatar"
+            className="rounded-circle"
+            style={{ width: "150px", height: "150px" }}
+          />
+        </div>
+        <div className="mt-2">
+          <label className="btn btn-light btn-sm">
+            Chọn tệp
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              onChange={handleFileUpload}
+              style={{ display: "none" }}
+            />
+          </label>
         </div>
       </div>
     </div>
