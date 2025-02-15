@@ -5,7 +5,7 @@ import { FaSearchPlus } from 'react-icons/fa';
 const ProductCard = ({ product, onZoom }) => {
   return (
     <Card className="position-relative">
-      <Card.Img variant="top" src={product.img} style={{ cursor: "pointer" }} />
+      <Card.Img variant="top" src={product.image_url} style={{ cursor: "pointer" }} />
       <Card.Footer>
         <div
           className="position-absolute top-0 end-0 p-2 bg-danger text-white rounded-circle"
@@ -16,8 +16,8 @@ const ProductCard = ({ product, onZoom }) => {
         </div>
       </Card.Footer>
       <Card.Body>
-        <Card.Title>{product.name}</Card.Title>
-        <Card.Text>{product.price} VND</Card.Text>
+        <Card.Title>{product.product_name}</Card.Title>
+        <Card.Text>{product.sale_price} VND</Card.Text>
         <div className="d-flex justify-content-between">
           <Button variant="danger" size="sm">
             Mua Ngay

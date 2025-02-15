@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Modal, Row, Col, Button } from "react-bootstrap";
 import Header from "../components/Products/Header";
 import Categories from "../components/Products/Categories";
@@ -7,6 +7,8 @@ import ProductList from "../components/Products/ProductList";
 import CustomPagination from "../components/Products/CustomPagination";
 import ChatPopup from '../components/Chats/ChatPopup';
 import { FaSearchPlus } from "react-icons/fa";
+import { productService } from "../services/productService";
+import ProductPreview from "../components/Modals/ProductPreview";
 
 const categories = ["Đồ ăn", "Đồ uống", "Đồ tươi sống", "Đồ chay"];
 
@@ -33,6 +35,33 @@ function ListPage() {
   const [flashSaleIndex, setFlashSaleIndex] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [currentPage]);
+
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+      };
+
+      const response = await productService.getProducts(params);
+      setProducts(response.items);
+      setTotalPages(response.metadata.totalPages);
+
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFlashSaleNext = () => {
     if (flashSaleIndex + flashSaleItems < products.length) {
@@ -56,21 +85,6 @@ function ListPage() {
     setShowDetail(false);
   };
 
-  const filteredProducts = products.filter(
-    (product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (!selectedCategory || product.category === selectedCategory) &&
-      product.price >= priceRange[0] &&
-      product.price <= priceRange[1]
-  );
-
-  const displayedProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
   return (
     <>
       <Header
@@ -89,13 +103,12 @@ function ListPage() {
           products={products.slice(flashSaleIndex, flashSaleIndex + flashSaleItems)}
           onPrev={handleFlashSalePrev}
           onNext={handleFlashSaleNext}
-          onZoom={handleOpenDetail}  // Thêm sự kiện phóng to
+          onZoom={handleOpenDetail}
         />
 
         <ProductList
-          products={displayedProducts}
-          onPriceRangeChange={setPriceRange}
-          onZoom={handleOpenDetail}  // Thêm sự kiện phóng to
+          products={products}
+          onZoom={handleOpenDetail}
         />
 
         <CustomPagination
@@ -107,25 +120,10 @@ function ListPage() {
 
       <ChatPopup userId={mockUserId} />
 
-      <Modal show={showDetail} onHide={handleCloseDetail} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{selectedProduct?.name}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row>
-            <Col md={6}>
-              <img src={selectedProduct?.img} alt={selectedProduct?.name} className="img-fluid rounded" />
-            </Col>
-            <Col md={6}>
-              <h4>{selectedProduct?.name}</h4>
-              <p><strong>Giá:</strong> <span className="text-danger fw-bold">{selectedProduct?.price} VND</span></p>
-              <p><strong>Kho:</strong> {selectedProduct?.stock} sản phẩm</p>
-              <p>{selectedProduct?.description}</p>
-              <Button variant="danger">Thêm vào giỏ hàng</Button>
-            </Col>
-          </Row>
-        </Modal.Body>
-      </Modal>
+      <ProductPreview
+        showDetail={showDetail}
+        handleCloseDetail={handleCloseDetail}
+        selectedProduct={selectedProduct} />
     </>
   );
 }
