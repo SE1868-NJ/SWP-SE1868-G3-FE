@@ -1,20 +1,11 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  Dropdown,
-  Form,
-  FormControl,
-  Navbar,
-  Pagination,
-  Row,
-} from "react-bootstrap";
-import { BsCart } from "react-icons/bs";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import ChatPopup from '../components/Chats/ChatPopup.jsx';
+import { Container } from "react-bootstrap";
+import Header from "../components/Products/Header";
+import Categories from "../components/Products/Categories";
+import FlashSale from "../components/Products/FlashSale";
+import ProductList from "../components/Products/ProductList";
+import CustomPagination from "../components/Products/CustomPagination";
+import ChatPopup from '../components/Chats/ChatPopup';
 
 const categories = ["Đồ ăn", "Đồ uống", "Đồ tươi sống", "Đồ chay"];
 
@@ -26,7 +17,6 @@ const products = Array.from({ length: 50 }, (_, i) => ({
 }));
 
 const mockUserId = 15;
-
 const itemsPerPage = 8;
 const flashSaleItems = 4;
 
@@ -36,14 +26,6 @@ function ListPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [flashSaleIndex, setFlashSaleIndex] = useState(0);
-
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
 
   const handleFlashSaleNext = () => {
     if (flashSaleIndex + flashSaleItems < products.length) {
@@ -70,154 +52,40 @@ function ListPage() {
     currentPage * itemsPerPage
   );
 
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
   return (
     <>
-      <Navbar bg="danger" variant="dark" expand="lg" className="px-3">
-        <Navbar.Brand href="#">Chợ Làng</Navbar.Brand>
-        <Form className="d-flex ms-auto">
-          <FormControl
-            type="search"
-            placeholder="Tìm sản phẩm..."
-            className="me-2"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Button variant="outline-light">Tìm</Button>
-        </Form>
-        <Button variant="outline-light" className="ms-3">
-          <BsCart size={24} />
-        </Button>
-      </Navbar>
+      <Header
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
 
       <Container className="mt-4">
-        <h4>Danh Mục</h4>
-        <Row>
-          {categories.map((category, index) => (
-            <Col key={index} xs={6} md={3} className="mb-3">
-              <Button
-                variant={
-                  selectedCategory === category ? "danger" : "outline-danger"
-                }
-                className="w-100"
-                onClick={() =>
-                  setSelectedCategory(
-                    category === selectedCategory ? "" : category
-                  )
-                }
-              >
-                {category}
-              </Button>
-            </Col>
-          ))}
-        </Row>
+        <Categories
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onCategorySelect={setSelectedCategory}
+        />
 
-        <h4 className="mt-4 d-flex justify-content-between align-items-center">
-          Flash Sale
-          <div>
-            <Button variant="outline-danger" onClick={handleFlashSalePrev}>
-              <FaChevronLeft />
-            </Button>
-            <Button
-              variant="outline-danger"
-              onClick={handleFlashSaleNext}
-              className="ms-2"
-            >
-              <FaChevronRight />
-            </Button>
-          </div>
-        </h4>
-        <Row>
-          {products
-            .slice(flashSaleIndex, flashSaleIndex + flashSaleItems)
-            .map((product, index) => (
-              <Col key={index} xs={6} md={3} className="mb-3">
-                <Card>
-                  <Card.Img variant="top" src={product.img} />
-                  <Card.Body>
-                    <Card.Title>{product.name}</Card.Title>
-                    <Card.Text>{product.price} VND</Card.Text>
-                    <div className="d-flex justify-content-between">
-                      <Button variant="danger" size="sm">
-                        Mua Ngay
-                      </Button>
-                      <Button variant="outline-danger" size="sm">
-                        Thêm vào giỏ hàng
-                      </Button>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-        </Row>
+        <FlashSale
+          products={products.slice(flashSaleIndex, flashSaleIndex + flashSaleItems)}
+          onPrev={handleFlashSalePrev}
+          onNext={handleFlashSaleNext}
+        />
 
-        <h4 className="mt-4 d-flex justify-content-between align-items-center">
-          Tất Cả Sản Phẩm
-          <Dropdown>
-            <Dropdown.Toggle variant="outline-danger" id="dropdown-basic">
-              Lọc theo giá
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setPriceRange([0, 500])}>
-                Dưới 500 VND
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setPriceRange([500, 1000])}>
-                500 - 1000 VND
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setPriceRange([0, 1000])}>
-                Tất cả
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </h4>
+        <ProductList
+          products={displayedProducts}
+          onPriceRangeChange={setPriceRange}
+        />
 
-        <Row>
-          {displayedProducts.map((product, index) => (
-            <Col key={index} xs={6} md={3} className="mb-3">
-              <Card>
-                <Card.Img variant="top" src={product.img} />
-                <Card.Body>
-                  <Card.Title>{product.name}</Card.Title>
-                  <Card.Text>{product.price} VND</Card.Text>
-                  <div className="d-flex justify-content-between">
-                    <Button variant="danger" size="sm">
-                      Mua Ngay
-                    </Button>
-                    <Button variant="outline-danger" size="sm">
-                      Thêm vào giỏ hàng
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-
-        <Pagination className="mt-3 justify-content-center">
-          <Pagination.Prev
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <FaChevronLeft />
-          </Pagination.Prev>
-          {[...Array(totalPages).keys()].map((num) =>
-            num + 1 <= currentPage + 2 && num + 1 >= currentPage - 2 ? (
-              <Pagination.Item
-                key={num + 1}
-                active={num + 1 === currentPage}
-                onClick={() => handlePageChange(num + 1)}
-              >
-                {num + 1}
-              </Pagination.Item>
-            ) : null
-          )}
-          <Pagination.Next
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            <FaChevronRight />
-          </Pagination.Next>
-        </Pagination>
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </Container>
+
       <ChatPopup userId={mockUserId} />
     </>
   );
