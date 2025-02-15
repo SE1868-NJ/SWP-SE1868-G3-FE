@@ -3,7 +3,7 @@ import { Row, Col, Button, Card } from 'react-bootstrap';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import ProductCard from './ProductCard';
 
-const FlashSale = ({ products, onPrev, onNext }) => {
+const FlashSale = ({ products, onPrev, onNext, onZoom }) => {
   return (
     <>
       <h4 className="mt-4 d-flex justify-content-between align-items-center">
@@ -20,7 +20,7 @@ const FlashSale = ({ products, onPrev, onNext }) => {
       <Row>
         {products.map((product, index) => (
           <Col key={index} xs={6} md={3} className="mb-3">
-            <ProductCard product={product} />
+            <ProductCard product={product} onZoom={onZoom} />
           </Col>
         ))}
       </Row>
