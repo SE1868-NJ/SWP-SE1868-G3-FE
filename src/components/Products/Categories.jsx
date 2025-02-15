@@ -9,11 +9,11 @@ const Categories = ({ categories, selectedCategory, onCategorySelect }) => {
         {categories.map((category, index) => (
           <Col key={index} xs={6} md={3} className="mb-3">
             <Button
-              variant={selectedCategory === category ? "danger" : "outline-danger"}
+              variant={selectedCategory === category.name ? "danger" : "outline-danger"}
               className="w-100"
-              onClick={() => onCategorySelect(category === selectedCategory ? "" : category)}
+              onClick={() => onCategorySelect(category.name === selectedCategory ? "" : category.name)}
             >
-              {category}
+              {category.name}
             </Button>
           </Col>
         ))}

@@ -4,10 +4,10 @@ import { Card, Button } from 'react-bootstrap';
 const ProductCard = ({ product }) => {
   return (
     <Card>
-      <Card.Img variant="top" src={product.img} />
+      <Card.Img variant="top" src={product.image_url} />
       <Card.Body>
-        <Card.Title>{product.name}</Card.Title>
-        <Card.Text>{product.price} VND</Card.Text>
+        <Card.Title>{product.product_name}</Card.Title>
+        <Card.Text>{product.sale_price} VND</Card.Text>
         <div className="d-flex justify-content-between">
           <Button variant="danger" size="sm">
             Mua Ngay
