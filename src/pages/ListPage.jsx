@@ -11,6 +11,7 @@ import TopSearch from "../components/Products/TopSearch";
 import ChatPopup from '../components/Chats/ChatPopup';
 import { productService } from "../services/productService";
 import ProductPreview from "../components/Modals/ProductPreview";
+import NotificationToast from "../components/Toast/NotificationToast";
 
 const categories = ["Đồ ăn", "Đồ uống", "Đồ tươi sống", "Đồ chay"];
 
@@ -54,7 +55,7 @@ function ListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   //const [selectedCategory, setSelectedCategory] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  // const [priceRange, setPriceRange] = useState([0, 1000]);
   const [flashSaleIndex, setFlashSaleIndex] = useState(0);
   const [topSearchIndex, setTopSearchIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -63,15 +64,21 @@ function ListPage() {
   const [products, setProducts] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState('success');
 
   useEffect(() => {
     fetchProducts();
   }, [currentPage]);
 
+  useEffect(() => {
+    getCountCart(mockUserId);
+  }, [showToast]);
 
   const fetchProducts = async () => {
     try {
-      setLoading(true);
       const params = {
         page: currentPage,
         limit: itemsPerPage,
@@ -83,10 +90,35 @@ function ListPage() {
 
     } catch (error) {
       console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
     }
   };
+
+  const handleAddCart = async (productId, mockUserId) => {
+    try {
+      const response = await productService.addToCart(productId, mockUserId);
+      console.log(response);
+      if (response.status === 'success') {
+        setToastMessage('Thêm vào giỏ hàng thành công!');
+        setToastVariant('success');
+        setShowToast(true);
+      }
+    } catch (error) {
+      setToastMessage('Có lỗi xảy ra khi thêm vào giỏ hàng');
+      setToastVariant('danger');
+      setShowToast(true);
+      console.error('Error adding to cart:', error);
+    }
+  }
+
+  const getCountCart = async (user_id) => {
+    try {
+      const response = await productService.getCountCart(user_id);
+      setCartCount(response);
+    } catch (error) {
+      console.error('Error getting cart count:', error);
+    }
+  };
+
 
   const handleFlashSaleNext = () => {
     if (flashSaleIndex + flashSaleItems < products.length) {
@@ -138,7 +170,7 @@ function ListPage() {
 
   return (
     <>
-      <Header searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <Header searchTerm={searchTerm} onSearchChange={setSearchTerm} countCart={cartCount} />
 
       <Container className="mt-4">
         <Advertisement
@@ -174,7 +206,9 @@ function ListPage() {
 
         <ProductList
           products={products}
+          onAddCart={handleAddCart}
           onZoom={handleOpenDetail}
+          user_id={mockUserId}
         />
 
         <CustomPagination
@@ -189,7 +223,15 @@ function ListPage() {
       <ProductPreview
         showDetail={showDetail}
         handleCloseDetail={handleCloseDetail}
-        selectedProduct={selectedProduct} />
+        selectedProduct={selectedProduct}
+      />
+
+      <NotificationToast
+        show={showToast}
+        message={toastMessage}
+        variant={toastVariant}
+        onClose={() => setShowToast(false)}
+      />
     </>
   );
 }
