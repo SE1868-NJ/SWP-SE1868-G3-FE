@@ -22,7 +22,7 @@ export const shopRoutes = [
     element: <ShopChat />,
   },
   {
-    path: "/product",
-    element: < Products/>,
+    path: "/shop/product",
+    element: <Products />,
   }
 ];
