@@ -10,10 +10,10 @@ export const productService = {
         }
     },
 
-    addToCart: async (productId, user_id) => {
+    addToCart: async (product_id, user_id) => {
         try {
             const response = await api.post(`/shop/cart/add_to_cart`, {
-                productId,
+                product_id,
                 user_id,
             });
             return response.data;

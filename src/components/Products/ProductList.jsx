@@ -27,7 +27,12 @@ const ProductList = ({ products, onAddCart, onZoom, user_id }) => {
       <Row>
         {products.map((product, index) => (
           <Col key={index} xs={6} md={3} className="mb-3">
-            <ProductCard product={product} onZoom={onZoom} onAddToCart={onAddCart} user_id={user_id} />
+            <ProductCard
+              product={product}
+              onZoom={onZoom}
+              onAddToCart={onAddCart}
+              user_id={user_id}
+            />
           </Col>
         ))}
       </Row>
