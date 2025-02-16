@@ -71,7 +71,6 @@ function ListPage() {
 
   const fetchProducts = async () => {
     try {
-      setLoading(true);
       const params = {
         page: currentPage,
         limit: itemsPerPage,
@@ -83,10 +82,21 @@ function ListPage() {
 
     } catch (error) {
       console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
     }
   };
+
+  const handleAddCart = (productId, mockUserId) => {
+    try {
+      setLoading(true);
+      const response = productService.addToCart(productId, mockUserId);
+
+      if (response.success) {
+        alert('Added to cart successfully!');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
+  }
 
   const handleFlashSaleNext = () => {
     if (flashSaleIndex + flashSaleItems < products.length) {
@@ -174,7 +184,9 @@ function ListPage() {
 
         <ProductList
           products={products}
+          onAddCart={handleAddCart}
           onZoom={handleOpenDetail}
+          user_id={mockUserId}
         />
 
         <CustomPagination

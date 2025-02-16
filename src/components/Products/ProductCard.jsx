@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Button, CardFooter } from 'react-bootstrap';
 import { FaSearchPlus } from 'react-icons/fa';
 
-const ProductCard = ({ product, onZoom }) => {
+const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
   return (
     <Card className="position-relative">
       <Card.Img variant="top" src={product.image_url} style={{ cursor: "pointer" }} />
@@ -22,7 +22,9 @@ const ProductCard = ({ product, onZoom }) => {
           <Button variant="danger" size="sm">
             Mua Ngay
           </Button>
-          <Button variant="outline-danger" size="sm">
+          <Button variant="outline-danger" size="sm"
+          onClick={() => onAddToCart(product.id, user_id)}
+          >
             Thêm vào giỏ hàng
           </Button>
         </div>

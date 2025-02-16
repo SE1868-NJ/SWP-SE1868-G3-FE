@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Dropdown } from 'react-bootstrap';
 import ProductCard from './ProductCard';
 
-const ProductList = ({ products, onZoom }) => {
+const ProductList = ({ products, onAddCart, onZoom, user_id }) => {
   return (
     <>
       <h4 className="mt-4 d-flex justify-content-between align-items-center">
@@ -27,7 +27,7 @@ const ProductList = ({ products, onZoom }) => {
       <Row>
         {products.map((product, index) => (
           <Col key={index} xs={6} md={3} className="mb-3">
-            <ProductCard product={product} onZoom={onZoom} />
+            <ProductCard product={product} onZoom={onZoom} onAddToCart={onAddCart} user_id={user_id} />
           </Col>
         ))}
       </Row>
