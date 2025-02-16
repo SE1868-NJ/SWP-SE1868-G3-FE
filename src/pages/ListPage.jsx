@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { Container } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import ChatPopup from "../components/Chats/ChatPopup";
 import Advertisement from "../components/Products/Advertisement";
+import React, { useState, useEffect } from "react";
+import { Container } from "react-bootstrap";
 import Categories from "../components/Products/Categories";
 import CustomPagination from "../components/Products/CustomPagination";
 import FlashSale from "../components/Products/FlashSale";
 import Header from "../components/Products/Header";
 import ProductList from "../components/Products/ProductList";
 import TopSearch from "../components/Products/TopSearch";
+import ChatPopup from '../components/Chats/ChatPopup';
+import { productService } from "../services/productService";
+import ProductPreview from "../components/Modals/ProductPreview";
 
 const categories = ["Đồ ăn", "Đồ uống", "Đồ tươi sống", "Đồ chay"];
 
@@ -19,10 +21,14 @@ const images = [
 ];
 
 const products = Array.from({ length: 50 }, (_, i) => ({
+  id: `${i + 1}`,
   name: `Sản phẩm ${i + 1}`,
   price: parseFloat((Math.random() * 900 + 100).toFixed(3)),
   img: "https://vnaroma.com/wp-content/uploads/2020/10/bi-quyet-chuan-bi-gia-vi-nau-bun-bo-hue-chuan-vi-01.jpg",
   category: categories[Math.floor(Math.random() * categories.length)],
+  brand: "Local Brand",
+  stock: 100,
+  description: "Mô tả sản phẩm đang cập nhật...",
 }));
 
 const topSearchProducts = Array.from({ length: 8 }, (_, i) => ({
@@ -52,6 +58,35 @@ function ListPage() {
   const [flashSaleIndex, setFlashSaleIndex] = useState(0);
   const [topSearchIndex, setTopSearchIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showDetail, setShowDetail] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [currentPage]);
+
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+      };
+
+      const response = await productService.getProducts(params);
+      setProducts(response.items);
+      setTotalPages(response.metadata.totalPages);
+
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFlashSaleNext = () => {
     if (flashSaleIndex + flashSaleItems < products.length) {
@@ -91,20 +126,15 @@ function ListPage() {
     navigate(`/products?category=${encodeURIComponent(category)}`);
   };
 
-  const filteredProducts = products.filter(
-    (product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (!selectedCategory || product.category === selectedCategory) &&
-      product.price >= priceRange[0] &&
-      product.price <= priceRange[1]
-  );
+  const handleOpenDetail = (product) => {
+    setSelectedProduct(product);
+    setShowDetail(true);
+  };
 
-  const displayedProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const handleCloseDetail = () => {
+    setSelectedProduct(null);
+    setShowDetail(false);
+  };
 
   return (
     <>
@@ -131,6 +161,7 @@ function ListPage() {
           )}
           onPrev={handleFlashSalePrev}
           onNext={handleFlashSaleNext}
+          onZoom={handleOpenDetail}
         />
         <TopSearch
           topSearchProducts={topSearchProducts.slice(
@@ -142,8 +173,8 @@ function ListPage() {
         />
 
         <ProductList
-          products={displayedProducts}
-          onPriceRangeChange={setPriceRange}
+          products={products}
+          onZoom={handleOpenDetail}
         />
 
         <CustomPagination
@@ -154,6 +185,11 @@ function ListPage() {
       </Container>
 
       <ChatPopup userId={mockUserId} />
+
+      <ProductPreview
+        showDetail={showDetail}
+        handleCloseDetail={handleCloseDetail}
+        selectedProduct={selectedProduct} />
     </>
   );
 }

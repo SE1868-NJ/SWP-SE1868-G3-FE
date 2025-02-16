@@ -2,12 +2,12 @@ import React from 'react';
 import { Row, Col, Dropdown } from 'react-bootstrap';
 import ProductCard from './ProductCard';
 
-const ProductList = ({ products, onPriceRangeChange }) => {
+const ProductList = ({ products, onZoom }) => {
   return (
     <>
       <h4 className="mt-4 d-flex justify-content-between align-items-center">
         Tất Cả Sản Phẩm
-        <Dropdown>
+        {/* <Dropdown>
           <Dropdown.Toggle variant="outline-danger" id="dropdown-basic">
             Lọc theo giá
           </Dropdown.Toggle>
@@ -22,12 +22,12 @@ const ProductList = ({ products, onPriceRangeChange }) => {
               Tất cả
             </Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown> */}
       </h4>
       <Row>
         {products.map((product, index) => (
           <Col key={index} xs={6} md={3} className="mb-3">
-            <ProductCard product={product} />
+            <ProductCard product={product} onZoom={onZoom} />
           </Col>
         ))}
       </Row>
