@@ -3,24 +3,24 @@ import { Button, Col, Row } from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./ProductCard";
 
-const FlashSale = ({ products, onPrev, onNext, onZoom }) => {
+const TopSearch = ({ topSearchProducts, onPrev, onNext }) => {
   return (
     <>
       <h4 className="mt-4 d-flex justify-content-between align-items-center">
-        Flash Sale
+        Top Search
         <div>
-          <Button variant="outline-danger" onClick={onPrev}>
+          <Button variant="outline-primary" onClick={onPrev}>
             <FaChevronLeft />
           </Button>
-          <Button variant="outline-danger" onClick={onNext} className="ms-2">
+          <Button variant="outline-primary" onClick={onNext} className="ms-2">
             <FaChevronRight />
           </Button>
         </div>
       </h4>
       <Row>
-        {products.map((product, index) => (
+        {topSearchProducts.map((product, index) => (
           <Col key={index} xs={6} md={3} className="mb-3">
-            <ProductCard product={product} onZoom={onZoom} />
+            <ProductCard product={product} />
           </Col>
         ))}
       </Row>
@@ -28,4 +28,4 @@ const FlashSale = ({ products, onPrev, onNext, onZoom }) => {
   );
 };
 
-export default FlashSale;
+export default TopSearch;
