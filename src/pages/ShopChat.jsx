@@ -6,7 +6,7 @@ import { chatService } from '../services/chatService';
 import { Socket } from '../services/socket';
 
 const ShopChat = () => {
-    const shopId = 2; // From authentication
+    const shopId = 1; // From authentication
     const [conversations, setConversations] = useState([]);
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [messages, setMessages] = useState([]);
