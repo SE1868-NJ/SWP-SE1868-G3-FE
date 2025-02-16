@@ -23,7 +23,7 @@ const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
             Mua Ngay
           </Button>
           <Button variant="outline-danger" size="sm"
-          onClick={() => onAddToCart(product.id, user_id)}
+            onClick={() => onAddToCart(product.id, user_id)}
           >
             Thêm vào giỏ hàng
           </Button>
