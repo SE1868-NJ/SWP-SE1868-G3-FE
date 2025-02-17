@@ -1,7 +1,7 @@
-import React from 'react';
-import { Row, Col, Button, Card } from 'react-bootstrap';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import ProductCard from './ProductCard';
+import React from "react";
+import { Button, Col, Row } from "react-bootstrap";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import ProductCard from "./ProductCard";
 
 const FlashSale = ({ products, onPrev, onNext, onZoom }) => {
   return (
