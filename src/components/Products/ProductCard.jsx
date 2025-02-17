@@ -12,12 +12,7 @@ const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
 
   return (
     <Card className="position-relative">
-      <Card.Img
-        variant="top"
-        src={product.image_url || product.img}
-        style={{ cursor: "pointer" }}
-        onClick={handleNavigate}
-      />
+      <Card.Img variant="top" src={product.image_url || product.img} style={{ cursor: "pointer" }} onClick={handleNavigate} />
       <Card.Footer>
         <div
           className="position-absolute top-0 end-0 p-2 bg-danger text-white rounded-circle"
@@ -42,8 +37,8 @@ const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
             Thêm vào giỏ hàng
           </Button>
         </div>
-      </Card.Body>
-    </Card>
+      </Card.Body >
+    </Card >
   );
 };
 
