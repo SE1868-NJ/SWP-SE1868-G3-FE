@@ -3,7 +3,7 @@ import { Card, Button, CardFooter } from 'react-bootstrap';
 import { FaSearchPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-const ProductCard = ({ product, onZoom }) => {
+const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
@@ -14,7 +14,7 @@ const ProductCard = ({ product, onZoom }) => {
     <Card className="position-relative">
       <Card.Img
         variant="top"
-        src={product.img}
+        src={product.image_url || product.img}
         style={{ cursor: "pointer" }}
         onClick={handleNavigate}
       />
@@ -29,14 +29,16 @@ const ProductCard = ({ product, onZoom }) => {
       </Card.Footer>
       <Card.Body>
         <Card.Title onClick={handleNavigate} style={{ cursor: "pointer" }}>
-          {product.name}
+          {product.product_name || product.name}
         </Card.Title>
-        <Card.Text>{product.price} VND</Card.Text>
+        <Card.Text>{product.sale_price || product.price} VND</Card.Text>
         <div className="d-flex justify-content-between">
           <Button variant="danger" size="sm">
             Mua Ngay
           </Button>
-          <Button variant="outline-danger" size="sm">
+          <Button variant="outline-danger" size="sm"
+            onClick={() => onAddToCart(product.id, user_id)}
+          >
             Thêm vào giỏ hàng
           </Button>
         </div>
