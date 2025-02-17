@@ -1,13 +1,7 @@
-import Layout from "./layout/index.jsx";
-import Page from "./pages/index.jsx";
-
+import React from "react";
+import AppRoutes from "./routes/index";
 function App() {
-
-    return (
-        <Layout>
-            <Page/>
-        </Layout>
-    )
+    return <AppRoutes />;
 }
 
-export default App
+export default App;
