@@ -3,6 +3,7 @@ import Layout from "../layout";
 import { authRoutes } from "./modules/auth.routes";
 import { shopRoutes } from "./modules/shop.routes";
 import { userRoutes } from "./modules/user.routes";
+import { supplierRoutes } from "./modules/supplier.routes";
 // import { mainRoutes } from "./main.routes";
 
 const routes = [
@@ -14,6 +15,7 @@ const routes = [
       ...authRoutes,
       ...shopRoutes,
       ...userRoutes,
+      ...supplierRoutes,
     ],
   },
 ];
