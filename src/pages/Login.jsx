@@ -54,7 +54,7 @@ function Login() {
 
 	const token = localStorage.getItem('token');
 	if (token) {
-		return <Navigate to={'/list_page'} />;
+		return <Navigate to={'/profile'} />;
 	}
 
 	return (
