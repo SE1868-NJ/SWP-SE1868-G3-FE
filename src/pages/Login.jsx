@@ -1,22 +1,61 @@
-import { Link } from 'react-router';
+import { useState } from 'react';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 
 import Container from '../components/Container';
 import Stack from '../components/Stack';
 import { Row, Col } from '../components/Grid';
 import Card from '../components/Card';
+import { authService } from '../services/authService';
 
-// import { loginWithGoogle } from '../api';
 import loginImg from '../assets/images/login.png';
 
 function Login() {
-	// const handleGoogleLogin = async () => {
-	// 	try {
-	// 		const data = await loginWithGoogle();
-	// 		console.log('Login successful!', data);
-	// 	} catch (error) {
-	// 		console.error('Login falsed:', error);
-	// 	}
-	// };
+	const navigate = useNavigate();
+	const [loginData, setLoginData] = useState({
+		email: '',
+		password: '',
+	});
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setLoginData({
+			...loginData,
+			[name]: value,
+		});
+		console.log(loginData);
+	};
+
+	const handleBlur = (e) => {
+		const { name, value } = e.target;
+		setLoginData((preLoginData) => ({
+			...preLoginData,
+			[name]: value,
+		}));
+		console.log(loginData);
+	};
+
+	const handleLogin = async (e) => {
+		e.preventDefault();
+		try {
+			const response = await authService.login(loginData);
+			if (response.user && response.token) {
+				const { token, user } = response;
+				localStorage.setItem('user', JSON.stringify(user));
+				localStorage.setItem('token', token);
+				navigate('/list_page');
+			} else {
+				console.error('Invalid response structure:', response);
+			}
+		} catch (error) {
+			console.log(error);
+			navigate('/login');
+		}
+	};
+
+	const token = localStorage.getItem('token');
+	if (token) {
+		return <Navigate to={'/profile'} />;
+	}
 
 	return (
 		<Row cols={1} md={2} className='g-0 g-md-5'>
@@ -43,6 +82,9 @@ function Login() {
 									name='email'
 									className='form-control'
 									placeholder='Email'
+									required
+									onChange={handleChange}
+									onBlur={handleBlur}
 								/>
 							</div>
 							<div className='input-group'>
@@ -52,10 +94,16 @@ function Login() {
 									name='password'
 									className='form-control'
 									placeholder='Password'
+									required
+									onChange={handleChange}
+									onBlur={handleBlur}
 								/>
 							</div>
 							<div className='w-100 d-flex flex-column gap-2'>
-								<button className='btn btn-lg btn-success w-100 fw-bold'>
+								<button
+									className='btn btn-lg btn-success w-100 fw-bold'
+									onClick={handleLogin}
+								>
 									Đăng nhập
 								</button>
 								<Link

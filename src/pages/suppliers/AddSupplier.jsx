@@ -28,7 +28,7 @@ function AddSupplier() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Nhà cung cấp mới:', supplier);
-        navigate('/suppliers');
+        navigate('/seller/suppliers');
     };
 
     return (
@@ -96,7 +96,7 @@ function AddSupplier() {
 
                     <div className='d-flex gap-2'>
                         <button type='submit' className='btn btn-success'>Lưu</button>
-                        <button type='button' className='btn btn-secondary' onClick={() => navigate('/suppliers')}>Hủy</button>
+                        <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
                     </div>
                 </form>
             </Card.Body>

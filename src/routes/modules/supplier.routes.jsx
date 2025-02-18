@@ -5,19 +5,19 @@ import ViewSupplier from '../../pages/suppliers/ViewSupplier';
 
 export const supplierRoutes = [
     {
-        path: "/suppliers",
+        path: "/seller/suppliers",
         element: <Suppliers />,
     },
     {
-        path: "/suppliers/add",
+        path: "/seller/suppliers/add",
         element: <AddSupplier />,
     },
     {
-        path: "/suppliers/edit/:id",
+        path: "/seller/suppliers/edit/:id",
         element: <EditSupplier />,
     },
     {
-        path: "/suppliers/view/:id",
+        path: "/seller/suppliers/view/:id",
         element: <ViewSupplier />,
     },
 ];

@@ -15,7 +15,7 @@ function EditSupplier() {
     useEffect(() => {
         if (!currentSupplier) {
             alert("Không tìm thấy nhà cung cấp! Quay lại danh sách.");
-            navigate('/suppliers');
+            navigate('/seller/suppliers');
         }
     }, [currentSupplier, navigate]);
 
@@ -33,7 +33,7 @@ function EditSupplier() {
         localStorage.setItem('suppliers', JSON.stringify(updatedSuppliers));
 
         console.log('Cập nhật nhà cung cấp:', supplier);
-        navigate('/suppliers');
+        navigate('/seller/suppliers');
     };
 
     return (
@@ -101,7 +101,7 @@ function EditSupplier() {
 
                     <div className='d-flex gap-2'>
                         <button type='submit' className='btn btn-success'>Lưu</button>
-                        <button type='button' className='btn btn-secondary' onClick={() => navigate('/suppliers')}>Hủy</button>
+                        <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
                     </div>
                 </form>
             </Card.Body>

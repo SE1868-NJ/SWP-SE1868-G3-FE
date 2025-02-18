@@ -27,7 +27,7 @@ function Suppliers() {
                     <input type='search' name='search' className='form-control' placeholder='Nhập từ khóa tìm kiếm...' />
                     <button type='submit' className='btn btn-danger'>Tìm kiếm</button>
                 </div>
-                <Link to='/suppliers/add' className='btn btn-danger'>
+                <Link to='/seller/suppliers/add' className='btn btn-danger'>
                     + Thêm nhà cung cấp
                 </Link>
             </div>
@@ -63,10 +63,10 @@ function Suppliers() {
                                         </span>
                                     </td>
                                     <td className='d-flex flex-column'>
-                                        <Link to={`/suppliers/edit/${supplier.id}`} className='fw-bold text-decoration-none text-primary' style={{ whiteSpace: 'nowrap' }}>
+                                        <Link to={`/seller/suppliers/edit/${supplier.id}`} className='fw-bold text-decoration-none text-primary' style={{ whiteSpace: 'nowrap' }}>
                                             Sửa
                                         </Link>
-                                        <Link to={`/suppliers/view/${supplier.id}`} className='fw-bold text-decoration-none text-primary' style={{ whiteSpace: 'nowrap' }}>
+                                        <Link to={`/seller/suppliers/view/${supplier.id}`} className='fw-bold text-decoration-none text-primary' style={{ whiteSpace: 'nowrap' }}>
                                             Xem thêm
                                         </Link>
                                     </td>
