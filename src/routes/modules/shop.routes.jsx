@@ -2,6 +2,7 @@ import ListPage from "../../pages/ListPage";
 import Cart from "../../pages/Cart";
 import Checkout from "../../pages/Checkout";
 import ShopChat from "../../pages/ShopChat";
+import ProductDetails from "../../pages/ProductDetails";
 
 export const shopRoutes = [
   {
@@ -19,5 +20,9 @@ export const shopRoutes = [
   {
     path: "/shop/chat",
     element: <ShopChat />,
+  },
+  {
+    path: "/product/:id",
+    element: <ProductDetails />,
   }
 ];

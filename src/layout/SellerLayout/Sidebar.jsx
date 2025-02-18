@@ -104,7 +104,7 @@ function Sidebar() {
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/products'} className='nav-link'>
+										<Link to={'/seller/suppliers'} className='nav-link'>
 											Nhà cung cấp
 										</Link>
 									</li>

@@ -5,9 +5,8 @@ import { shopRoutes } from './modules/shop.routes';
 import { userRoutes } from './modules/user.routes';
 import { homeRoute } from './modules/home.routes';
 import { sellerRoutes } from './modules/seller.routes';
-import { element } from 'prop-types';
 import SellerLayout from '../layout/SellerLayout';
-// import { mainRoutes } from "./main.routes";
+import { supplierRoutes } from './modules/supplier.routes';
 
 const routes = [
 	{
@@ -18,7 +17,7 @@ const routes = [
 	{
 		path: '/seller',
 		element: <SellerLayout />,
-		children: [...sellerRoutes],
+		children: [...sellerRoutes, ...supplierRoutes],
 	},
 ];
 
