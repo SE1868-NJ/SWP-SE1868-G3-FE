@@ -1,6 +1,8 @@
 import { useParams, useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import Card from '../../components/Card';
+import SupplierHeader from '../../components/Supplier/SupplierHeader';
+import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
 
 function EditSupplier() {
     const { id } = useParams();
@@ -11,6 +13,7 @@ function EditSupplier() {
     const currentSupplier = storedSuppliers.find(s => s.id.trim() === id.trim());
 
     const [supplier, setSupplier] = useState(currentSupplier || null);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (!currentSupplier) {
@@ -26,8 +29,24 @@ function EditSupplier() {
         setSupplier({ ...supplier, [name]: value });
     };
 
+    const validateForm = () => {
+        let newErrors = {};
+
+        if (!supplier.name.trim()) newErrors.name = "Tên nhà cung cấp không được để trống";
+        if (!supplier.deliveryTime || supplier.deliveryTime <= 0) newErrors.deliveryTime = "Thời gian giao hàng phải lớn hơn 0";
+        if (!supplier.address.trim()) newErrors.address = "Địa chỉ không được để trống";
+        if (!supplier.contactName.trim()) newErrors.contactName = "Họ và tên không được để trống";
+        if (!supplier.phone.trim()) newErrors.phone = "Số điện thoại không được để trống";
+        else if (!/^\d{10,11}$/.test(supplier.phone)) newErrors.phone = "Số điện thoại không hợp lệ";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!validateForm()) return;
 
         const updatedSuppliers = storedSuppliers.map(s => (s.id === supplier.id ? supplier : s));
         localStorage.setItem('suppliers', JSON.stringify(updatedSuppliers));
@@ -39,66 +58,9 @@ function EditSupplier() {
     return (
         <Card>
             <Card.Body>
-                <h2 className='fw-bold'>Chỉnh sửa nhà cung cấp</h2>
-                <p className="text-muted fst-italic">Các trường có dấu <span className="text-danger">*</span> là bắt buộc.</p>
+                <SupplierHeader title="Chỉnh sửa Nhà Cung Cấp" subtitle="Vui lòng điền đầy đủ thông tin." showRequiredNote={true} />
                 <form onSubmit={handleSubmit}>
-
-                    <h5 className="fw-bold text-decoration-underline">Thông tin cơ bản</h5>
-                    <div className='mb-3'>
-                        <label className='form-label'>Tên nhà cung cấp <span className="text-danger">*</span></label>
-                        <input type='text' name='name' className='form-control' value={supplier.name} onChange={handleChange} required />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Thời gian giao hàng (ngày) <span className="text-danger">*</span></label>
-                        <input type='number' name='deliveryTime' className='form-control' value={supplier.deliveryTime} onChange={handleChange} required />
-                    </div>
-
-                    <h5 className="fw-bold text-decoration-underline">Thông tin giao dịch</h5>
-                    <div className='mb-3'>
-                        <label className='form-label'>Tên ngân hàng</label>
-                        <input type='text' name='bankName' className='form-control' value={supplier.bankName} onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Số tài khoản</label>
-                        <input type='text' name='accountNumber' className='form-control' value={supplier.accountNumber} onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Thời hạn thanh toán</label>
-                        <input type='text' name='paymentTerm' className='form-control' value={supplier.paymentTerm} onChange={handleChange} />
-                    </div>
-
-                    <h5 className="fw-bold text-decoration-underline">Địa chỉ nhà cung cấp</h5>
-                    <div className='mb-3'>
-                        <label className='form-label'>Địa chỉ <span className="text-danger">*</span></label>
-                        <input type='text' name='address' className='form-control' value={supplier.address} onChange={handleChange} />
-                    </div>
-
-                    <h5 className="fw-bold text-decoration-underline">Thông tin liên hệ</h5>
-                    <div className='mb-3'>
-                        <label className='form-label'>Họ và tên <span className="text-danger">*</span></label>
-                        <input type='text' name='contactName' className='form-control' value={supplier.contactName} onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Số điện thoại <span className="text-danger">*</span></label>
-                        <input type='text' name='phone' className='form-control' value={supplier.phone} onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Facebook</label>
-                        <input type='text' name='facebook' className='form-control' value={supplier.facebook} onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Skype</label>
-                        <input type='text' name='skype' className='form-control' value={supplier.skype} onChange={handleChange} />
-                    </div>
-
-                    <h5 className="fw-bold text-decoration-underline">Trạng thái</h5>
-                    <div className='mb-3'>
-                        <select name='status' className='form-select' value={supplier.status} onChange={handleChange}>
-                            <option value='Active'>Hoạt động</option>
-                            <option value='Inactive'>Ngừng hoạt động</option>
-                        </select>
-                    </div>
-
+                    <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} />
                     <div className='d-flex gap-2'>
                         <button type='submit' className='btn btn-success'>Lưu</button>
                         <button type='button' className='btn btn-secondary' onClick={() => navigate('/suppliers')}>Hủy</button>
