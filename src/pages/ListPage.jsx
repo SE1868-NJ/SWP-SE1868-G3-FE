@@ -8,7 +8,6 @@ import FlashSale from "../components/Products/FlashSale";
 import Header from "../components/Products/Header";
 import ProductList from "../components/Products/ProductList";
 import TopSearch from "../components/Products/TopSearch";
-import ChatPopup from '../components/Chats/ChatPopup';
 import { productService } from "../services/productService";
 import ProductPreview from "../components/Modals/ProductPreview";
 import NotificationToast from "../components/Toast/NotificationToast";
@@ -217,8 +216,6 @@ function ListPage() {
           onPageChange={setCurrentPage}
         />
       </Container>
-
-      <ChatPopup userId={mockUserId} />
 
       <ProductPreview
         showDetail={showDetail}

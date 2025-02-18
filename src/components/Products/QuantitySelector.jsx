@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const QuantitySelector = ({ quantity, maxStock, onChange, selectedSize }) => {
     const handleChange = (e) => {
-        if (!selectedSize) return; // Không cho chỉnh số lượng nếu chưa chọn kích cỡ
+        if (!selectedSize) return; 
         let value = parseInt(e.target.value) || 1;
         value = Math.max(1, Math.min(value, maxStock));
         onChange(value);
@@ -29,11 +29,5 @@ const QuantitySelector = ({ quantity, maxStock, onChange, selectedSize }) => {
     );
 };
 
-QuantitySelector.propTypes = {
-    quantity: PropTypes.number.isRequired,
-    maxStock: PropTypes.number.isRequired,
-    onChange: PropTypes.func.isRequired,
-    selectedSize: PropTypes.string,
-};
 
 export default QuantitySelector;

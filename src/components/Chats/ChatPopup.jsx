@@ -7,14 +7,14 @@ import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
 import { chatService } from '../../services/chatService';
 import { Socket } from '../../services/socket';
+import { useChat } from '../../hooks/contexts/ChatContext';
 
 const ChatPopup = ({ userId }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [conversations, setConversations] = useState([]);
-  const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [file, setFile] = useState(null);
+  const { isOpen, openChat, closeChat, selectedConversation, setSelectedConversation } = useChat();
 
   const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -23,13 +23,8 @@ const ChatPopup = ({ userId }) => {
   const name = "user_name1"
 
   const setupSocketHandlers = (conversationId) => {
-    // Remove all existing listeners first
-    Socket.removeAllListeners();
-
-    // Join new conversation
     Socket.emit('join-conversation', conversationId);
 
-    // Setup new listeners
     Socket.on('receive_message', (newMessage) => {
       setMessages(prev => [...prev, newMessage]);
     });
@@ -69,11 +64,6 @@ const ChatPopup = ({ userId }) => {
       };
 
       fetchMessages();
-      // Socket.emit('join-conversation', selectedConversation);
-
-      // Socket.on('receive_message', (newMessage) => {
-      //   setMessages(prev => [...prev, newMessage]);
-      // });
 
       return () => {
         Socket.removeAllListeners();
@@ -141,13 +131,11 @@ const ChatPopup = ({ userId }) => {
   };
 
   const handleClose = () => {
-    setIsOpen(false);
-    Socket.removeAllListeners();
     if (selectedConversation) {
       Socket.emit('leave-conversation', selectedConversation);
     }
-    setSelectedConversation(null);
     setMessages([]);
+    closeChat();
   };
 
   return (
@@ -156,7 +144,7 @@ const ChatPopup = ({ userId }) => {
         <Button
           variant="danger"
           className="rounded-circle p-3"
-          onClick={() => setIsOpen(true)}
+          onClick={() => openChat()}
         >
           <IoMdChatboxes size={24} />
         </Button>

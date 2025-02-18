@@ -5,11 +5,11 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
 const ProductImages = ({ images }) => {
-    if (!images || images.length === 0) {
-        images = ["https://via.placeholder.com/500"];
-    }
+    // if (!images || images.length === 0) {
+    //     images = ["https://via.placeholder.com/500"];
+    // }
 
-    const [selectedImage, setSelectedImage] = useState(images[0]);
+    const [selectedImage, setSelectedImage] = useState(images);
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const handleNext = () => {

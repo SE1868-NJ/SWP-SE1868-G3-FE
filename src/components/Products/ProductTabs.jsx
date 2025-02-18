@@ -51,19 +51,4 @@ const ProductTabs = ({ product }) => {
     );
 };
 
-ProductTabs.propTypes = {
-    product: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        reviews: PropTypes.array,
-        fullDescription: PropTypes.string,
-        descriptionImages: PropTypes.arrayOf(PropTypes.string),
-        category: PropTypes.string,
-        brand: PropTypes.string,
-        origin: PropTypes.string,
-        material: PropTypes.string,
-        weight: PropTypes.number,
-        warranty: PropTypes.string
-    }).isRequired
-};
-
 export default ProductTabs;
