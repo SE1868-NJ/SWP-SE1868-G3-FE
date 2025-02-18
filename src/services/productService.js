@@ -29,5 +29,14 @@ export const productService = {
         } catch (error) {
             throw error;
         }
-    }
+    },
+
+    getProductById: async (product_id) => {
+        try {
+            const response = await api.get(`/shop/product/get_product_by_id/${product_id}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 };
