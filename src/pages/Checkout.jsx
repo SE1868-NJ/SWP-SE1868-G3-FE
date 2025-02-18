@@ -1,287 +1,254 @@
 import React, { useState } from "react";
 import avt from "../assets/images/avt.jpg";
-
 const Checkout = () => {
-  const [showAddressModal, setShowAddressModal] = useState(false);
-  const [showShippingModal, setShowShippingModal] = useState(false);
-  const [selectedVoucher, setSelectedVoucher] = useState("");
-  const [products] = useState([
-    { name: "MeXueMeILin Ao sweater", price: 150000, quantity: 1 },
-  ]);
-  const [shippingFee, setShippingFee] = useState(432800);
+  const [address, setAddress] = useState({
+    name: "Họ và tên customer",
+    phone: "Số điện thoại",
+    location: "Địa chỉ nhận hàng",
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempAddress, setTempAddress] = useState(address);
+  const [message, setMessage] = useState("");
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [shippingMethod, setShippingMethod] = useState("standard");
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
+  const totalPrice = 59000;
+  const shippingFee = shippingMethod === "standard" ? 15000 : 30000;
+  const voucherDiscount = selectedVoucher ? 10000 : 0; // Giảm 10.000đ nếu có voucher
+  const finalTotal = totalPrice + shippingFee - voucherDiscount;
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setTempAddress(address);
   };
 
-  const totalAmount =
-    products.reduce((sum, item) => sum + item.price * item.quantity, 0) +
-    shippingFee;
-
-  const handlePlaceOrder = () => {
-    alert("Đặt hàng thành công!");
+  const handleSave = () => {
+    setAddress(tempAddress);
+    setIsEditing(false);
   };
 
+  const handleVoucherSelection = () => {
+    setSelectedVoucher(selectedVoucher ? null : "Giảm 10.000đ");
+  };
+
+  const [selectedMethod, setSelectedMethod] = useState("");
+
+  const OrderSummary = ({ totalPrice, shippingFee, voucherDiscount }) => {
+    const finalTotal = totalPrice + shippingFee - voucherDiscount;
+  };
   return (
-    <div className="container py-4">
-      {/* Phần Địa chỉ */}
-      <div className="card mb-4 shadow-sm">
+    <div className="container p-4">
+      <h4 className="mb-4">Xác nhận thanh toán</h4>
+
+      {/* Address Section */}
+      <div
+        className="card mb-4 p-3 rounded border"
+        style={{
+          backgroundColor: "white",
+          border: "1px solid #dee2e6",
+          boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.1)",
+        }}
+      >
         <div className="card-body">
-          <div className="d-flex justify-content-between align-items-start mb-3">
+          <h6 className="card-title">
+            <span className="text-primary">●</span> Địa chỉ nhận hàng
+          </h6>
+          {isEditing ? (
             <div>
-              <h2 className="h4 mb-2 fw-bold text-dark">Địa Chỉ Nhận Hàng</h2>
-              <div className="text-dark">
-                <p className="mb-1 fw-semibold">Thu An (+84) 963780216</p>
-                <p className="text-muted small">
-                  Tòa nhà Moon skylromes-khu TĐC Bắc phú cát (gần tòa phenikaa),
-                  <br />
-                  Xã Thạch Hòa, Huyện Thạch Thất, Hà Nội
+              <input
+                type="text"
+                className="form-control mb-2"
+                value={tempAddress.name}
+                onChange={(e) =>
+                  setTempAddress({ ...tempAddress, name: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                className="form-control mb-2"
+                value={tempAddress.phone}
+                onChange={(e) =>
+                  setTempAddress({ ...tempAddress, phone: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                className="form-control mb-2"
+                value={tempAddress.location}
+                onChange={(e) =>
+                  setTempAddress({ ...tempAddress, location: e.target.value })
+                }
+              />
+              <button className="btn btn-success me-2" onClick={handleSave}>
+                Lưu
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setIsEditing(false)}
+              >
+                Hủy
+              </button>
+            </div>
+          ) : (
+            <div className="row">
+              <div className="col">
+                <p className="mb-1">{address.name}</p>
+                <p className="mb-0">
+                  {address.phone} - {address.location}
                 </p>
               </div>
-            </div>
-            <div>
-              <button className="btn btn-outline-danger btn-sm me-2" disabled>
-                Mặc Định
-              </button>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => setShowAddressModal(true)}
-              >
-                Thay Đổi
-              </button>
-            </div>
-          </div>
-
-          <hr className="my-4" />
-
-          {/* Danh sách sản phẩm */}
-          <h5 className="h5 mb-3 fw-bold text-dark">Sản phẩm</h5>
-          <div className="list-group">
-            {products.map((product, index) => (
-              <div key={index} className="list-group-item border-0 px-0 py-3">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <img
-                      src={avt}
-                      alt="product"
-                      className="img-fluid me-3"
-                      style={{ width: "5em" }}
-                    />
-                    <div>
-                      <h6 className="mb-1 fw-semibold">{product.name}</h6>
-                      <small className="text-muted">
-                        Số lượng: {product.quantity}
-                      </small>
-                    </div>
-                  </div>
-                  <span className="text-danger fw-bold">
-                    {formatCurrency(product.price)}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Voucher và vận chuyển */}
-          <div className="row mt-4 g-3">
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label fw-semibold">
-                  Voucher của Shop
-                </label>
-                <select
-                  className="form-select"
-                  value={selectedVoucher}
-                  onChange={(e) => setSelectedVoucher(e.target.value)}
+              <div className="col-auto">
+                <button
+                  className="btn btn-danger px-3 py-1"
+                  onClick={handleEdit}
                 >
-                  <option value="">Chọn Voucher</option>
-                  <option value="voucher1">Giảm 10%</option>
-                  <option value="voucher2">Giảm 50.000đ</option>
-                </select>
+                  Thay đổi
+                </button>
               </div>
             </div>
-
-            <div className="col-md-6">
-              <div className="border p-3 rounded">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 className="fw-semibold mb-0">Phương thức vận chuyển</h6>
-                    <small className="text-success fw-semibold">Nhanh</small>
-                  </div>
-                  <div>
-                    <span className="text-danger fw-bold me-3">
-                      {formatCurrency(shippingFee)}
-                    </span>
-                    <button
-                      className="btn btn-link p-0 text-decoration-none"
-                      onClick={() => setShowShippingModal(true)}
-                    >
-                      Thay Đổi
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Tổng tiền */}
-          <div className="row mt-4">
-            <div className="col-12 text-end">
-              <div className="bg-light p-3 rounded">
-                <h4 className="fw-bold">
-                  Tổng thanh toán ({products.length} sản phẩm):
-                  <span className="text-danger ms-2">
-                    {formatCurrency(totalAmount)}
-                  </span>
-                </h4>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Phần Thanh toán */}
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <h2 className="h4 mb-4 fw-bold text-dark">Phương thức thanh toán</h2>
+      {/* Product Table */}
+      <div className="mb-4">
+        {/* Table Header */}
+        <div className="row fw-bold border-bottom mb-2">
+          <div className="col-5 text-start">Sản phẩm</div>
+          <div className="col-2 text-end">Đơn giá</div>
+          <div className="col-2 text-end">Số lượng</div>
+          <div className="col-3 text-end">Thành tiền</div>
+        </div>
 
-          <div className="mb-4">
-            <div className="border rounded p-3 mb-3">
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="payment"
-                  id="shopeePay"
-                  defaultChecked
-                />
-                <label
-                  className="form-check-label fw-semibold"
-                  htmlFor="shopeePay"
-                >
-                  Ví ShopeePay
-                </label>
-                <p className="text-muted small mb-0">Thẻ Tín dụng/Ghi nợ</p>
-              </div>
-            </div>
-
-            <div className="border rounded p-3">
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="payment"
-                  id="cod"
-                />
-                <label className="form-check-label fw-semibold" htmlFor="cod">
-                  Thanh toán khi nhận hàng
-                </label>
-              </div>
-            </div>
+        {/* Product Row */}
+        <div className="row mb-2 align-items-center">
+          <div className="col-5 d-flex align-items-center">
+            <img
+              src={avt}
+              alt="Sản phẩm"
+              className="img me-2"
+              width="50"
+              height="50"
+            />
+            <span>Tên sản phẩm</span>
           </div>
+          <div className="col-2 text-end">59.000</div>
+          <div className="col-2 text-end">1</div>
+          <div className="col-3 text-end">59.000</div>
+        </div>
+      </div>
 
-          <button
-            className="btn btn-danger w-100 fw-bold py-3"
-            onClick={handlePlaceOrder}
+      {/* Voucher Section */}
+      <div className="mb-4 d-flex justify-content-between align-items-center border-bottom pb-2">
+        <div className="d-flex align-items-center ms-auto">
+          {" "}
+          {/* Căn lề phải */}
+          <i className="bi bi-ticket-perforated text-danger me-2"></i>
+          <span className="text-dark me-5">
+            Voucher của shop {selectedVoucher && `- ${selectedVoucher}`}
+          </span>
+        </div>
+        <button
+          className="text-danger border-0 bg-transparent fw-bold"
+          onClick={handleVoucherSelection}
+        >
+          Chọn voucher
+        </button>
+      </div>
+
+      {/* Message & Shipping Method on the same row */}
+      <div className="row mb-4">
+        {/* Message Section */}
+        <div className="col-md-6 d-flex align-items-center">
+          <label htmlFor="message" className="form-label me-2">
+            Lời nhắn:
+          </label>
+          <input
+            type="text"
+            id="message"
+            className="form-control"
+            placeholder="Lưu ý cho Người bán..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            style={{ maxWidth: "70%" }} // Điều chỉnh độ rộng của input
+          />
+        </div>
+
+        {/* Shipping Method Section */}
+        <div className="col-md-6 d-flex align-items-center justify-content-end">
+          <span className="me-2">Phương thức vận chuyển:</span>
+          <select
+            className="form-select"
+            value={shippingMethod}
+            onChange={(e) => setShippingMethod(e.target.value)}
+            style={{ maxWidth: "50%" }} // Điều chỉnh độ rộng của select
           >
-            Đặt hàng
-          </button>
-
-          <p className="text-muted small mt-3 text-center">
-            Nhấn “Đặt hàng” đồng nghĩa với việc bạn đồng ý tuân theo
-            <a href="#terms" className="text-decoration-none">
-              {" "}
-              Điều khoản Shopee
-            </a>
-          </p>
+            <option value="standard">Vận chuyển thường - 15.000đ</option>
+            <option value="express">Vận Chuyển Nhanh - 30.000đ</option>
+          </select>
         </div>
       </div>
 
-      {/* Modals */}
-      <div
-        className={`modal ${showAddressModal ? "show" : ""}`}
-        style={{ display: showAddressModal ? "block" : "none" }}
-        tabIndex="-1"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Thay đổi địa chỉ</h5>
-              <button
-                type="button"
-                className="btn-close"
-                onClick={() => setShowAddressModal(false)}
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form>
-                <div className="mb-3">
-                  <label className="form-label">Địa chỉ mới</label>
-                  <textarea className="form-control" rows="3"></textarea>
-                </div>
-                <button className="btn btn-primary">Lưu thay đổi</button>
-              </form>
-            </div>
+      {/* Payment Method */}
+      <div className="mb-4 border-top pt-2">
+        {/* Dòng đầu tiên: Chọn phương thức thanh toán */}
+        <div className="d-flex align-items-center mb-2">
+          <div className="fw-bold me-3">Phương thức thanh toán:</div>
+          <div>
+            <button
+              className={`btn me-2 ${
+                selectedMethod === "Thanh toán khi nhận hàng"
+                  ? "btn-outline-danger"
+                  : "btn-outline-secondary"
+              }`}
+              onClick={() => setSelectedMethod("Thanh toán khi nhận hàng")}
+            >
+              Thanh toán khi nhận hàng
+            </button>
+            <button
+              className={`btn ${
+                selectedMethod === "Ví điện tử"
+                  ? "btn-outline-danger"
+                  : "btn-outline-secondary"
+              }`}
+              onClick={() => setSelectedMethod("Ví điện tử")}
+            >
+              Ví điện tử
+            </button>
           </div>
         </div>
       </div>
-      <div
-        className={`modal-backdrop fade ${showAddressModal ? "show" : ""}`}
-        style={{ display: showAddressModal ? "block" : "none" }}
-      ></div>
 
-      <div
-        className={`modal ${showShippingModal ? "show" : ""}`}
-        style={{ display: showShippingModal ? "block" : "none" }}
-        tabIndex="-1"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Chọn phương thức vận chuyển</h5>
-              <button
-                type="button"
-                className="btn-close"
-                onClick={() => setShowShippingModal(false)}
-              ></button>
-            </div>
-            <div className="modal-body">
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="shipping"
-                  id="fast"
-                  defaultChecked
-                  onChange={() => setShippingFee(432800)}
-                />
-                <label className="form-check-label" htmlFor="fast">
-                  Giao hàng nhanh - 432.800đ
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="shipping"
-                  id="standard"
-                  onChange={() => setShippingFee(320000)}
-                />
-                <label className="form-check-label" htmlFor="standard">
-                  Giao hàng tiết kiệm - 320.000đ
-                </label>
-              </div>
-            </div>
+      {/* Total Section */}
+      <div className="border-top pt-3 border-bottom pb-3">
+        <div className="d-flex flex-column align-items-end">
+          <div className="d-flex justify-content-between w-50">
+            <span>Tổng tiền hàng:</span>
+            <span>{totalPrice.toLocaleString()}d</span>
+          </div>
+          <div className="d-flex justify-content-between w-50">
+            <span>Tổng tiền phí vận chuyển:</span>
+            <span>{shippingFee.toLocaleString()}d</span>
+          </div>
+          <div className="d-flex justify-content-between w-50">
+            <span>Giảm giá voucher:</span>
+            <span>{voucherDiscount.toLocaleString()}d</span>
+          </div>
+          <div className="d-flex justify-content-between w-50 fw-bold">
+            <span>Tổng thanh toán:</span>
+            <span>{finalTotal.toLocaleString()}d</span>
           </div>
         </div>
       </div>
-      <div
-        className={`modal-backdrop fade ${showShippingModal ? "show" : ""}`}
-        style={{ display: showShippingModal ? "block" : "none" }}
-      ></div>
+
+      {/* Footer */}
+      <div className="mt-4">
+        <p className="small text-muted">
+          Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo Điều khoản
+          chợ làng.
+        </p>
+        <button className="btn btn-danger w-100 py-2">Đặt hàng</button>
+      </div>
     </div>
   );
 };
