@@ -1,48 +1,48 @@
-import React, { useState } from "react";
-import avt1 from "../assets/images/avt1.png";
+import React, { useState } from 'react'
+import avt1 from '../assets/images/avt1.png'
 
 const Profile = () => {
   const [userData, setUserData] = useState({
-    username: "pthuan8324",
-    name: "pho mai que",
-    email: "ph**********@gmail.com",
-    phone: "*****16",
-    gender: "male",
-  });
-  
-  const [isEditing, setIsEditing] = useState(false);
-  const [errors, setErrors] = useState({});
+    username: 'pthuan8324',
+    name: 'pho mai que',
+    email: 'ph**********@gmail.com',
+    phone: '*****16',
+    gender: 'male',
+  })
+
+  const [isEditing, setIsEditing] = useState(false)
+  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
-  };
+    const { name, value } = e.target
+    setUserData({ ...userData, [name]: value })
+  }
 
   const validate = () => {
-    let newErrors = {};
+    let newErrors = {}
     if (userData.name.length > 30) {
-      newErrors.name = "Tên không được quá 30 kí tự";
+      newErrors.name = 'Tên không được quá 30 kí tự'
     }
-    if (!userData.email.endsWith("@gmail.com")) {
-      newErrors.email = "Sai định dạng Email";
+    if (!userData.email.endsWith('@gmail.com')) {
+      newErrors.email = 'Sai định dạng Email'
     }
     if (userData.phone.length !== 10 || isNaN(userData.phone)) {
-      newErrors.phone = "Số điện thoại phải có đúng 10 chữ số";
+      newErrors.phone = 'Số điện thoại phải có đúng 10 chữ số'
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleEdit = () => {
-    setIsEditing(true);
-  };
+    setIsEditing(true)
+  }
 
   const handleSave = () => {
     if (validate()) {
-      setIsEditing(false);
+      setIsEditing(false)
       // Thêm logic lưu thông tin vào database tại đây nếu cần
     }
-  };
+  }
 
   return (
     <div className="container mt-5">
@@ -77,7 +77,7 @@ const Profile = () => {
                   src={avt1}
                   alt="Avatar"
                   className="rounded-circle"
-                  style={{ width: "100px", height: "100px" }}
+                  style={{ width: '100px', height: '100px' }}
                 />
               </div>
               <table className="table">
@@ -97,7 +97,9 @@ const Profile = () => {
                         className="form-control"
                         disabled={!isEditing}
                       />
-                      {errors.name && <p className="text-danger">{errors.name}</p>}
+                      {errors.name && (
+                        <p className="text-danger">{errors.name}</p>
+                      )}
                     </td>
                   </tr>
                   <tr>
@@ -111,7 +113,9 @@ const Profile = () => {
                         className="form-control"
                         disabled={!isEditing}
                       />
-                      {errors.email && <p className="text-danger">{errors.email}</p>}
+                      {errors.email && (
+                        <p className="text-danger">{errors.email}</p>
+                      )}
                     </td>
                   </tr>
                   <tr>
@@ -125,7 +129,9 @@ const Profile = () => {
                         className="form-control"
                         disabled={!isEditing}
                       />
-                      {errors.phone && <p className="text-danger">{errors.phone}</p>}
+                      {errors.phone && (
+                        <p className="text-danger">{errors.phone}</p>
+                      )}
                     </td>
                   </tr>
                   <tr>
@@ -137,7 +143,7 @@ const Profile = () => {
                           type="radio"
                           name="gender"
                           value="male"
-                          checked={userData.gender === "male"}
+                          checked={userData.gender === 'male'}
                           onChange={handleChange}
                           disabled={!isEditing}
                         />
@@ -149,7 +155,7 @@ const Profile = () => {
                           type="radio"
                           name="gender"
                           value="female"
-                          checked={userData.gender === "female"}
+                          checked={userData.gender === 'female'}
                           onChange={handleChange}
                           disabled={!isEditing}
                         />
@@ -161,7 +167,7 @@ const Profile = () => {
                           type="radio"
                           name="gender"
                           value="other"
-                          checked={userData.gender === "other"}
+                          checked={userData.gender === 'other'}
                           onChange={handleChange}
                           disabled={!isEditing}
                         />
@@ -171,10 +177,18 @@ const Profile = () => {
                   </tr>
                 </tbody>
               </table>
-              <button className="btn btn-secondary me-2" onClick={handleEdit} disabled={isEditing}>
+              <button
+                className="btn btn-secondary me-2"
+                onClick={handleEdit}
+                disabled={isEditing}
+              >
                 Cập Nhật
               </button>
-              <button className="btn btn-danger" onClick={handleSave} disabled={!isEditing}>
+              <button
+                className="btn btn-danger"
+                onClick={handleSave}
+                disabled={!isEditing}
+              >
                 Lưu
               </button>
             </div>
@@ -182,7 +196,7 @@ const Profile = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

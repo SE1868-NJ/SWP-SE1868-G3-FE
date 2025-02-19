@@ -1,5 +1,5 @@
 // import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 function Header() {
   return (
@@ -22,7 +22,7 @@ function Header() {
         </div>
       </div>
     </nav>
-  );
+  )
 }
 
-export default Header;
+export default Header
