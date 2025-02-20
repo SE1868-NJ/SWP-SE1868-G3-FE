@@ -9,8 +9,6 @@ const ProductTabs = ({ product }) => {
         return <p className="text-center text-muted mt-4">⏳ Đang tải dữ liệu sản phẩm...</p>;
     }
 
-    const reviews = product.reviews || [];
-
     return (
         <Container className="mt-5">
             <Tab.Container defaultActiveKey="details">
@@ -28,7 +26,7 @@ const ProductTabs = ({ product }) => {
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link eventKey="reviews" className="px-4 text-dark">
-                            Đánh giá ({reviews.length})
+                            Đánh giá
                         </Nav.Link>
                     </Nav.Item>
                 </Nav>
