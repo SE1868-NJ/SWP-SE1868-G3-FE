@@ -1,5 +1,6 @@
-import React from 'react';
-function Pages() {
-	return <h1>Home</h1>;
+import { Navigate } from 'react-router-dom';
+
+function Home() {
+	return <Navigate to={'/list_page'} />;
 }
-export default Pages;
+export default Home;

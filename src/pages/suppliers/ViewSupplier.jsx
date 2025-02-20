@@ -17,8 +17,8 @@ function ViewSupplier() {
 
     const handleDelete = () => {
         const updatedSuppliers = storedSuppliers.filter(s => s.id !== id);
-        localStorage.setItem('suppliers', JSON.stringify(updatedSuppliers));
-        navigate('/suppliers');
+        localStorage.setItem('/seller/suppliers', JSON.stringify(updatedSuppliers));
+        navigate('/seller/suppliers');
     };
 
     return (

@@ -1,13 +1,14 @@
-import React from 'react';
-import { Row, Col, Dropdown } from 'react-bootstrap';
+// import React from 'react';
+// import { Row, Col, Dropdown } from 'react-bootstrap';
 import ProductCard from './ProductCard';
+import PropTypes from 'prop-types';
 
 const ProductList = ({ products, onAddCart, onZoom, user_id }) => {
-  return (
-    <>
-      <h4 className="mt-4 d-flex justify-content-between align-items-center">
-        Tất Cả Sản Phẩm
-        {/* <Dropdown>
+	return (
+		<div>
+			<h4 className='mt-4 d-flex justify-content-between align-items-center'>
+				Tất Cả Sản Phẩm
+				{/* <Dropdown>
           <Dropdown.Toggle variant="outline-danger" id="dropdown-basic">
             Lọc theo giá
           </Dropdown.Toggle>
@@ -23,21 +24,25 @@ const ProductList = ({ products, onAddCart, onZoom, user_id }) => {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown> */}
-      </h4>
-      <Row>
-        {products.map((product, index) => (
-          <Col key={index} xs={6} md={3} className="mb-3">
-            <ProductCard
-              product={product}
-              onZoom={onZoom}
-              onAddToCart={onAddCart}
-              user_id={user_id}
-            />
-          </Col>
-        ))}
-      </Row>
-    </>
-  );
+			</h4>
+			<div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4'>
+				{products.map((product, index) => (
+					<div className='col' key={index}>
+						<ProductCard
+							product={product}
+							onZoom={onZoom}
+							onAddToCart={onAddCart}
+							user_id={user_id}
+						/>
+					</div>
+				))}
+			</div>
+		</div>
+	);
+};
+
+ProductList.propTypes = {
+	products: PropTypes.array,
 };
 
 export default ProductList;

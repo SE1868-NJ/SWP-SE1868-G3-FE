@@ -26,7 +26,7 @@ function Suppliers() {
         }
     }, []);
 
-    // Nhập 
+    // Nhập
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
     };
@@ -58,7 +58,7 @@ function Suppliers() {
                     />
                     <button type='submit' className='btn btn-danger' onClick={handleSearch}>Tìm kiếm</button>
                 </div>
-                <Link to='/suppliers/add' className='btn btn-danger'>
+                <Link to='/seller/suppliers/add' className='btn btn-danger'>
                     + Thêm nhà cung cấp
                 </Link>
             </div>

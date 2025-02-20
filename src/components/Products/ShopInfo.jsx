@@ -1,26 +1,32 @@
 import { Card, Button } from "react-bootstrap";
-import PropTypes from "prop-types";
+import {useChat} from "../../hooks/contexts/chatContext";
 
 const ShopInfo = ({ shop }) => {
+    const {openChat} = useChat();
+
+    const handleChatClick = () => {
+        openChat(); 
+    };
+
     return (
         <Card className="p-3 shadow-sm border-0 mx-auto mt-5" style={{ maxWidth: "1200px" }}>
             <div className="d-flex align-items-center justify-content-between mb-3">
                 <div className="d-flex align-items-center gap-3">
                     <img
-                        src={shop.logo}
+                        src={shop.shop_logo}
                         alt="Shop Logo"
                         style={{ width: "70px", height: "70px", borderRadius: "50%" }}
                     />
                     <div>
-                        <h5 className="fw-bold mb-1">{shop.name}</h5>
+                        <h5 className="fw-bold mb-1">{shop.shop_name}</h5>
                         <span style={{ color: "#00a046", fontSize: "0.9rem" }}>
-                            Online {shop.lastActive}
+                            Online {shop.status}
                         </span>
                     </div>
                 </div>
 
                 <div className="d-flex gap-2">
-                    <Button variant="danger" className="fw-bold px-4">Chat Ngay</Button>
+                    <Button variant="danger" className="fw-bold px-4" onClick={handleChatClick}>Chat Ngay</Button>
                     <Button variant="outline-secondary px-4">Xem Shop</Button>
                 </div>
             </div>
@@ -56,18 +62,5 @@ const ShopInfo = ({ shop }) => {
     );
 };
 
-ShopInfo.propTypes = {
-    shop: PropTypes.shape({
-        logo: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        lastActive: PropTypes.string.isRequired,
-        reviews: PropTypes.string.isRequired,
-        products: PropTypes.string.isRequired,
-        responseRate: PropTypes.string.isRequired,
-        responseTime: PropTypes.string.isRequired,
-        joined: PropTypes.string.isRequired,
-        followers: PropTypes.string.isRequired,
-    }).isRequired,
-};
 
 export default ShopInfo;

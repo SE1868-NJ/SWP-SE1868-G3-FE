@@ -9,8 +9,6 @@ const ProductTabs = ({ product }) => {
         return <p className="text-center text-muted mt-4">⏳ Đang tải dữ liệu sản phẩm...</p>;
     }
 
-    const reviews = product.reviews || [];
-
     return (
         <Container className="mt-5">
             <Tab.Container defaultActiveKey="details">
@@ -28,7 +26,7 @@ const ProductTabs = ({ product }) => {
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link eventKey="reviews" className="px-4 text-dark">
-                            Đánh giá ({reviews.length})
+                            Đánh giá
                         </Nav.Link>
                     </Nav.Item>
                 </Nav>
@@ -49,21 +47,6 @@ const ProductTabs = ({ product }) => {
             </Tab.Container>
         </Container>
     );
-};
-
-ProductTabs.propTypes = {
-    product: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        reviews: PropTypes.array,
-        fullDescription: PropTypes.string,
-        descriptionImages: PropTypes.arrayOf(PropTypes.string),
-        category: PropTypes.string,
-        brand: PropTypes.string,
-        origin: PropTypes.string,
-        material: PropTypes.string,
-        weight: PropTypes.number,
-        warranty: PropTypes.string
-    }).isRequired
 };
 
 export default ProductTabs;
