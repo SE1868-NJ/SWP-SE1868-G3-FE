@@ -1,76 +1,101 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import Card from '../../components/Card';
 import SupplierHeader from '../../components/Supplier/SupplierHeader';
 import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
+import supplierService from '../../services/supplierService';
+import { validateField, validateForm } from '../../utils/validation';
 
 function AddSupplier() {
-    const [supplier, setSupplier] = useState({
-        name: '',
-        deliveryTime: '',
-        bankName: '',
-        accountNumber: '',
-        paymentTerm: '',
-        address: '',
-        contactName: '',
-        phone: '',
-        facebook: '',
-        skype: '',
-        note: '',
-        status: 'Hoạt động'
+  const [supplier, setSupplier] = useState({
+    supplier_name: '',
+    delivery_time: '',
+    bank_name: '',
+    account_number: '',
+    payment_term: '',
+    address: '',
+    contact_name: '',
+    phone_number: '',
+    note: '',
+    status: 'Hoạt động'
+  });
+
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const errorRefs = useRef({});
+
+  // Cập nhật ref của input lỗi khi lỗi thay đổi
+  useEffect(() => {
+    Object.keys(errors).forEach((field) => {
+      if (errors[field]) {
+        const input = document.querySelector(`[name="${field}"]`);
+        if (input) {
+          errorRefs.current[field] = input;
+        }
+      }
     });
+  }, [errors]);
 
-    const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSupplier((prev) => ({ ...prev, [name]: value }));
 
-    const [errors, setErrors] = useState({});
+    const error = validateField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: error }));
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setSupplier((prev) => ({ ...prev, [name]: value }));
-    };
+    if (error) {
+      errorRefs.current[name] = e.target;
+    } else {
+      delete errorRefs.current[name];
+    }
+  };
 
-    const validateForm = () => {
-        let newErrors = {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (!supplier.name.trim()) newErrors.name = "Tên nhà cung cấp không được để trống";
-        if (!supplier.deliveryTime || supplier.deliveryTime <= 0) newErrors.deliveryTime = "Thời gian giao hàng phải lớn hơn 0";
-        if (!supplier.address.trim()) newErrors.address = "Địa chỉ không được để trống";
-        if (!supplier.contactName.trim()) newErrors.contactName = "Họ và tên không được để trống";
-        if (!supplier.phone.trim()) newErrors.phone = "Số điện thoại không được để trống";
-        else if (!/^\d{10,11}$/.test(supplier.phone)) newErrors.phone = "Số điện thoại không hợp lệ";
+    const newErrors = validateForm(supplier);
+    setErrors(newErrors);
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorField = Object.keys(newErrors)[0];
+      if (firstErrorField) {
+        if (errorRefs.current[firstErrorField]) {
+          errorRefs.current[firstErrorField].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          errorRefs.current[firstErrorField].focus();
+        }
+      }
+      return;
+    }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    try {
+      setLoading(true);
+      await supplierService.createSupplier(supplier);
+      alert('Thêm nhà cung cấp thành công!');
+      navigate('/seller/suppliers');
+    } catch (error) {
+      alert('Thêm nhà cung cấp thất bại! Vui lòng thử lại.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        if (!validateForm()) return;
-
-        let suppliers = JSON.parse(localStorage.getItem('suppliers')) || [];
-        const newSupplier = { id: Date.now().toString(), ...supplier };
-        suppliers.push(newSupplier);
-        localStorage.setItem('suppliers', JSON.stringify(suppliers));
-
-        navigate('/seller/suppliers');
-    };
-
-
-    return (
-        <Card>
-            <Card.Body>
-                <SupplierHeader title="Thêm Nhà Cung Cấp" subtitle="Vui lòng điền đầy đủ thông tin." showRequiredNote={true} />
-                <form onSubmit={handleSubmit}>
-                    <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} />
-                    <div className='d-flex gap-2'>
-                        <button type='submit' className='btn btn-success'>Lưu</button>
-                        <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
-                    </div>
-                </form>
-            </Card.Body>
-        </Card>
-    );
+  return (
+    <Card>
+      <Card.Body>
+        <SupplierHeader title="Thêm Nhà Cung Cấp" subtitle="Vui lòng điền đầy đủ thông tin." showRequiredNote={true} />
+        <form onSubmit={handleSubmit}>
+          <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} />
+          <div className='d-flex gap-2'>
+            <button type='submit' className='btn btn-success' disabled={loading}>
+              {loading ? 'Đang lưu...' : 'Lưu'}
+            </button>
+            <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
+          </div>
+        </form>
+      </Card.Body>
+    </Card>
+  );
 }
 
 export default AddSupplier;

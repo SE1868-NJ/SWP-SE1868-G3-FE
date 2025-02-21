@@ -1,74 +1,105 @@
 import { useParams, useNavigate } from 'react-router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Card from '../../components/Card';
 import SupplierHeader from '../../components/Supplier/SupplierHeader';
 import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
+import supplierService from '../../services/supplierService';
+import { validateField, validateForm } from '../../utils/validation';
 
 function EditSupplier() {
-    const { id } = useParams();
-    const navigate = useNavigate();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [supplier, setSupplier] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState({});
+  const errorRefs = useRef({});
 
-    const storedSuppliers = JSON.parse(localStorage.getItem('suppliers')) || [];
-
-    const currentSupplier = storedSuppliers.find(s => s.id.trim() === id.trim());
-
-    const [supplier, setSupplier] = useState(currentSupplier || null);
-    const [errors, setErrors] = useState({});
-
-    useEffect(() => {
-        if (!currentSupplier) {
-            alert("Không tìm thấy nhà cung cấp! Quay lại danh sách.");
-            navigate('/seller/suppliers');
+  useEffect(() => {
+    const fetchSupplier = async () => {
+      try {
+        // console.log(`Lấy dữ liệu nhà cung cấp có ID: ${id}`);
+        const response = await supplierService.getSupplierById(id);
+        if (response) {
+          // console.log("Nhà cung cấp:", response);
+          setSupplier(response);
         }
-    }, [currentSupplier, navigate]);
-
-    if (!supplier) return null;
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setSupplier({ ...supplier, [name]: value });
-    };
-
-    const validateForm = () => {
-        let newErrors = {};
-
-        if (!supplier.name.trim()) newErrors.name = "Tên nhà cung cấp không được để trống";
-        if (!supplier.deliveryTime || supplier.deliveryTime <= 0) newErrors.deliveryTime = "Thời gian giao hàng phải lớn hơn 0";
-        if (!supplier.address.trim()) newErrors.address = "Địa chỉ không được để trống";
-        if (!supplier.contactName.trim()) newErrors.contactName = "Họ và tên không được để trống";
-        if (!supplier.phone.trim()) newErrors.phone = "Số điện thoại không được để trống";
-        else if (!/^\d{10,11}$/.test(supplier.phone)) newErrors.phone = "Số điện thoại không hợp lệ";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        if (!validateForm()) return;
-
-        const updatedSuppliers = storedSuppliers.map(s => (s.id === supplier.id ? supplier : s));
-        localStorage.setItem('suppliers', JSON.stringify(updatedSuppliers));
-
-        console.log('Cập nhật nhà cung cấp:', supplier);
+      } catch (error) {
+        // console.error("Lỗi khi lấy dữ liệu nhà cung cấp:", error);
         navigate('/seller/suppliers');
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchSupplier();
+  }, [id, navigate]);
 
-    return (
-        <Card>
-            <Card.Body>
-                <SupplierHeader title="Chỉnh sửa Nhà Cung Cấp" subtitle="Vui lòng điền đầy đủ thông tin." showRequiredNote={true} />
-                <form onSubmit={handleSubmit}>
-                    <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} />
-                    <div className='d-flex gap-2'>
-                        <button type='submit' className='btn btn-success'>Lưu</button>
-                        <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
-                    </div>
-                </form>
-            </Card.Body>
-        </Card>
-    );
+  if (!supplier) {
+    return <h2 className="text-center mt-5">Nhà cung cấp không tồn tại!</h2>;
+  }
+
+  // Xử lý khi thay đổi input
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSupplier({ ...supplier, [name]: value });
+
+    // Kiểm tra lỗi ngay khi nhập
+    const error = validateField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: error }));
+
+    // Lưu ref nếu có lỗi
+    if (error) errorRefs.current[name] = e.target;
+    else delete errorRefs.current[name];
+  };
+
+  // Xử lý submit form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const newErrors = validateForm(supplier);
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorField = Object.keys(newErrors)[0];
+      // Cuộn tới ô input bị lỗi
+      if (firstErrorField) {
+        // Cuộn đến input có lỗi còn lại
+        if (errorRefs.current[firstErrorField]) {
+          errorRefs.current[firstErrorField].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          errorRefs.current[firstErrorField].focus();
+        }
+      }
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await supplierService.updateSupplier(id, supplier);
+      alert("Cập nhật thành công!");
+      navigate('/seller/suppliers');
+    } catch (error) {
+      alert("Lỗi khi cập nhật nhà cung cấp!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return (
+    <Card>
+      <Card.Body>
+        <SupplierHeader title="Chỉnh sửa Nhà Cung Cấp" subtitle="Vui lòng điền đầy đủ thông tin." showRequiredNote={true} />
+        <form onSubmit={handleSubmit}>
+          <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} readOnly={false} />
+          <div className='d-flex gap-2'>
+            <button type='submit' className='btn btn-success' disabled={loading}>
+              {loading ? 'Đang lưu...' : 'Lưu'}
+            </button>
+            <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
+          </div>
+        </form>
+      </Card.Body>
+    </Card>
+  );
 }
 
 export default EditSupplier;
