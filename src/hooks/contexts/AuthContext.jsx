@@ -1,12 +1,17 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { productService } from '../../services/productService';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [cartCount, setCartCount] = useState(0);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastVariant, setToastVariant] = useState('success');
     const [user, setUser] = useState(
         {
-            id: 16,
+            id: 15,
             name: "Trần Xuân Đông",
             email: "dongtx04@gmail.com",
             avatar: "",
@@ -33,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     //     try {
     //         const response = await authService.login(credentials);
     //         const { token, user } = response;
-            
+
     //         localStorage.setItem('token', token);
     //         setIsAuthenticated(true);
     //         setUser(user);
@@ -47,10 +52,43 @@ export const AuthProvider = ({ children }) => {
     //     setIsAuthenticated(false);
     //     setUser(null);
     // };
+    useEffect(() => {
+        const getCountCart = async (user_id) => {
+            try {
+                const response = await productService.getCountCart(user_id);
+                setCartCount(response);
+            } catch (error) {
+                console.error('Error getting cart count:', error);
+            }
+        };
+        getCountCart(user.id);
+    }, []);
+
+    const handleAddCart = async (productId, mockUserId) => {
+        try {
+            const response = await productService.addToCart(productId, mockUserId);
+            if (response.status === 'success') {
+                setToastMessage('Thêm vào giỏ hàng thành công!');
+                setToastVariant('success');
+                setShowToast(true);
+            }
+        } catch (error) {
+            setToastMessage('Có lỗi xảy ra khi thêm vào giỏ hàng');
+            setToastVariant('danger');
+            setShowToast(true);
+
+        }
+    };
 
     return (
         <AuthContext.Provider value={{
             // isAuthenticated,
+            cartCount,
+            handleAddCart,
+            showToast,
+            toastMessage,
+            toastVariant,
+            setShowToast,
             user,
             // loading,
             // login,

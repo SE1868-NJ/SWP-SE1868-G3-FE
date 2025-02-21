@@ -1,8 +1,11 @@
 // import React from 'react';
 import { Link } from 'react-router';
 // import Container from '../components/Container';
+import { useAuth } from '../hooks/contexts/AuthContext';
 
 function Header() {
+	const { cartCount } = useAuth();
+
 	return (
 		<div className='shadow-sm'>
 			<nav className='bg-danger'>
@@ -107,8 +110,14 @@ function Header() {
 									<i className='bi bi-search' />
 								</button>
 							</div>
-							<Link to='/cart' className='btn btn-outline-light border-2'>
+							<Link to='/cart' className='btn btn-outline-light border-2 position-relative'>
 								<i className='bi bi-basket-fill' />
+								{cartCount > 0 && (
+									<span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+										{cartCount}
+										<span className="visually-hidden">items in cart</span>
+									</span>
+								)}
 							</Link>
 						</div>
 					</form>
