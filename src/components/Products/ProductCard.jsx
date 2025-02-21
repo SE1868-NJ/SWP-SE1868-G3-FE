@@ -21,7 +21,7 @@ const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
 			<div
 				className='position-absolute top-0 end-0 m-2'
 				style={{ cursor: 'pointer' }}
-				// onClick={() => onZoom(product)}
+				onClick={() => onZoom(product)}
 			>
 				<button className='btn btn-danger shadow-lg'>
 					<i className='bi bi-zoom-in' />
