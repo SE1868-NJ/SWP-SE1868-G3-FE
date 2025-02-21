@@ -13,12 +13,12 @@ const routes = [
 	{
 		path: '/',
 		element: <Layout />,
-		children: [...homeRoute, ...authRoutes, ...shopRoutes, ...userRoutes],
+		children: [...homeRoute, ...authRoutes, ...userRoutes],
 	},
 	{
 		path: '/seller',
 		element: <SellerLayout />,
-		children: [...sellerRoutes, ...supplierRoutes],
+		children: [...sellerRoutes, ...supplierRoutes, ...shopRoutes],
 	},
 ];
 

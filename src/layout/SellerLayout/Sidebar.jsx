@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useSeller } from '../../hooks/contexts/SellerContext';
 
 function Sidebar() {
+	const { shops } = useSeller();
+
 	return (
 		<div
 			className='offcanvas-md offcanvas-start bg-body-tertiary min-vh-100 border-1 border-end d-flex flex-column'
@@ -147,7 +150,7 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/message'} className='nav-link'>
+										<Link to={'/seller/chat'} className='nav-link'>
 											Tin nhắn
 										</Link>
 									</li>
@@ -174,9 +177,11 @@ function Sidebar() {
 								id='shop-id'
 								className='form-select form-select-lg dropup shadow-none'
 							>
-								<option value='shop-id-1'>Shop Name 1</option>
-								<option value='shop-id-1'>Shop Name 1</option>
-								<option value='shop-id-1'>Shop Name 1</option>
+								{shops.map((shop) => (
+									<option key={shop.shop_id} value={shop.shop_id}>
+										{shop.shop_name}
+									</option>
+								))}
 							</select>
 							<Link
 								to={'/seller/shop/create'}
