@@ -7,6 +7,7 @@ import { homeRoute } from './modules/home.routes';
 import { sellerRoutes } from './modules/seller.routes';
 import SellerLayout from '../layout/SellerLayout';
 import { supplierRoutes } from './modules/supplier.routes';
+import { AuthProvider } from '../hooks/contexts/AuthContext';
 
 const routes = [
 	{
@@ -24,7 +25,11 @@ const routes = [
 const router = createBrowserRouter(routes);
 
 function AppRoutes() {
-	return <RouterProvider router={router} />;
+	return (
+		<AuthProvider>
+			<RouterProvider router={router} />
+		</AuthProvider>
+	);
 }
 
 export default AppRoutes;

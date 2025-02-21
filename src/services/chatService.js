@@ -22,6 +22,16 @@ export const chatService = {
     }
   },
 
+  getConversation: async (userId, shopId) => {
+    try {
+      const response = await api.get(`/conversation/${userId}/${shopId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching conversation:', error);
+      throw error;
+    }
+  },
+
   // Get messages for a conversation
   getMessages: async (conversationId, limit = 20, offset = 0) => {
     try {
