@@ -48,7 +48,7 @@ const ChatPopup = ({ userId }) => {
     if (userId) {
       fetchConversations();
     }
-  }, [userId]);
+  }, [selectedConversation]);
 
   // Handle socket connections
   useEffect(() => {

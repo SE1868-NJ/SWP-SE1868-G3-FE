@@ -5,7 +5,7 @@ const ShopInfo = ({ shop }) => {
     const {openChat} = useChat();
 
     const handleChatClick = () => {
-        openChat(); 
+        openChat(shop.shop_id); 
     };
 
     return (
