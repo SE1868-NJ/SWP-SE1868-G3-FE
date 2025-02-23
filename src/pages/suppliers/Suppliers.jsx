@@ -17,18 +17,15 @@ function Suppliers() {
         setSuppliers(data);
         setFilteredSuppliers(data);
       } catch (error) {
-        // console.error("Lỗi khi lấy dữ liệu nhà cung cấp:", error);
       }
     };
     fetchSuppliers();
   }, []);
 
-  // Nhập
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  // Tìm kiếm
   const handleSearch = () => {
     const result = suppliers.filter(supplier =>
       supplier.supplier_name.toLowerCase().includes(searchQuery.toLowerCase())

@@ -11,7 +11,6 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
           className={`form-control ${errors.supplier_name ? 'is-invalid' : ''}`}
           value={supplier.supplier_name}
           onChange={handleChange}
-          // required
           disabled={readOnly}
         />
         {errors.supplier_name && <div className="invalid-feedback">{errors.supplier_name}</div>}
@@ -24,7 +23,6 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
           className={`form-control ${errors.delivery_time ? 'is-invalid' : ''}`}
           value={supplier.delivery_time}
           onChange={handleChange}
-          // required
           disabled={readOnly}
         />
         {errors.delivery_time && <div className="invalid-feedback">{errors.delivery_time}</div>}
@@ -53,7 +51,6 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
           className={`form-control ${errors.address ? 'is-invalid' : ''}`}
           value={supplier.address}
           onChange={handleChange}
-          // required
           disabled={readOnly}
         />
         {errors.address && <div className="invalid-feedback">{errors.address}</div>}

@@ -17,14 +17,11 @@ function EditSupplier() {
   useEffect(() => {
     const fetchSupplier = async () => {
       try {
-        // console.log(`Lấy dữ liệu nhà cung cấp có ID: ${id}`);
         const response = await supplierService.getSupplierById(id);
         if (response) {
-          // console.log("Nhà cung cấp:", response);
           setSupplier(response);
         }
       } catch (error) {
-        // console.error("Lỗi khi lấy dữ liệu nhà cung cấp:", error);
         navigate('/seller/suppliers');
       } finally {
         setLoading(false);
@@ -37,21 +34,17 @@ function EditSupplier() {
     return <h2 className="text-center mt-5">Nhà cung cấp không tồn tại!</h2>;
   }
 
-  // Xử lý khi thay đổi input
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSupplier({ ...supplier, [name]: value });
 
-    // Kiểm tra lỗi ngay khi nhập
     const error = validateField(name, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
 
-    // Lưu ref nếu có lỗi
     if (error) errorRefs.current[name] = e.target;
     else delete errorRefs.current[name];
   };
 
-  // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -60,9 +53,7 @@ function EditSupplier() {
 
     if (Object.keys(newErrors).length > 0) {
       const firstErrorField = Object.keys(newErrors)[0];
-      // Cuộn tới ô input bị lỗi
       if (firstErrorField) {
-        // Cuộn đến input có lỗi còn lại
         if (errorRefs.current[firstErrorField]) {
           errorRefs.current[firstErrorField].scrollIntoView({ behavior: 'smooth', block: 'center' });
           errorRefs.current[firstErrorField].focus();

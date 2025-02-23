@@ -25,7 +25,6 @@ function AddSupplier() {
   const [loading, setLoading] = useState(false);
   const errorRefs = useRef({});
 
-  // Cập nhật ref của input lỗi khi lỗi thay đổi
   useEffect(() => {
     Object.keys(errors).forEach((field) => {
       if (errors[field]) {
