@@ -3,11 +3,11 @@ import Checkout from '../../pages/Checkout';
 
 export const orderRoutes = [
   {
-    path: "order/cart",
-    Component: Cart
+    path: "cart",
+    element: <Cart />
   },
   {
-    path: "order/checkout",
-    Component: Checkout
+    path: "checkout",
+    element: <Checkout />
   }
 ];
