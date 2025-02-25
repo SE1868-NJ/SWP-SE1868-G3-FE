@@ -39,4 +39,13 @@ export const productService = {
             throw error;
         }
     },
+    getProductByName: async (product_name) => {
+        try {
+            const response = await api.get(`/shop/product/get_product_by_name/${product_name}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
 };

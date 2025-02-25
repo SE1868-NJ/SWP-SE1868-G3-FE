@@ -1,8 +1,9 @@
-import Home from '../../pages/Home';
-import ListPage from '../../pages/ListPage';
 import Cart from '../../pages/Cart';
 import Checkout from '../../pages/Checkout';
+import Home from '../../pages/Home';
+import ListPage from '../../pages/ListPage';
 import ProductDetails from '../../pages/ProductDetails';
+import SearchProduct from '../../pages/SearchProduct';
 
 export const homeRoute = [
 	{
@@ -10,19 +11,23 @@ export const homeRoute = [
 		element: <Home />,
 	},
 	{
-		path: "/list_page",
+		path: '/list_page',
 		element: <ListPage />,
 	},
 	{
-		path: "/cart",
+		path: '/cart',
 		element: <Cart />,
 	},
 	{
-		path: "/checkout",
+		path: '/checkout',
 		element: <Checkout />,
 	},
 	{
-		path: "/product/:id",
+		path: '/product/:id',
 		element: <ProductDetails />,
-	}
+	},
+	{
+		path: '/search',
+		element: <SearchProduct />,
+	},
 ];
