@@ -1,17 +1,9 @@
-import { Badge, Button } from 'react-bootstrap';
-import PropTypes from 'prop-types';
 import SizeSelector from './SizeSelector';
 import QuantitySelector from './QuantitySelector';
 import ShippingInfo from './ShippingInfo';
 import PurchaseActions from './PurchaseActions';
 import ShopDiscounts from './ShopDiscounts';
-import Media from './Media';
-
-const reviewsData = {
-    rating: 4.9,
-    total: 4300,
-};
-const soldQuantity = 11300;
+// import Media from './Media';
 
 const ProductInfo = ({
     product,
@@ -26,20 +18,43 @@ const ProductInfo = ({
 
         {/* Đánh giá */}
         <div className="d-flex align-items-center gap-3 mt-1" style={{ fontSize: "0.9rem", color: "#666" }}>
-            <span className="fw-bold text-dark">{reviewsData.rating.toFixed(1)}</span>
-            <div className="d-flex align-items-center text-warning">
-                {[...Array(5)].map((_, i) => (
-                    <span key={i} className={i < Math.round(reviewsData.rating) ? "text-warning" : "text-muted"}>
-                        ★
-                    </span>
-                ))}
+            <span className="fw-bold text-dark">{product.rating.toFixed(1)}</span>
+            <div className="d-flex align-items-center">
+                {[...Array(5)].map((_, i) => {
+                    const percentage = product.rating - i;
+
+                    return (
+                        <span
+                            key={i}
+                            style={{
+                                position: 'relative',
+                                display: 'inline-block',
+                                color: '#e4e5e9'
+                            }}
+                        >
+                            ★
+                            <span
+                                style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    top: 0,
+                                    width: percentage > 1 ? '100%' : `${Math.max(0, percentage * 100)}%`,
+                                    overflow: 'hidden',
+                                    color: '#ffc107'
+                                }}
+                            >
+                                ★
+                            </span>
+                        </span>
+                    );
+                })}
             </div>
             <span>
-                <strong>{reviewsData.total.toLocaleString()}</strong> Đánh Giá
+                <strong>{product.count_feedback}</strong> Đánh Giá
             </span>
-            <span>
+            {/* <span>
                 <strong>{soldQuantity.toLocaleString()}</strong> Sold
-            </span>
+            </span> */}
         </div>
 
         {/* Giá */}
@@ -78,7 +93,7 @@ const ProductInfo = ({
         <PurchaseActions selectedSize={selectedSize} />
 
         {/* Chia sẻ */}
-        <Media />
+        {/* <Media /> */}
     </div>
 );
 

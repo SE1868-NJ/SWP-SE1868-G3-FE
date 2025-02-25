@@ -10,7 +10,7 @@ const ShopChatList = ({
     return (
         <Card className="h-100">
             <Card.Header>
-                <h5 className="mb-0">Conversations</h5>
+                <h5 className="mb-0">Chat</h5>
             </Card.Header>
             <Card.Body className="p-0">
                 <div className="conversations-list overflow-auto h-100">

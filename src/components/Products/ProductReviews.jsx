@@ -47,10 +47,37 @@ const ProductReviews = ({ productId }) => {
                         <Col md={3} className="text-center border-end">
                             <div className="display-4 fw-bold text-danger">{feedbacks.rating}</div>
                             <div className="text-muted mb-2">trên 5</div>
-                            <div className="star-rating">
-                                {[...Array(5)].map((_, i) => (
-                                    <span key={i} className="text-warning h4">★</span>
-                                ))}
+                             <div className="star-rating">
+                                {[...Array(5)].map((_, i) => {
+                                    const rating = feedbacks.rating;
+                                    const percentage = rating - i;
+
+                                    return (
+                                        <span
+                                            key={i}
+                                            style={{
+                                                position: 'relative',
+                                                display: 'inline-block',
+                                                fontSize: '1.5rem',
+                                                color: '#e4e5e9'
+                                            }}
+                                        >
+                                            ★
+                                            <span
+                                                style={{
+                                                    position: 'absolute',
+                                                    left: 0,
+                                                    top: 0,
+                                                    width: percentage > 1 ? '100%' : `${Math.max(0, percentage * 100)}%`,
+                                                    overflow: 'hidden',
+                                                    color: '#ffc107'
+                                                }}
+                                            >
+                                                ★
+                                            </span>
+                                        </span>
+                                    );
+                                })}
                             </div>
                         </Col>
 
@@ -102,7 +129,7 @@ const ProductReviews = ({ productId }) => {
                                 className="w-100 mb-2"
                                 onClick={() => setSelectedFilter({ rating: 'all', type: 'all' })}
                             >
-                                Tất Cả ({feedbacks.total})
+                                Tất Cả
                             </Button>
                             <Button
                                 variant={selectedFilter.type === 'comment' ? "danger" : "outline-danger"}
