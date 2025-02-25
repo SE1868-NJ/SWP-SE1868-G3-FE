@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Checkbox from "./Checkbox";
 
 const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, items }) => {
   return (
     <div className="container mt-4 border-top pt-3 bg-white fixed-bottom p-3 w-100 g-0">
       <div className="row w-100 text-center justify-content-center">
         <div className="col-md-5 d-flex align-items-center justify-content-start">
-          <input type="checkbox" className="form-check-input me-2" checked={selectAll} onChange={toggleSelectAll} />
+          <Checkbox checked={selectAll} onChange={toggleSelectAll} className="me-2" />
           <span>Chọn tất cả ({items.length})</span>
         </div>
         <div className="col-md-7 text-center">
