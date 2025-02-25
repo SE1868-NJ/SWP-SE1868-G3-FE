@@ -31,7 +31,22 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
       <h5 className="fw-bold text-decoration-underline">Thông Tin Giao Dịch</h5>
       <div className='mb-3'>
         <label className='form-label'>Tên Ngân Hàng</label>
-        <input type='text' name='bank_name' className='form-control' value={supplier.bank_name} onChange={handleChange} disabled={readOnly} />
+        <select
+          name='bank_name'
+          className='form-select'
+          value={supplier.bank_name}
+          onChange={handleChange}
+          disabled={readOnly}
+        >
+          <option value="">-- Chọn Ngân Hàng --</option>
+          <option value="MB Bank">MB Bank</option>
+          <option value="Vietcombank">Vietcombank</option>
+          <option value="Techcombank">Techcombank</option>
+          <option value="BIDV">BIDV</option>
+          <option value="ACB">ACB</option>
+          <option value="Sacombank">Sacombank</option>
+          <option value="Agribank">Agribank</option>
+        </select>
       </div>
       <div className='mb-3'>
         <label className='form-label'>Số Tài Khoản</label>
