@@ -1,19 +1,31 @@
-// components/Cart/CartItem.jsx
-import React from "react";
-import Checkbox from "./Checkbox"; // Thêm import Checkbox để tái sử dụng style
+import React, { useState } from "react";
+import Checkbox from "./Checkbox";
 import avt from "../../assets/images/avt.jpg";
+import { Modal } from "react-bootstrap"; // Sử dụng Modal từ react-bootstrap
 
 const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, removeItem, appliedDiscounts = {} }) => {
-  // Kiểm tra appliedDiscounts tồn tại trước khi truy cập
-  const discountRate = appliedDiscounts[item.storeName] || 0;
+  const { id, name, price, quantity, storeName, stock = 1000 } = item; // Giả sử stock là 1000 (mặc định)
+  const isSelected = selectedItems.includes(id);
 
-  // Tính giá gốc (trước khi giảm)
-  const originalPrice = item.price * item.quantity;
+  // State để quản lý modal xác nhận xóa
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Tính tổng mức giảm giá từ appliedDiscounts cho storeName cụ thể (mảng các object { code, rate })
+  const discounts = appliedDiscounts[storeName] || [];
+  const totalDiscount = isSelected ? (discounts.reduce((sum, discount) => {
+    console.log("Discount:", discount);
+    return sum + (Number(discount.rate) || 0); // Đảm bảo discount.rate là số
+  }, 0) || 0) : 0;
+
+  // Tính giá gốc (trước khi giảm) cho mỗi sản phẩm
+  const originalPricePerUnit = Number(price); // Chuyển đổi price thành số
+  const originalPrice = originalPricePerUnit * quantity; // Giá gốc cho số lượng
 
   // Tính giá sau khi giảm (nếu có voucher)
-  const discountedPrice = originalPrice * (1 - discountRate);
+  const discountedPricePerUnit = originalPricePerUnit * (1 - totalDiscount);
+  const discountedPrice = discountedPricePerUnit * quantity; // Giá sau giảm cho số lượng
 
-  // Tạo component nhỏ để hiển thị giá, tránh lặp code
+  // Tạo component nhỏ để hiển thị giá
   const PriceDisplay = ({ originalPrice, discountedPrice, discountRate }) => (
     discountRate > 0 ? (
       <>
@@ -26,46 +38,91 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
     )
   );
 
+  // Hàm xử lý tăng/giảm số lượng, validate với kho
+  const handleUpdateQuantity = (delta) => {
+    const newQuantity = Math.max(1, quantity + delta);
+    if (newQuantity > stock) {
+      alert(`Số lượng vượt quá kho (${stock} sản phẩm). Vui lòng chọn số lượng nhỏ hơn hoặc bằng ${stock}.`);
+      return;
+    }
+    updateQuantity(id, delta);
+  };
+
+  // Hàm xử lý khi nhấn nút "Xóa"
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  // Hàm xác nhận xóa
+  const handleConfirmDelete = () => {
+    removeItem(id);
+    setShowDeleteConfirm(false);
+  };
+
+  // Hàm hủy xóa
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+  };
+
   return (
     <div className="row align-items-center mb-3 text-center g-0 p-3 rounded border">
       {/* Cột chọn sản phẩm */}
       <div className="col-5 d-flex align-items-center text-start">
-        {/* Sử dụng Checkbox component thay cho input gốc */}
         <Checkbox
-          checked={selectedItems.includes(item.id)}
-          onChange={() => toggleSelectItem(item.id)}
+          checked={isSelected}
+          onChange={() => toggleSelectItem(id)}
           className="me-3"
         />
-        <img src={avt} alt={item.name} style={{ width: "80px", height: "80px", objectFit: "cover" }} className="me-2" />
+        <img src={avt} alt={name} style={{ width: "80px", height: "80px", objectFit: "cover" }} className="me-2" />
         <div>
-          <div className="fw-bold">{item.name}</div>
-          {/* <div className="text-muted">Số lượng: {item.quantity}</div> */} {/* Comment cũ được giữ nguyên */}
+          <div className="fw-bold">{name}</div>
+          <div className="text-muted">Kho: {stock}</div> {/* Thêm trường "Kho" */}
+          {isSelected && discounts.length > 0 && (
+            <p className="text-success mb-0">
+              Giảm giá: {(totalDiscount * 100).toFixed(0)}% (Mã: {discounts.map(d => d.code).join(", ")})
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Cột hiển thị giá gốc - Sử dụng PriceDisplay */}
+      {/* Cột hiển thị giá gốc (cho mỗi đơn vị) - Sử dụng PriceDisplay */}
       <div className="col-2 text-center">
-        <PriceDisplay originalPrice={originalPrice} discountedPrice={discountedPrice} discountRate={discountRate} />
+        <PriceDisplay originalPrice={originalPricePerUnit} discountedPrice={discountedPricePerUnit} discountRate={totalDiscount} />
       </div>
 
       {/* Cột tăng/giảm số lượng */}
       <div className="col-2 d-flex justify-content-center align-items-center">
-        <button className="btn btn-sm" onClick={() => updateQuantity(item.id, -1)}>-</button>
-        <span className="mx-2 border rounded px-3 py-1">{item.quantity}</span>
-        <button className="btn btn-sm" onClick={() => updateQuantity(item.id, 1)}>+</button>
+        <button className="btn btn-sm" onClick={() => handleUpdateQuantity(-1)}>-</button>
+        <span className="mx-2 border rounded px-3 py-1">{quantity}</span>
+        <button className="btn btn-sm" onClick={() => handleUpdateQuantity(1)}>+</button>
       </div>
 
       {/* Cột tổng giá trị sản phẩm (sau khi giảm giá nếu có) - Sử dụng PriceDisplay */}
       <div className="col-2 text-center">
-        <PriceDisplay originalPrice={originalPrice} discountedPrice={discountedPrice} discountRate={discountRate} />
+        <PriceDisplay originalPrice={originalPrice} discountedPrice={discountedPrice} discountRate={totalDiscount} />
       </div>
 
       {/* Cột nút xóa sản phẩm */}
       <div className="col-1 text-center">
-        <button className="btn btn-sm text-danger" onClick={() => removeItem(item.id)}>
+        <button className="btn btn-sm text-danger" onClick={handleDeleteClick}>
           <i className="bi bi-trash" />
         </button>
       </div>
+
+      {/* Modal xác nhận xóa */}
+      <Modal show={showDeleteConfirm} onHide={handleCancelDelete} centered>
+        <Modal.Body className="text-center p-4">
+          <p>Bạn có muốn xóa sản phẩm này?</p>
+          <div className="d-flex justify-content-center gap-3">
+            <button className="btn btn-secondary" onClick={handleCancelDelete}>
+              Trở lại
+            </button>
+            <button className="btn btn-danger" onClick={handleConfirmDelete}>
+              Có
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
