@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import CustomPagination from '../components/Products/CustomPagination';
-import ProductList from '../components/Products/ProductList';
+import ProductSearch from '../components/Products/ProductSearch';
 import { useAuth } from '../hooks/contexts/AuthContext';
 import { productService } from '../services/productService';
 
@@ -9,55 +9,56 @@ function useQuery() {
 	return new URLSearchParams(useLocation().search);
 }
 
-function ListPage() {
+function SearchProduct() {
 	const query = useQuery();
-	const navigate = useNavigate();
-	const searchKeyword = query.get('search')?.toLowerCase() || ''; // Lấy từ khóa tìm kiếm
 	const [currentPage, setCurrentPage] = useState(1);
 	const [products, setProducts] = useState([]);
 	const [totalPages, setTotalPages] = useState(0);
+	const [sortPrice, setSortPrice] = useState('asc'); // Mặc định tăng dần
 	const { handleAddCart, user } = useAuth();
 
 	useEffect(() => {
-		fetchProducts();
-	}, [currentPage, searchKeyword]); // Gọi lại khi trang hoặc từ khóa tìm kiếm thay đổi
+		const fetchProducts = async () => {
+			try {
+				const searchTerm = query.get('query')?.toLowerCase() || '';
 
-	const fetchProducts = async () => {
-		try {
-			const searchTerm = query.get('query')?.toLowerCase() || ''; // Lấy từ khóa tìm kiếm từ URL
+				const params = {
+					page: currentPage,
+					limit: 8,
+					search: searchTerm,
+					sortPrice: sortPrice, // Thêm tham số sortPrice
+				};
+				console.log('Tham số API:', params); // In thông tin tham số truyền đi cho API
 
-			const params = {
-				page: currentPage,
-				limit: 8,
-			};
+				const response = await productService.getProducts(params);
+				console.log('Dữ liệu API:', response.items);
 
-			const response = await productService.getProducts(params);
-			console.log('Dữ liệu API:', response.items); // Kiểm tra dữ liệu trả về
+				if (!response.items) {
+					setProducts([]);
+					return;
+				}
 
-			if (!response.items) {
-				setProducts([]);
-				return;
+				setProducts(response.items);
+				setTotalPages(response.metadata.totalPages);
+			} catch (error) {
+				console.error('Lỗi khi tải sản phẩm:', error);
 			}
+		};
+		fetchProducts();
+	}, [currentPage, query, sortPrice]); // Theo dõi cả sortPrice
 
-			const filteredProducts = response.items.filter(
-				(product) =>
-					product.product_name &&
-					product.product_name.toLowerCase().includes(searchTerm),
-			);
-
-			setProducts(filteredProducts);
-			setTotalPages(response.metadata.totalPages);
-		} catch (error) {
-			console.error('Lỗi khi tải sản phẩm:', error);
-		}
+	// Hàm xử lý khi người dùng chọn sắp xếp
+	const handleSortPrice = (order) => {
+		setSortPrice(order);
 	};
 
 	return (
 		<>
-			<ProductList
+			<ProductSearch
 				products={products}
 				onAddCart={handleAddCart}
 				user_id={user?.id}
+				onSortPrice={handleSortPrice} // Truyền xuống cho ProductSearch
 			/>
 			<CustomPagination
 				currentPage={currentPage}
@@ -68,4 +69,4 @@ function ListPage() {
 	);
 }
 
-export default ListPage;
+export default SearchProduct;

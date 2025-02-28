@@ -1,15 +1,15 @@
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import ProductPreview from '../components/Modals/ProductPreview';
 import Advertisement from '../components/Products/Advertisement';
-import React, { useState, useEffect } from 'react';
 import Categories from '../components/Products/Categories';
 import CustomPagination from '../components/Products/CustomPagination';
 import FlashSale from '../components/Products/FlashSale';
 import ProductList from '../components/Products/ProductList';
 import TopSearch from '../components/Products/TopSearch';
-import { productService } from '../services/productService';
-import ProductPreview from '../components/Modals/ProductPreview';
 import NotificationToast from '../components/Toast/NotificationToast';
 import { useAuth } from '../hooks/contexts/AuthContext';
+import { productService } from '../services/productService';
 
 const categories = ['Đồ ăn', 'Đồ uống', 'Đồ tươi sống', 'Đồ chay'];
 
@@ -57,7 +57,14 @@ function ListPage() {
 	const [products, setProducts] = useState([]);
 	const [totalPages, setTotalPages] = useState(0);
 
-	const { handleAddCart, showToast, user, toastMessage, toastVariant, setShowToast } = useAuth();
+	const {
+		handleAddCart,
+		showToast,
+		user,
+		toastMessage,
+		toastVariant,
+		setShowToast,
+	} = useAuth();
 
 	useEffect(() => {
 		fetchProducts();
@@ -94,7 +101,6 @@ function ListPage() {
 	// 		console.error('Error adding to cart:', error);
 	// 	}
 	// };
-
 
 	const handleFlashSaleNext = () => {
 		if (flashSaleIndex + flashSaleItems < products.length) {
