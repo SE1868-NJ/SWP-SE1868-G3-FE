@@ -54,4 +54,24 @@ export const productService = {
 			throw error;
 		}
 	},
+	getTopSearchedProducts: async (searchCount = 0, limit = 4) => {
+		try {
+			const url = `/shop/product/get_top_searched_products?search_count=${searchCount}&limit=${limit}`;
+			const response = await api.get(url);
+			console.log("Full API response:", response.data); // Log toàn bộ response
+			const products = response.data.data || response.data || []; // Lấy data nếu có, mặc định mảng rỗng
+			console.log("Extracted products:", products); // Log dữ liệu đã trích xuất
+			if (!products.length) {
+				console.warn("No top searched products returned from API");
+			}
+			return products;
+		} catch (error) {
+			console.error("API error:", error.response?.data || error.message);
+			throw error;
+		}
+	}
+
+	
+	
+
 };

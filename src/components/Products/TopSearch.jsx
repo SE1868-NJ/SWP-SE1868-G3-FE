@@ -1,31 +1,30 @@
-import React from "react";
-import { Button, Col, Row } from "react-bootstrap";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import ProductCard from "./ProductCard";
+import React from 'react';
+import { Col, Row } from 'react-bootstrap';
+import ProductCard from './ProductCard';
 
-const TopSearch = ({ topSearchProducts, onPrev, onNext }) => {
-  return (
-    <>
-      <h4 className="mt-4 d-flex justify-content-between align-items-center">
-        Top Search
-        <div>
-          <Button variant="outline-primary" onClick={onPrev}>
-            <FaChevronLeft />
-          </Button>
-          <Button variant="outline-primary" onClick={onNext} className="ms-2">
-            <FaChevronRight />
-          </Button>
-        </div>
-      </h4>
-      <Row>
-        {topSearchProducts.map((product, index) => (
-          <Col key={index} xs={6} md={3} className="mb-3">
-            <ProductCard product={product} />
-          </Col>
-        ))}
-      </Row>
-    </>
-  );
+const TopSearch = ({ topSearchProducts = [], onPrev, onNext }) => {
+	console.log('TopSearch products:', topSearchProducts); // Kiểm tra dữ liệu
+
+	return (
+		<>
+			<h4 className='mt-4 d-flex justify-content-between align-items-center'>
+				Top Search
+			</h4>
+			<Row>
+				{topSearchProducts.length > 0 ? (
+					topSearchProducts.map((product, index) => (
+						<Col key={product.id || index} xs={6} md={3} className='mb-3'>
+							<ProductCard product={product} />
+						</Col>
+					))
+				) : (
+					<Col xs={12}>
+						<p className='text-muted'>Không có dữ liệu top search.</p>
+					</Col>
+				)}
+			</Row>
+		</>
+	);
 };
 
 export default TopSearch;
