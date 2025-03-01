@@ -13,7 +13,9 @@ const CartList = ({
   toggleSelectStore,
   appliedDiscounts,
   setAppliedDiscounts,
-  removeItems, // Nhận removeItems từ props
+  removeItems,
+  applyVoucher, // Nhận applyVoucher từ props
+  removeVoucher, // Nhận removeVoucher từ props
 }) => {
   const groupedItems = items.reduce((acc, item) => {
     if (!acc[item.storeName]) acc[item.storeName] = [];
@@ -25,49 +27,39 @@ const CartList = ({
   const [showVoucherModal, setShowVoucherModal] = useState(null); // Store name của modal đang hiển thị
   const voucherButtonRefs = useRef({}); // Dùng để lưu trữ ref của từng nút "Thêm Shop Voucher"
 
-  // Xử lý áp mã giảm giá, cho phép tích lũy nhiều mã
-  const handleApplyVoucher = (storeName) => {
+  // Xử lý áp mã giảm giá
+  const handleApplyVoucher = async (storeName) => {
     const code = voucherCodes[storeName] || "";
-    const currentDiscounts = appliedDiscounts[storeName] || []; // Mảng các mã đã áp dụng và mức giảm giá
-
-    if (code === "SHOP2024" || code === "DISCOUNT2025") {
-      // Kiểm tra xem mã đã được áp dụng chưa
-      if (!currentDiscounts.some(discount => discount.code === code)) {
-        let discountRate;
-        if (code === "SHOP2024") {
-          discountRate = 0.1; // Giảm 10%
-        } else if (code === "DISCOUNT2025") {
-          discountRate = 0.15; // Giảm 15%
-        }
-
-        // Thêm mã mới vào danh sách áp dụng, nhưng giới hạn tổng giảm giá tối đa là 100%
-        const totalDiscount = currentDiscounts.reduce((sum, d) => sum + d.rate, 0) + discountRate;
-        if (totalDiscount <= 1) { // Đảm bảo tổng giảm giá không vượt quá 100%
-          setAppliedDiscounts({
-            ...appliedDiscounts,
-            [storeName]: [...(currentDiscounts || []), { code, rate: discountRate }]
-          });
-        } else {
-          alert("Tổng mức giảm giá không thể vượt quá 100%!");
-        }
-      } else {
-        alert("Mã này đã được áp dụng!");
-      }
-    } else {
-      alert("Mã voucher không hợp lệ!");
-      setVoucherCodes({ ...voucherCodes, [storeName]: "" }); // Xóa mã không hợp lệ
+    if (!code) {
+      alert('Vui lòng nhập mã voucher.');
+      return;
     }
-    setShowVoucherModal(null); // Ẩn modal sau khi áp dụng
+
+    try {
+      await applyVoucher(storeName, code);
+      setVoucherCodes(prev => ({ ...prev, [storeName]: '' }));
+      setShowVoucherModal(null);
+    } catch (error) {
+      console.error('Lỗi khi áp dụng voucher:', error);
+      alert(error.message || 'Mã voucher không hợp lệ hoặc đã hết hạn.');
+    }
   };
 
-  // Xử lý xóa một mã voucher cụ thể
-  const handleRemoveVoucher = (storeName, codeToRemove) => {
-    const currentDiscounts = appliedDiscounts[storeName] || [];
-    const updatedDiscounts = currentDiscounts.filter(discount => discount.code !== codeToRemove);
-    setAppliedDiscounts({
-      ...appliedDiscounts,
-      [storeName]: updatedDiscounts.length > 0 ? updatedDiscounts : null
-    });
+  const handleRemoveVoucher = async (storeName, codeToRemove) => {
+    const storeItems = items.filter(item => item.storeName === storeName);
+    if (storeItems.length > 0) {
+      const cartId = storeItems[0].id;
+      console.log('Gọi xóa voucher:', { cartId, storeName, codeToRemove });
+      try {
+        await removeVoucher(cartId, storeName, codeToRemove);
+        setShowVoucherModal(null);
+      } catch (error) {
+        console.error('Lỗi khi xóa:', error);
+        // Đã xử lý lỗi trong CartContainer.js, không cần hiển thị lại
+      }
+    } else {
+      alert('Không tìm thấy sản phẩm trong cửa hàng này.');
+    }
   };
 
   const toggleVoucherModal = (storeName) => {
@@ -81,7 +73,9 @@ const CartList = ({
 
     items.forEach(item => {
       const discounts = appliedDiscounts[item.storeName] || [];
-      const totalDiscount = selectedItems.includes(item.id) ? discounts.reduce((sum, discount) => sum + discount.rate, 0) : 0;
+      const totalDiscount = selectedItems.includes(item.id) && discounts.length > 0
+        ? discounts.reduce((sum, discount) => sum + (Number(discount.rate) || 0), 0)
+        : 0;
       const discountedPricePerUnit = item.price * (1 - totalDiscount);
       const itemTotal = discountedPricePerUnit * item.quantity;
 
@@ -100,12 +94,11 @@ const CartList = ({
     <div className="w-100">
       {Object.keys(groupedItems).map((storeName) => {
         const storeItems = groupedItems[storeName];
-        const allSelected = storeItems.every((item) => selectedItems.includes(item.id));
+        const allSelected = storeItems.every(item => selectedItems.includes(item.id));
         const currentDiscounts = appliedDiscounts[storeName] || [];
 
         return (
           <div key={storeName} className="mb-4 border rounded bg-white p-3 shadow-sm position-relative">
-            {/* Hiển thị tên cửa hàng */}
             <div className="d-flex align-items-center justify-content-between mb-2 px-3 py-2 border-bottom">
               <div className="d-flex align-items-center">
                 <Checkbox
@@ -118,9 +111,8 @@ const CartList = ({
               </div>
             </div>
 
-            {/* Danh sách sản phẩm trong cửa hàng */}
             <div className="p-2">
-              {storeItems.map((item) => (
+              {storeItems.map(item => (
                 <CartItem
                   key={item.id}
                   item={item}
@@ -128,43 +120,40 @@ const CartList = ({
                   toggleSelectItem={toggleSelectItem}
                   updateQuantity={updateQuantity}
                   removeItem={removeItem}
-                  appliedDiscounts={appliedDiscounts} // Truyền toàn bộ appliedDiscounts để CartItem xử lý
+                  appliedDiscounts={appliedDiscounts}
                 />
               ))}
             </div>
 
-            {/* Thêm Voucher Shop - Nút để mở/đóng modal */}
             <div className="position-relative">
               <button
                 className="btn btn-link text-primary mt-2 d-flex align-items-center"
-                ref={(el) => (voucherButtonRefs.current[storeName] = el)} // Gán ref cho nút
+                ref={el => (voucherButtonRefs.current[storeName] = el)}
                 onClick={() => toggleVoucherModal(storeName)}
                 style={{ textDecoration: "none" }}
               >
                 <i className="bi bi-ticket-perforated-fill text-danger me-2"></i> Thêm Shop Voucher
               </button>
 
-              {/* Hiển thị VoucherModal ngay dưới nút */}
               <VoucherModal
                 show={showVoucherModal === storeName}
                 onClose={() => setShowVoucherModal(null)}
                 storeName={storeName}
                 voucherCode={voucherCodes[storeName] || ""}
-                appliedVouchers={currentDiscounts} // Truyền danh sách các mã đã áp dụng
+                appliedVouchers={currentDiscounts}
                 onChangeVoucher={(e) => setVoucherCodes({ ...voucherCodes, [storeName]: e.target.value })}
                 onApplyVoucher={() => handleApplyVoucher(storeName)}
-                onRemoveVoucher={(code) => handleRemoveVoucher(storeName, code)} // Thêm hàm xóa voucher
+                onRemoveVoucher={(code) => handleRemoveVoucher(storeName, code)}
               />
             </div>
           </div>
         );
       })}
-      {/* Thêm CartFooter ở cuối danh sách */}
       <CartFooter
         selectAll={items.length > 0 && items.every(item => selectedItems.includes(item.id))}
         toggleSelectAll={() => {
           if (items.length > 0 && items.every(item => selectedItems.includes(item.id))) {
-            toggleSelectStore(items[0].storeName); // Giả sử toggleSelectStore sẽ hủy chọn tất cả
+            toggleSelectStore(items[0].storeName);
           } else {
             items.forEach(item => toggleSelectItem(item.id));
           }
