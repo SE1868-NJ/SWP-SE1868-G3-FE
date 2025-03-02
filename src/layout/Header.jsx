@@ -1,10 +1,20 @@
 // import React from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 // import Container from '../components/Container';
+import React, { useState } from 'react';
 import { useAuth } from '../hooks/contexts/AuthContext';
-
 function Header() {
   const { cartCount } = useAuth();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${searchQuery.trim()}`);
+    }
+  };
 
   return (
     <div className='shadow-sm'>
@@ -96,7 +106,12 @@ function Header() {
             />
             <span className='fs-4 fw-bold'>Chợ Làng</span>
           </Link>
-          <form className='col-12 col-lg-auto mb-3 mb-lg-0' role='search'>
+
+          <form
+            className='col-12 col-lg-auto mb-3 mb-lg-0'
+            role='search'
+            onSubmit={handleSearch}
+          >
             <div className='hstack gap-2'>
               <div className='input-group'>
                 <input
@@ -105,17 +120,22 @@ function Header() {
                   style={{ boxShadow: 'none' }}
                   placeholder='Tìm kiếm...'
                   aria-label='Search'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button type='button' className='btn bg-white border-0'>
                   <i className='bi bi-search' />
                 </button>
               </div>
-              <Link to='/order/cart' className='btn btn-outline-light border-2 position-relative'>
+              <Link
+                to='/order/cart'
+                className='btn btn-outline-light border-2 position-relative'
+              >
                 <i className='bi bi-basket-fill' />
                 {cartCount > 0 && (
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'>
                     {cartCount}
-                    <span className="visually-hidden">items in cart</span>
+                    <span className='visually-hidden'>items in cart</span>
                   </span>
                 )}
               </Link>

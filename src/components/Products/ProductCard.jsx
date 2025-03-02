@@ -1,7 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card, Button, CardFooter } from 'react-bootstrap';
-import { FaSearchPlus } from 'react-icons/fa';
+import { Button, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
@@ -30,7 +28,7 @@ const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
 			<Card.Img
 				variant='top'
 				src={product.image_url || product.img}
-				style={{ cursor: 'pointer' }}
+				style={{ cursor: 'pointer', height: '200px' }}
 				onClick={handleNavigate}
 			/>
 
