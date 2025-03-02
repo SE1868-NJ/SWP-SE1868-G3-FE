@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Checkbox from "./Checkbox";
 import { Modal } from "react-bootstrap";
 
 const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, items, selectedItems, removeItems, onCheckout }) => {
   const isAnyItemSelected = selectedItems && selectedItems.length > 0;
+  const navigate = useNavigate();
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -23,6 +24,15 @@ const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, ite
 
   const handleCancelDelete = () => {
     setShowDeleteConfirm(false);
+  };
+
+  const handleCheckout = () => {
+    if (isAnyItemSelected) {
+      const selectedProducts = items.filter((item) => selectedItems.includes(item.id));
+      navigate("/order/checkout", { state: { selectedProducts } });
+    } else {
+      alert("Vui lòng chọn sản phẩm trước khi thanh toán!");
+    }
   };
 
   return (
@@ -44,14 +54,14 @@ const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, ite
           <div className="d-flex align-items-center">
             <span className="fw-bold">Tổng thanh toán ({totalQuantity} sản phẩm):</span>
             <h5 className="mb-0 ms-2 fw-bold" style={{ fontSize: "1rem" }}>{totalPrice.toLocaleString()}đ</h5>
-            <Link
-              to={isAnyItemSelected ? "/order/checkout" : "#"}
-              className={`btn btn-danger ms-3 px-3 py-1 fw-bold`}
+            <button
+              className="btn btn-danger ms-3 px-3 py-1 fw-bold"
               style={{ fontSize: "1rem" }}
               disabled={!isAnyItemSelected}
+              onClick={handleCheckout}
             >
               Mua hàng
-            </Link>
+            </button>
           </div>
         </div>
       </div>

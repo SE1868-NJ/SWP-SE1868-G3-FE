@@ -3,13 +3,14 @@ import cartService from "../../services/cartService";
 import CartHeader from "./CartHeader";
 import CartList from "./CartList";
 import CartFooter from "./CartFooter";
+import { useAuth } from "../../hooks/contexts/AuthContext";
 
 const CartContainer = () => {
   const [items, setItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [appliedDiscounts, setAppliedDiscounts] = useState({});
-  const [userId, setUserId] = useState(1); // Giả sử userId là 1, có thể lấy từ context/auth
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,8 +19,7 @@ const CartContainer = () => {
       setLoading(true);
       setError(null);
       try {
-        const cartData = await cartService.getCartsByUserId(userId);
-        console.log('Dữ liệu giỏ hàng:', cartData);
+        const cartData = await cartService.getCartsByUserId(user.id);
         let formattedItems = [];
         if (Array.isArray(cartData)) {
           formattedItems = cartData.flatMap(shop =>
@@ -49,7 +49,7 @@ const CartContainer = () => {
     };
 
     fetchCartData();
-  }, [userId]);
+  }, [user.id]);
 
   // Sử dụng useCallback để tránh re-render không cần thiết
   const updateQuantity = useCallback(async (id, delta) => {
@@ -151,7 +151,7 @@ const CartContainer = () => {
       }
 
       const storeId = storeItems[0].shopId;
-      const response = await cartService.applyVoucher(userId, storeId, voucherCode);
+      const response = await cartService.applyVoucher(user.id, storeId, voucherCode);
 
       // Cập nhật danh sách voucher đã áp dụng từ phản hồi API
       const appliedVouchers = response.appliedVouchers || [];
@@ -161,7 +161,7 @@ const CartContainer = () => {
       }));
 
       // Fetch lại giỏ hàng để đồng bộ
-      const cartData = await cartService.getCartsByUserId(userId);
+      const cartData = await cartService.getCartsByUserId(user.id);
       const formattedItems = cartData.flatMap(shop =>
         shop.items.map(item => ({
           id: item.cart_id,
@@ -207,7 +207,7 @@ const CartContainer = () => {
       });
 
       // Fetch lại giỏ hàng để đồng bộ
-      const cartData = await cartService.getCartsByUserId(userId);
+      const cartData = await cartService.getCartsByUserId(user.id);
       const formattedItems = cartData.flatMap(shop =>
         shop.items.map(item => ({
           id: item.cart_id,
