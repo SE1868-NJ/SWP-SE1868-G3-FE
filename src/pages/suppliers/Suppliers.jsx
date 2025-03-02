@@ -1,84 +1,94 @@
 import { Link } from 'react-router';
-import { useEffect } from 'react';
-import Card from '../../components/Card';
+import { useEffect, useState } from 'react';
+import SupplierHeader from '../../components/Supplier/SupplierHeader';
+import SupplierList from '../../components/Supplier/SupplierList';
+import supplierService from '../../services/supplierService';
+import CustomPagination from "../../components/Products/CustomPagination"; // Đoạn tách riêng
 
 function Suppliers() {
-    const suppliers = [
-        { id: 'VNSUP21069449274327216', name: 'Nhà cung cấp Z (D)', deliveryTime: 3, address: 'Hà Nội', contactInfo: '1 Thông tin liên hệ', note: '-', status: 'Hoạt động' },
-        { id: 'VNSUP21068012216352816', name: 'Nhà cung cấp B', deliveryTime: 10, address: 'Hồ Chí Minh', contactInfo: '3 Thông tin liên hệ', note: '-', status: 'Hoạt động' },
-        { id: 'VNSUP21061096303083568', name: 'Nhà cung cấp A', deliveryTime: 10, address: '-', contactInfo: '-', note: '-', status: 'Ngừng Hoạt động' }
-    ];
 
-    useEffect(() => {
-        localStorage.setItem('suppliers', JSON.stringify(suppliers));
-    });
+  const [suppliers, setSuppliers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredSuppliers, setFilteredSuppliers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const [totalPages, setTotalPages] = useState(1); // Tổng số trang
+  const itemsPerPage = 10;
 
-    return (
-        <>
-            <div className='mb-3'>
-                <h2 className='fw-bold'>Quản lý nhà cung cấp</h2>
-                <p className='text-muted fst-italic'>Quản lý thông tin liên quan đến nhà cung cấp. Chỉ có quyền Quản lý mới có thể truy cập tính năng này.</p>
-            </div>
-            <div className='d-flex justify-content-between align-items-center mb-3'>
-                <div className='d-flex gap-2 w-50'>
-                    <select className='form-select'>
-                        <option>Nhà cung cấp</option>
-                    </select>
-                    <input type='search' name='search' className='form-control' placeholder='Nhập từ khóa tìm kiếm...' />
-                    <button type='submit' className='btn btn-danger'>Tìm kiếm</button>
-                </div>
-                <Link to='/seller/suppliers/add' className='btn btn-danger'>
-                    + Thêm nhà cung cấp
-                </Link>
-            </div>
-            <Card>
-                <Card.Body>
-                    <table className='table table-striped'>
-                        <thead>
-                            <tr>
-                                <th scope='col'>#</th>
-                                <th scope='col'>Nhà cung cấp</th>
-                                <th scope='col'>Mã nhà cung cấp</th>
-                                <th scope='col'>Thời gian giao hàng (Ngày)</th>
-                                <th scope='col'>Địa chỉ nhà cung cấp</th>
-                                <th scope='col'>Thông tin liên hệ</th>
-                                <th scope='col'>Ghi chú</th>
-                                <th scope='col'>Trạng thái</th>
-                                <th scope='col'>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {suppliers.map((supplier, index) => (
-                                <tr key={supplier.id}>
-                                    <th scope='row'>{index + 1}</th>
-                                    <td>{supplier.name}</td>
-                                    <td>{supplier.id}</td>
-                                    <td>{supplier.deliveryTime}</td>
-                                    <td>{supplier.address}</td>
-                                    <td>{supplier.contactInfo}</td>
-                                    <td>{supplier.note}</td>
-                                    <td>
-                                        <span className={`badge ${supplier.status === 'Hoạt động' ? 'bg-success' : 'bg-danger'}`}>
-                                            {supplier.status}
-                                        </span>
-                                    </td>
-                                    <td className='d-flex flex-column'>
-                                        <Link to={`/seller/suppliers/edit/${supplier.id}`} className='fw-bold text-decoration-none text-primary' style={{ whiteSpace: 'nowrap' }}>
-                                            Sửa
-                                        </Link>
-                                        <Link to={`/seller/suppliers/view/${supplier.id}`} className='fw-bold text-decoration-none text-primary' style={{ whiteSpace: 'nowrap' }}>
-                                            Xem thêm
-                                        </Link>
-                                    </td>
+  useEffect(() => {
+    fetchSuppliers();
+  }, [currentPage]);
 
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </Card.Body>
-            </Card>
-        </>
+  const fetchSuppliers = async () => {
+    try {
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+      };
+
+      const response = await supplierService.getSuppliers(params);
+      if (response && response.items) {
+        setSuppliers(response.items);
+        setFilteredSuppliers(response.items);
+        setTotalPages(response.metadata?.totalPages || 1);
+      } else {
+        setSuppliers([]);
+        setFilteredSuppliers([]);
+        setTotalPages(1);
+      }
+    } catch (error) {
+      console.error("Error fetching suppliers:", error);
+      setSuppliers([]);
+      setFilteredSuppliers([]);
+      setTotalPages(1);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearch = () => {
+    const result = suppliers.filter(supplier =>
+      supplier.supplier_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    setFilteredSuppliers(result);
+  };
+
+  return (
+    <>
+      <SupplierHeader
+        title="Quản lý nhà cung cấp"
+        subtitle="Quản lý thông tin liên quan đến nhà cung cấp. Chỉ có quyền Quản lý mới có thể truy cập tính năng này."
+      />
+      <div className='d-flex justify-content-between align-items-center mb-3'>
+        <div className='d-flex gap-2 w-auto'>
+          <input
+            type='search'
+            name='search'
+            className='form-control'
+            placeholder='Nhập tên nhà cung cấp'
+            value={searchQuery}
+            onChange={handleSearchChange}
+            style={{ width: '250px' }}
+          />
+          <button type='submit' className='btn btn-danger' onClick={handleSearch}>Tìm kiếm</button>
+        </div>
+        <Link to='/seller/suppliers/add' className='btn btn-danger'>
+          + Thêm nhà cung cấp
+        </Link>
+      </div>
+      <SupplierList suppliers={filteredSuppliers} />
+      <CustomPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </>
+  );
 }
 
 export default Suppliers;

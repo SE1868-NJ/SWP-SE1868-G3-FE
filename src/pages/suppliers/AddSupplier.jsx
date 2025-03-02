@@ -1,107 +1,100 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import Card from '../../components/Card';
+import SupplierHeader from '../../components/Supplier/SupplierHeader';
+import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
+import supplierService from '../../services/supplierService';
+import { validateField, validateForm } from '../../utils/validation';
 
 function AddSupplier() {
-    const [supplier, setSupplier] = useState({
-        name: '',
-        deliveryTime: '',
-        bankName: '',
-        accountNumber: '',
-        paymentTerm: '',
-        address: '',
-        contactName: '',
-        phone: '',
-        facebook: '',
-        skype: '',
-        note: '',
-        status: 'Hoạt động'
+  const [supplier, setSupplier] = useState({
+    supplier_name: '',
+    delivery_time: '',
+    bank_name: '',
+    account_number: '',
+    payment_term: '',
+    address: '',
+    contact_name: '',
+    phone_number: '',
+    note: '',
+    status: 'Hoạt động'
+  });
+
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const errorRefs = useRef({});
+
+  useEffect(() => {
+    Object.keys(errors).forEach((field) => {
+      if (errors[field]) {
+        const input = document.querySelector(`[name="${field}"]`);
+        if (input) {
+          errorRefs.current[field] = input;
+        }
+      }
     });
+  }, [errors]);
 
-    const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSupplier((prev) => ({ ...prev, [name]: value }));
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setSupplier((prev) => ({ ...prev, [name]: value }));
-    };
+    const error = validateField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: error }));
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Nhà cung cấp mới:', supplier);
-        navigate('/seller/suppliers');
-    };
+    if (error) {
+      errorRefs.current[name] = e.target;
+    } else {
+      delete errorRefs.current[name];
+    }
+  };
 
-    return (
-        <Card>
-            <Card.Body>
-                <h2 className='fw-bold'>Thêm Nhà Cung Cấp</h2>
-                <p className="text-muted fst-italic">Các trường có dấu <span className="text-danger">*</span> là bắt buộc.</p>
-                <form onSubmit={handleSubmit}>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-                    <h5 className="fw-bold text-decoration-underline">Thông Tin Cơ Bản</h5>
-                    <div className='mb-3'>
-                        <label className='form-label'>Tên Nhà Cung Cấp <span className="text-danger">*</span></label>
-                        <input type='text' name='name' className='form-control' onChange={handleChange} required />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Thời Gian Giao Hàng (Ngày) <span className="text-danger">*</span></label>
-                        <input type='number' name='deliveryTime' className='form-control' onChange={handleChange} required />
-                    </div>
+    const newErrors = validateForm(supplier);
+    setErrors(newErrors);
 
-                    <h5 className="fw-bold text-decoration-underline">Thông Tin Giao Dịch</h5>
-                    <div className='mb-3'>
-                        <label className='form-label'>Tên Ngân Hàng</label>
-                        <input type='text' name='bankName' className='form-control' onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Số Tài Khoản</label>
-                        <input type='text' name='accountNumber' className='form-control' onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Thời Hạn Thanh Toán</label>
-                        <input type='text' name='paymentTerm' className='form-control' onChange={handleChange} />
-                    </div>
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorField = Object.keys(newErrors)[0];
+      if (firstErrorField) {
+        if (errorRefs.current[firstErrorField]) {
+          errorRefs.current[firstErrorField].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          errorRefs.current[firstErrorField].focus();
+        }
+      }
+      return;
+    }
 
-                    <h5 className="fw-bold text-decoration-underline">Địa Chỉ Nhà Cung Cấp</h5>
-                    <div className='mb-3'>
-                        <label className='form-label' >Địa Chỉ <span className="text-danger">*</span></label>
-                        <input type='text' name='address' className='form-control' onChange={handleChange} />
-                    </div>
+    try {
+      setLoading(true);
+      await supplierService.createSupplier(supplier);
+      alert('Thêm nhà cung cấp thành công!');
+      navigate('/seller/suppliers');
+    } catch (error) {
+      alert('Thêm nhà cung cấp thất bại! Vui lòng thử lại.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                    <h5 className="fw-bold text-decoration-underline">Thông Tin Liên Hệ</h5>
-                    <div className='mb-3'>
-                        <label className='form-label'>Họ và Tên <span className="text-danger">*</span></label>
-                        <input type='text' name='contactName' className='form-control' onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Số Điện Thoại <span className="text-danger">*</span></label>
-                        <input type='text' name='phone' className='form-control' onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Facebook</label>
-                        <input type='text' name='facebook' className='form-control' onChange={handleChange} />
-                    </div>
-                    <div className='mb-3'>
-                        <label className='form-label'>Skype</label>
-                        <input type='text' name='skype' className='form-control' onChange={handleChange} />
-                    </div>
-
-                    <h5 className="fw-bold text-decoration-underline">Trạng Thái</h5>
-                    <div className='mb-3'>
-                        <select name='status' className='form-select' onChange={handleChange}>
-                            <option value='Hoạt động'>Hoạt động</option>
-                            <option value='Không hoạt động'>Không hoạt động</option>
-                        </select>
-                    </div>
-
-                    <div className='d-flex gap-2'>
-                        <button type='submit' className='btn btn-success'>Lưu</button>
-                        <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
-                    </div>
-                </form>
-            </Card.Body>
-        </Card>
-    );
+  return (
+    <Card>
+      <Card.Body>
+        <SupplierHeader title="Thêm Nhà Cung Cấp" subtitle="Vui lòng điền đầy đủ thông tin." showRequiredNote={true} />
+        <form onSubmit={handleSubmit}>
+          <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} />
+          <div className='d-flex gap-2'>
+            <button type='submit' className='btn btn-success' disabled={loading}>
+              {loading ? 'Đang lưu...' : 'Lưu'}
+            </button>
+            <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
+          </div>
+        </form>
+      </Card.Body>
+    </Card>
+  );
 }
 
 export default AddSupplier;
