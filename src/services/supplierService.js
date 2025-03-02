@@ -10,6 +10,15 @@ const supplierService = {
     }
   },
 
+  getSuppliers: async (params) => {
+    try {
+      const response = await api.get(`/supplier/paginated`, { params }); // Sử dụng GET với query params
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getSupplierById: async (supplier_id) => {
     try {
       const response = await api.get(`/supplier/${supplier_id}`);

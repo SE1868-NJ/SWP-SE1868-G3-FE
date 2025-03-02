@@ -3,24 +3,49 @@ import { useEffect, useState } from 'react';
 import SupplierHeader from '../../components/Supplier/SupplierHeader';
 import SupplierList from '../../components/Supplier/SupplierList';
 import supplierService from '../../services/supplierService';
+import CustomPagination from "../../components/Products/CustomPagination"; // Đoạn tách riêng
 
 function Suppliers() {
 
   const [suppliers, setSuppliers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSuppliers, setFilteredSuppliers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const [totalPages, setTotalPages] = useState(1); // Tổng số trang
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    const fetchSuppliers = async () => {
-      try {
-        const data = await supplierService.getAllSupplier();
-        setSuppliers(data);
-        setFilteredSuppliers(data);
-      } catch (error) {
-      }
-    };
     fetchSuppliers();
-  }, []);
+  }, [currentPage]);
+
+  const fetchSuppliers = async () => {
+    try {
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+      };
+
+      const response = await supplierService.getSuppliers(params);
+      if (response && response.items) {
+        setSuppliers(response.items);
+        setFilteredSuppliers(response.items);
+        setTotalPages(response.metadata?.totalPages || 1);
+      } else {
+        setSuppliers([]);
+        setFilteredSuppliers([]);
+        setTotalPages(1);
+      }
+    } catch (error) {
+      console.error("Error fetching suppliers:", error);
+      setSuppliers([]);
+      setFilteredSuppliers([]);
+      setTotalPages(1);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -57,6 +82,11 @@ function Suppliers() {
         </Link>
       </div>
       <SupplierList suppliers={filteredSuppliers} />
+      <CustomPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </>
   );
 }
