@@ -1,7 +1,7 @@
 // import React from 'react';
 // import { Row, Col, Dropdown } from 'react-bootstrap';
-import ProductCard from './ProductCard';
 import PropTypes from 'prop-types';
+import ProductCard from './ProductCard';
 
 const ProductList = ({ products, onAddCart, onZoom, user_id }) => {
 	return (
