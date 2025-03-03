@@ -45,32 +45,6 @@ const cartService = {
         }
     },
 
-    applyVoucher: async (userId, storeId, voucherCode) => {
-        try {
-            const response = await api.post(`/shop/cart/apply_voucher`, { userId, storeId, voucherCode });
-            if (response.data.status === 'success') {
-                return response.data.data;
-            }
-            throw new Error(response.data.data?.message || 'Mã voucher không hợp lệ.');
-        } catch (error) {
-            console.error('Lỗi khi áp dụng voucher:', error);
-            throw error;
-        }
-    },
-
-    removeVoucher: async (cartId, voucherCode) => {
-        try {
-            const response = await api.post('/shop/cart/remove_voucher', { cartId, voucherCode });
-            if (response.data.status === 'success') {
-                return response.data.data;
-            }
-            throw new Error(response.data.message || 'Không thể xóa voucher.');
-        } catch (error) {
-            console.error('Lỗi khi xóa voucher:', error);
-            throw error;
-        }
-    }
-
 };
 
 export default cartService;

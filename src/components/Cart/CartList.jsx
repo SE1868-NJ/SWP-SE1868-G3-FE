@@ -14,8 +14,6 @@ const CartList = ({
   appliedDiscounts,
   setAppliedDiscounts,
   removeItems,
-  applyVoucher, // Nhận applyVoucher từ props
-  removeVoucher, // Nhận removeVoucher từ props
 }) => {
   const groupedItems = items.reduce((acc, item) => {
     if (!acc[item.storeName]) acc[item.storeName] = [];

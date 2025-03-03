@@ -16,7 +16,7 @@ const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, ite
 
   const handleConfirmDelete = () => {
     if (removeItems) {
-      removeItems(selectedItems); // Gọi removeItems với danh sách cartIds đã chọn
+      removeItems(selectedItems);
     }
     setShowDeleteConfirm(false);
   };
