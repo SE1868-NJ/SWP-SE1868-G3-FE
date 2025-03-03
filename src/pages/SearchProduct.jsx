@@ -20,6 +20,11 @@ function SearchProduct() {
 	const [sortPrice, setSortPrice] = useState('asc');
 	const { handleAddCart, user } = useAuth();
 
+	const [filters, setFilters] = useState({
+		categories: [],
+		priceRange: { min: 0, max: 10000000 } // Mặc định là full range
+	});
+
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
@@ -30,6 +35,9 @@ function SearchProduct() {
 					limit: 8,
 					search: searchTerm,
 					sortPrice: sortPrice,
+					categories: filters.categories.join(','), // Chuyển array thành string
+					minPrice: filters.priceRange.min,
+					maxPrice: filters.priceRange.max
 				};
 
 				const response = await productService.getProducts(params);
@@ -39,8 +47,9 @@ function SearchProduct() {
 				console.error('Lỗi khi tải sản phẩm:', error);
 			}
 		};
+
 		fetchProducts();
-	}, [currentPage, query, sortPrice]);
+	}, [currentPage, query, sortPrice, filters]);  // Thêm filters vào dependency
 
 	const handleSortPrice = (order) => {
 		setSortPrice(order);
@@ -53,7 +62,10 @@ function SearchProduct() {
 			<div className='row'>
 				{/* Sidebar - Bộ lọc */}
 				<div className='col-md-2'>
-					<ProductSideBar />
+					<ProductSideBar 
+						filters={filters} 
+						onFilterChange={setFilters} 
+					/>
 				</div>
 
 				{/* Kết quả tìm kiếm */}
