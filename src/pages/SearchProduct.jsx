@@ -4,6 +4,9 @@ import CustomPagination from '../components/Products/CustomPagination';
 import ProductSearch from '../components/Products/ProductSearch';
 import { useAuth } from '../hooks/contexts/AuthContext';
 import { productService } from '../services/productService';
+import ProductSideBar from './ProductSideBar';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -14,8 +17,13 @@ function SearchProduct() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [products, setProducts] = useState([]);
 	const [totalPages, setTotalPages] = useState(0);
-	const [sortPrice, setSortPrice] = useState('asc'); // Mặc định tăng dần
+	const [sortPrice, setSortPrice] = useState('asc');
 	const { handleAddCart, user } = useAuth();
+
+	const [filters, setFilters] = useState({
+		categories: [],
+		priceRange: { min: 0, max: 10000000 } // Mặc định là full range
+	});
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -26,46 +34,57 @@ function SearchProduct() {
 					page: currentPage,
 					limit: 8,
 					search: searchTerm,
-					sortPrice: sortPrice, // Thêm tham số sortPrice
+					sortPrice: sortPrice,
+					categories: filters.categories.join(','), // Chuyển array thành string
+					minPrice: filters.priceRange.min,
+					maxPrice: filters.priceRange.max
 				};
-				console.log('Tham số API:', params); // In thông tin tham số truyền đi cho API
 
 				const response = await productService.getProducts(params);
-				console.log('Dữ liệu API:', response.items);
-
-				if (!response.items) {
-					setProducts([]);
-					return;
-				}
-
-				setProducts(response.items);
+				setProducts(response.items || []);
 				setTotalPages(response.metadata.totalPages);
 			} catch (error) {
 				console.error('Lỗi khi tải sản phẩm:', error);
 			}
 		};
-		fetchProducts();
-	}, [currentPage, query, sortPrice]); // Theo dõi cả sortPrice
 
-	// Hàm xử lý khi người dùng chọn sắp xếp
+		fetchProducts();
+	}, [currentPage, query, sortPrice, filters]);  // Thêm filters vào dependency
+
 	const handleSortPrice = (order) => {
 		setSortPrice(order);
 	};
 
+	const searchTerm = query.get('query') || '';
+
 	return (
-		<>
-			<ProductSearch
-				products={products}
-				onAddCart={handleAddCart}
-				user_id={user?.id}
-				onSortPrice={handleSortPrice} // Truyền xuống cho ProductSearch
-			/>
-			<CustomPagination
-				currentPage={currentPage}
-				totalPages={totalPages}
-				onPageChange={setCurrentPage}
-			/>
-		</>
+		<div className='container-fluid mt-4'>
+			<div className='row'>
+				{/* Sidebar - Bộ lọc */}
+				<div className='col-md-2'>
+					<ProductSideBar 
+						filters={filters} 
+						onFilterChange={setFilters} 
+					/>
+				</div>
+
+				{/* Kết quả tìm kiếm */}
+				<div className='col-md-10'>
+					<ProductSearch
+						products={products}
+						onAddCart={handleAddCart}
+						user_id={user?.id}
+						onSortPrice={handleSortPrice}
+						searchTerm={searchTerm}
+					/>
+					<CustomPagination
+						currentPage={currentPage}
+						totalPages={totalPages}
+						onPageChange={setCurrentPage}
+					/>
+				</div>
+			</div>
+		</div>
 	);
 }
 
