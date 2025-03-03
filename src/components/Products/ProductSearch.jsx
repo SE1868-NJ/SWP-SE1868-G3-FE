@@ -9,10 +9,10 @@ const ProductSearch = ({
 	onZoom,
 	user_id,
 	onSortPrice,
+	searchTerm,
 }) => {
-	const [sortLabel, setSortLabel] = useState('Sắp xếp theo giá'); // State lưu nhãn hiện tại
+	const [sortLabel, setSortLabel] = useState('Sắp xếp theo giá');
 
-	// Hàm gọi khi chọn sắp xếp
 	const handleSort = (order) => {
 		onSortPrice(order);
 		if (order === 'asc') {
@@ -25,10 +25,10 @@ const ProductSearch = ({
 	return (
 		<div>
 			<h4 className='mt-4 d-flex justify-content-between align-items-center'>
-				Tất Cả Sản Phẩm
+				Kết quả tìm kiếm cho từ khóa "{searchTerm}"
 				<Dropdown>
 					<Dropdown.Toggle variant='outline-danger' id='dropdown-basic'>
-						{sortLabel} {/* Hiển thị nhãn hiện tại */}
+						{sortLabel}
 					</Dropdown.Toggle>
 					<Dropdown.Menu>
 						<Dropdown.Item onClick={() => handleSort('asc')}>
@@ -43,7 +43,7 @@ const ProductSearch = ({
 			<div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4'>
 				{products.length > 0 ? (
 					products.map((product, index) => (
-						<div className='col' key={index}>
+						<div className='col mb-4' key={index}>
 							<ProductCard
 								product={product}
 								onZoom={onZoom}
@@ -66,6 +66,7 @@ ProductSearch.propTypes = {
 	onZoom: PropTypes.func,
 	user_id: PropTypes.string,
 	onSortPrice: PropTypes.func.isRequired,
+	searchTerm: PropTypes.string.isRequired,
 };
 
 export default ProductSearch;

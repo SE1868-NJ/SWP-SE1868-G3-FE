@@ -1,11 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap');
 
 * {
-  font-family: "Jura", sans-serif;
+	font-family: 'Jura', sans-serif;
 }
 .product-image {
-  width: 200px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 10px; /* Bo góc nhẹ */
+	width: 200px;
+	height: 150px;
+	object-fit: cover;
+	border-radius: 10px; /* Bo góc nhẹ */
+}
+/* SearchProduct.css */
+.product-sidebar {
+	width: 220px;
+	background-color: #f8f9fa;
+	border: 1px solid #dee2e6;
+	padding: 12px;
+	border-radius: 5px;
 }
