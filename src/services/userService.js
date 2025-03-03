@@ -32,17 +32,39 @@ const userService = {
     },
     
 
-    uploadAvatar: async (userId, formData) => {
+    uploadAvatar: async (id, file) => {
         try {
-            const response = await api.put(`/user/${userId}/upload-avatar`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+            if (!file) throw new Error("No file provided");
+    
+            const formData = new FormData();
+            formData.append("avatar", file);
+    
+            const response = await api.post(`/user/upload/${id}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" }
             });
-            return response.data;
+    
+            console.log("Full response:", response);
+    
+            // Dùng response trực tiếp thay vì response.data
+            if (!response || !response.avatar) {
+                throw new Error("Response không chứa avatar hoặc không hợp lệ");
+            }
+    
+            // Trả về response thay vì response.data
+            return response;
         } catch (error) {
-            console.error("Lỗi khi upload avatar", error);
+            console.error("Lỗi khi upload avatar:", error.message);
+            if (error.response) {
+                console.error("Status:", error.response.status);
+                console.error("Data:", error.response.data);
+            }
             throw error;
         }
     }
+    
+    
+    
+    
 };
 
 export default userService;
