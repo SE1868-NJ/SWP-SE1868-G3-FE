@@ -8,7 +8,6 @@ const CartContainer = () => {
   const [items, setItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [appliedDiscounts, setAppliedDiscounts] = useState({});
   const [userId, setUserId] = useState(1); // Giả sử userId, có thể lấy từ context/auth
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -121,15 +120,12 @@ const CartContainer = () => {
     }, 0);
   }, [selectedItems, items]);
 
-  const totalPriceWithDiscount = useMemo(() => {
+  const totalPrice = useMemo(() => {
     return selectedItems.reduce((sum, id) => {
       const item = items.find(i => i.id === id);
-      if (!item) return sum;
-      const discounts = appliedDiscounts[item.storeName] || [];
-      const totalDiscount = discounts.reduce((acc, discount) => acc + (Number(discount.rate) || 0), 0); // Đảm bảo rate là số
-      return sum + item.price * item.quantity * (1 - totalDiscount);
+      return sum + (item ? item.price * item.quantity : 0);
     }, 0);
-  }, [selectedItems, items, appliedDiscounts]);
+  }, [selectedItems, items]);
 
   useEffect(() => {
     setSelectAll(items.length > 0 && selectedItems.length === items.length);
@@ -149,8 +145,6 @@ const CartContainer = () => {
           updateQuantity={updateQuantity}
           removeItem={removeItem}
           toggleSelectStore={toggleSelectStore}
-          appliedDiscounts={appliedDiscounts}
-          setAppliedDiscounts={setAppliedDiscounts}
           removeItems={removeItems}
         />
       </div>
@@ -158,7 +152,7 @@ const CartContainer = () => {
         selectAll={selectAll}
         toggleSelectAll={toggleSelectAll}
         totalQuantity={totalQuantity}
-        totalPrice={totalPriceWithDiscount}
+        totalPrice={totalPrice}
         items={items}
         selectedItems={selectedItems}
         removeItems={removeItems}

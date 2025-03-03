@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Checkbox from "./Checkbox";
 import { Modal } from "react-bootstrap";
 
-const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, items, selectedItems, removeItems, onCheckout }) => {
+const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, items, selectedItems, removeItems }) => {
   const isAnyItemSelected = selectedItems && selectedItems.length > 0;
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);

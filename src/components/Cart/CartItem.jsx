@@ -3,35 +3,14 @@ import Checkbox from "./Checkbox";
 import avt from "../../assets/images/avt.jpg";
 import { Modal } from "react-bootstrap";
 
-const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, removeItem, appliedDiscounts = {} }) => {
-  const { id, name, price, quantity, storeName, stock = 1000 } = item;
+const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, removeItem }) => {
+  const { id, name, price, quantity, stock = 1000 } = item;
   const isSelected = selectedItems.includes(id);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // Tính tổng mức giảm giá từ appliedDiscounts
-  const discounts = appliedDiscounts[storeName] || [];
-  const totalDiscount = isSelected && discounts.length > 0
-    ? discounts.reduce((sum, discount) => sum + (Number(discount.rate) || 0), 0)
-    : 0;
-
   const originalPricePerUnit = Number(price);
   const originalPrice = originalPricePerUnit * quantity;
-
-  const discountedPricePerUnit = originalPricePerUnit * (1 - totalDiscount);
-  const discountedPrice = originalPrice * (1 - totalDiscount);
-
-  const PriceDisplay = ({ originalPrice, discountedPrice, discountRate }) => (
-    discountRate > 0 ? (
-      <>
-        <del className="text-muted">{originalPrice.toLocaleString()}đ</del>
-        <br />
-        <span className="text-danger fw-bold">{discountedPrice.toLocaleString()}đ</span>
-      </>
-    ) : (
-      <span>{originalPrice.toLocaleString()}đ</span>
-    )
-  );
 
   const handleUpdateQuantity = (delta) => {
     const newQuantity = Math.max(1, quantity + delta);
@@ -67,16 +46,11 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
         <div>
           <div className="fw-bold">{name}</div>
           <div className="text-muted">Kho: {stock}</div>
-          {isSelected && discounts.length > 0 && (
-            <p className="text-success mb-0">
-              Giảm giá: {(totalDiscount * 100).toFixed(0)}% (Mã: {discounts.map(d => d.code).join(', ')})
-            </p>
-          )}
         </div>
       </div>
 
       <div className="col-2 text-center">
-        <PriceDisplay originalPrice={originalPricePerUnit} discountedPrice={discountedPricePerUnit} discountRate={totalDiscount} />
+        <span>{originalPricePerUnit.toLocaleString()}đ</span>
       </div>
 
       <div className="col-2 d-flex justify-content-center align-items-center">
@@ -86,7 +60,7 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
       </div>
 
       <div className="col-2 text-center">
-        <PriceDisplay originalPrice={originalPrice} discountedPrice={discountedPrice} discountRate={totalDiscount} />
+        <span>{originalPrice.toLocaleString()}đ</span>
       </div>
 
       <div className="col-1 text-center">
