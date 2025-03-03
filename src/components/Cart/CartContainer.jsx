@@ -3,12 +3,13 @@ import cartService from "../../services/cartService";
 import CartHeader from "./CartHeader";
 import CartList from "./CartList";
 import CartFooter from "./CartFooter";
+import { useAuth } from "../../hooks/contexts/AuthContext";
 
 const CartContainer = () => {
   const [items, setItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [userId, setUserId] = useState(1); // Giả sử userId, có thể lấy từ context/auth
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,8 +18,7 @@ const CartContainer = () => {
       setLoading(true);
       setError(null);
       try {
-        const cartData = await cartService.getCartsByUserId(userId);
-        console.log('Dữ liệu giỏ hàng:', cartData);
+        const cartData = await cartService.getCartsByUserId(user.id);
         let formattedItems = [];
         if (Array.isArray(cartData)) {
           formattedItems = cartData.flatMap(shop =>
@@ -46,7 +46,7 @@ const CartContainer = () => {
       }
     };
     fetchCartData();
-  }, [userId]);
+  }, [user.id]);
 
   const updateQuantity = useCallback(async (id, delta) => {
     const item = items.find(item => item.id === id);
