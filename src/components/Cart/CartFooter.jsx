@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Checkbox from "./Checkbox";
 import { Modal } from "react-bootstrap";
 
-const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, items, selectedItems, removeItems, onCheckout }) => {
+const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, items, selectedItems, removeItems }) => {
   const isAnyItemSelected = selectedItems && selectedItems.length > 0;
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, ite
 
   const handleConfirmDelete = () => {
     if (removeItems) {
-      removeItems(selectedItems); // Gọi removeItems với danh sách cartIds đã chọn
+      removeItems(selectedItems);
     }
     setShowDeleteConfirm(false);
   };
