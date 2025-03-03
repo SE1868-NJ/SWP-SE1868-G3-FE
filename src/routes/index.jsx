@@ -9,6 +9,7 @@ import { orderRoutes } from './modules/order.routes';
 import { sellerRoutes } from './modules/seller.routes';
 import SellerLayout from '../layout/SellerLayout';
 import { supplierRoutes } from './modules/supplier.routes';
+import { voucherRoutes } from './modules/voucher.routes';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
 
 const routes = [
@@ -20,7 +21,7 @@ const routes = [
 	{
 		path: '/seller',
 		element: <SellerLayout />,
-		children: [...sellerRoutes, ...supplierRoutes, ...shopRoutes],
+		children: [...sellerRoutes, ...supplierRoutes, ...shopRoutes, ...voucherRoutes],
 	},
 	{
 		path: "/order",
