@@ -3,6 +3,7 @@ import Layout from '../layout';
 import { authRoutes } from './modules/auth.routes';
 import { shopRoutes } from './modules/shop.routes';
 import { userRoutes } from './modules/user.routes';
+import { orderCanceledRoutes } from './modules/orderCanceled.routes';
 import { homeRoute } from './modules/home.routes';
 import { sellerRoutes } from './modules/seller.routes';
 import SellerLayout from '../layout/SellerLayout';
@@ -13,7 +14,12 @@ const routes = [
 	{
 		path: '/',
 		element: <Layout />,
-		children: [...homeRoute, ...authRoutes, ...userRoutes],
+		children: [
+			...homeRoute,
+			...authRoutes,
+			...userRoutes,
+			...orderCanceledRoutes,
+		],
 	},
 	{
 		path: '/seller',
