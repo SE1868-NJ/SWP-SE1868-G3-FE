@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import VoucherHeader from '../components/Voucher/VoucherHeader';
 import VoucherList from '../components/Voucher/VoucherList';
+import VoucherForm from '../components/Modals/VoucherForm';
 
 const initialVouchers = [
   {
@@ -21,7 +22,7 @@ const initialVouchers = [
   },
   {
     id: 2,
-    name: "Chiết khấu cho người dùng hàng thân thiết 1 triệu",
+    name: "Chiết khấu cho những đơn hàng trên 1 triệu",
     startDate: "20/08/2024",
     endDate: "20/02/2025",
     value: 5,
@@ -38,114 +39,131 @@ const initialVouchers = [
 
 function Vouchers() {
   const [vouchers, setVouchers] = useState(initialVouchers);
-  const [searchQuery, setSearchQuery] = useState(""); // Tìm kiếm tên/mã voucher
-  const [endDate, setEndDate] = useState(""); // Lưu giá trị ngày kết thúc
+  const [searchQuery, setSearchQuery] = useState("");
   const [filteredVouchers, setFilteredVouchers] = useState(initialVouchers);
+  const [showForm, setShowForm] = useState(false);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleEndDateChange = (e) => {
-    setEndDate(e.target.value);
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    setFilteredVouchers(initialVouchers); // Reset về danh sách gốc khi xóa tìm kiếm
-  };
-
-  const handleClearEndDate = () => {
-    setEndDate("");
-    setFilteredVouchers(initialVouchers); // Reset về danh sách gốc khi xóa ngày
-  };
-
   const handleSearch = () => {
-    let result = [...vouchers]; // Sao chép mảng gốc để lọc
-
-    // Lọc theo tên hoặc mã voucher
-    if (searchQuery) {
-      result = result.filter(voucher =>
-        voucher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        voucher.code.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    if (searchQuery.trim() === "") {
+      setFilteredVouchers(vouchers);
+      return;
     }
 
-    // Lọc theo ngày kết thúc (nếu có)
-    if (endDate) {
-      result = result.filter(voucher => {
-        const voucherEndDate = new Date(voucher.endDate.split('/').reverse().join('-')); // Chuyển đổi định dạng "dd/mm/yyyy" thành "yyyy-mm-dd"
-        const selectedEndDate = new Date(endDate);
-        return voucherEndDate.toDateString() === selectedEndDate.toDateString(); // So sánh ngày (bỏ qua giờ, phút, giây)
-      });
-    }
+    const result = vouchers.filter(voucher =>
+      voucher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      voucher.code.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     setFilteredVouchers(result);
   };
 
+  const handleAddNewVoucher = () => {
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+  };
+
+  const handleVoucherSubmit = (newVoucherData) => {
+    // Format data and add new voucher
+    const now = new Date();
+    const day = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const year = now.getFullYear();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+
+    const formattedTime = `${hours}:${minutes} ${day}/${month}/${year}`;
+
+    // Create the new voucher
+    const newVoucher = {
+      id: vouchers.length > 0 ? Math.max(...vouchers.map(v => v.id)) + 1 : 1,
+      name: newVoucherData.name,
+      startDate: newVoucherData.startDate,
+      endDate: newVoucherData.endDate,
+      value: parseFloat(newVoucherData.value),
+      valueType: newVoucherData.valueType,
+      quantity: parseInt(newVoucherData.quantity, 10),
+      usedQuantity: 0,
+      status: "Sẵn sàng",
+      code: newVoucherData.code,
+      condition: newVoucherData.serviceLimit === 'total' ? "Tổng giá trị đơn hàng" :
+        newVoucherData.serviceLimit === 'allServices' ? "Tất cả thể dịch vụ" :
+          newVoucherData.serviceLimit === 'allProducts' ? "Tất cả sản phẩm" : "Tùy chọn",
+      updatedAt: formattedTime,
+      updatedBy: "admin",
+    };
+
+    // Add the new voucher to the list
+    const updatedVouchers = [...vouchers, newVoucher];
+    setVouchers(updatedVouchers);
+    setFilteredVouchers(updatedVouchers);
+
+    // Close the form and show success message
+    setShowForm(false);
+
+    // Instead of using toast.success, you can implement a simple notification system
+    // or just use an alert for now until you install react-toastify
+    alert("Thêm mới voucher thành công!");
+  };
+
   return (
-    <>
+    <div className="container-fluid p-4">
       <VoucherHeader
         title="Quản lý voucher"
         subtitle="Quản lý thông tin liên quan đến phiếu giảm giá. Chỉ có quyền Quản lý mới có thể truy cập tính năng này."
       />
+
       <div className='d-flex justify-content-between align-items-center mb-3'>
         <div className='d-flex gap-2 w-auto'>
-          <div className='input-group' style={{ width: '250px' }}>
-            <input
-              type='text'
-              name='search'
-              className='form-control'
-              placeholder='Tên, mã voucher'
-              value={searchQuery}
-              onChange={handleSearchChange}
-              style={{ fontSize: '14px', borderRadius: '4px', border: '1px solid #ced4da' }}
-            />
-            {searchQuery && (
-              <button
-                className='btn btn-outline-secondary'
-                type='button'
-                onClick={handleClearSearch}
-                style={{ fontSize: '14px', padding: '0 8px', borderRadius: '0 4px 4px 0', border: '1px solid #ced4da', borderLeft: 'none' }}
-              >
-                ×
-              </button>
-            )}
-          </div>
-          <div className='input-group' style={{ width: '150px' }}>
-            <input
-              type='date'
-              className='form-control'
-              value={endDate}
-              onChange={handleEndDateChange}
-              style={{ fontSize: '14px', borderRadius: '4px', border: '1px solid #ced4da' }}
-            />
-            {endDate && (
-              <button
-                className='btn btn-outline-secondary'
-                type='button'
-                onClick={handleClearEndDate}
-                style={{ fontSize: '14px', padding: '0 8px', borderRadius: '0 4px 4px 0', border: '1px solid #ced4da', borderLeft: 'none' }}
-              >
-                ×
-              </button>
-            )}
-          </div>
+          <input
+            type='search'
+            name='search'
+            className='form-control'
+            placeholder='Nhập tên hoặc mã voucher'
+            value={searchQuery}
+            onChange={handleSearchChange}
+            style={{ width: '250px' }}
+          />
+
           <button
             type='submit'
-            className='btn btn-danger'
+            className='btn btn-sm text-white'
+            style={{ backgroundColor: '#f56e6e', fontSize: '13px', height: '34px' }}
             onClick={handleSearch}
-            style={{ fontSize: '14px', padding: '6px 12px', borderRadius: '4px', border: 'none' }}
           >
             Tìm kiếm
           </button>
         </div>
-        <Link to='/seller/vouchers/add' className='btn btn-danger'>
+
+        <button
+          className='btn btn-sm text-white'
+          style={{ backgroundColor: '#f56e6e', fontSize: '13px', height: '34px' }}
+          onClick={handleAddNewVoucher}
+        >
           + Thêm mới
-        </Link>
+        </button>
       </div>
-      <VoucherList vouchers={filteredVouchers} />
-    </>
+
+      <div className="card">
+        <div className="card-body p-0">
+          <VoucherList vouchers={filteredVouchers} />
+        </div>
+      </div>
+
+      {/* Render the VoucherForm component when showForm is true */}
+      {showForm && (
+        <VoucherForm
+          onClose={handleCloseForm}
+          onSubmit={handleVoucherSubmit}
+        />
+      )}
+    </div>
   );
 }
 
