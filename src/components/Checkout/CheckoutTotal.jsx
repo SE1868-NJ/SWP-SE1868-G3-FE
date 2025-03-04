@@ -3,10 +3,11 @@ import React from "react";
 const CheckoutTotal = ({
   totalProductPrice,
   shippingFee,
-  voucherDiscount,
-  insuranceFee = 0,
+  voucherDiscount = 0,
   totalAmount,
   formatCurrency,
+  handlePlaceOrder,
+  isProcessing
 }) => {
   return (
     <div className="card mb-3 shadow-sm">
@@ -19,10 +20,12 @@ const CheckoutTotal = ({
           <span className="text-secondary">Tổng tiền phí vận chuyển</span>
           <span>{formatCurrency(shippingFee)}</span>
         </div>
-        <div className="d-flex justify-content-between py-1">
-          <span className="text-secondary">Tổng cộng Voucher giảm giá</span>
-          <span className="text-secondary">-{formatCurrency(voucherDiscount)}</span>
-        </div>
+        {voucherDiscount > 0 && (
+          <div className="d-flex justify-content-between py-1">
+            <span className="text-secondary">Tổng cộng Voucher giảm giá</span>
+            <span className="text-secondary">-{formatCurrency(voucherDiscount)}</span>
+          </div>
+        )}
         <div className="d-flex justify-content-between py-1 border-top mt-2 pt-2">
           <span className="text-secondary">Tổng thanh toán</span>
           <span className="fs-4 text-danger fw-medium">{formatCurrency(totalAmount)}</span>
@@ -36,9 +39,17 @@ const CheckoutTotal = ({
         </div>
         <button 
           className="btn btn-danger px-4"
-          onClick={() => alert('Đặt hàng thành công!')}
+          onClick={handlePlaceOrder}
+          disabled={isProcessing}
         >
-          Đặt hàng
+          {isProcessing ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Đang xử lý...
+            </>
+          ) : (
+            "Đặt hàng"
+          )}
         </button>
       </div>
     </div>
