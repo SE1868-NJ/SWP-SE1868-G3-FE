@@ -1,8 +1,8 @@
-import SizeSelector from './SizeSelector';
+import PurchaseActions from './PurchaseActions';
 import QuantitySelector from './QuantitySelector';
 import ShippingInfo from './ShippingInfo';
-import PurchaseActions from './PurchaseActions';
 import ShopDiscounts from './ShopDiscounts';
+import SizeSelector from './SizeSelector';
 // import Media from './Media';
 
 const ProductInfo = ({
@@ -18,7 +18,10 @@ const ProductInfo = ({
 
         {/* Đánh giá */}
         <div className="d-flex align-items-center gap-3 mt-1" style={{ fontSize: "0.9rem", color: "#666" }}>
-            <span className="fw-bold text-dark">{product.rating.toFixed(1)}</span>
+        <span className="fw-bold text-dark">
+    {typeof product.rating === 'number' ? product.rating.toFixed(1) : 'N/A'}
+</span>
+
             <div className="d-flex align-items-center">
                 {[...Array(5)].map((_, i) => {
                     const percentage = product.rating - i;
