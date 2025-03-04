@@ -84,74 +84,74 @@ const VoucherForm = ({ onClose, onSubmit }) => {
 			borderRadius: '12px',
 			boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
 			border: 'none',
-			maxWidth: '900px', // Tăng kích thước từ 750px lên 900px
+			maxWidth: '1100px', // Increased from 900px to 1100px
 			margin: '0 auto',
-			width: '95%',
+			width: '98%', // Increased from 95% to 98%
 		},
 		modalHeader: {
 			borderBottom: '1px solid #eaeaea',
-			padding: '16px 24px', // Tăng padding
+			padding: '16px 24px',
 		},
 		modalTitle: {
-			fontSize: '20px', // Tăng từ 16px lên 20px
+			fontSize: '20px',
 			fontWeight: '600',
 			color: '#333',
 		},
 		modalBody: {
-			padding: '24px', // Tăng từ 15px lên 24px
+			padding: '24px',
 		},
 		modalFooter: {
 			borderTop: '1px solid #eaeaea',
-			padding: '16px 24px', // Tăng padding
+			padding: '16px 24px',
 		},
 		navTabs: {
 			borderBottom: '1px solid #eaeaea',
 			display: 'flex',
-			marginBottom: '20px', // Tăng từ 10px lên 20px
+			marginBottom: '20px',
 		},
 		navLink: {
 			color: '#666',
 			border: 'none',
-			padding: '12px 20px', // Tăng padding
+			padding: '12px 20px',
 			fontWeight: '500',
 			cursor: 'pointer',
 			background: 'none',
 			textDecoration: 'none',
-			fontSize: '16px', // Thêm kích thước font
+			fontSize: '16px',
 		},
 		navLinkActive: {
 			color: '#f56e6e',
-			borderBottom: '3px solid #f56e6e', // Tăng độ dày đường viền
+			borderBottom: '3px solid #f56e6e',
 			backgroundColor: 'transparent',
 		},
 		formGroup: {
-			marginBottom: '20px', // Tăng từ 12px lên 20px
+			marginBottom: '20px',
 		},
 		label: {
 			fontWeight: '500',
 			color: '#444',
-			marginBottom: '8px', // Tăng từ 4px lên 8px
+			marginBottom: '8px',
 			display: 'block',
-			fontSize: '16px', // Tăng từ 14px lên 16px
+			fontSize: '16px',
 		},
 		formControl: {
-			borderRadius: '6px', // Tăng từ 4px lên 6px
+			borderRadius: '6px',
 			border: '1px solid #ddd',
-			padding: '10px 14px', // Tăng padding
-			fontSize: '16px', // Tăng kích thước font
+			padding: '10px 14px',
+			fontSize: '16px',
 			width: '100%',
 		},
 		formCheck: {
-			marginRight: '20px', // Tăng từ 12px lên 20px
-			fontSize: '16px', // Tăng từ 14px lên 16px
+			marginRight: '20px',
+			fontSize: '16px',
 			display: 'flex',
 			alignItems: 'center',
 		},
 		btn: {
-			borderRadius: '6px', // Tăng từ 4px lên 6px
-			padding: '10px 18px', // Tăng padding
+			borderRadius: '6px',
+			padding: '10px 18px',
 			fontWeight: '500',
-			fontSize: '16px', // Tăng từ 14px lên 16px
+			fontSize: '16px',
 			cursor: 'pointer',
 			border: 'none',
 		},
@@ -166,8 +166,8 @@ const VoucherForm = ({ onClose, onSubmit }) => {
 			color: '#666',
 		},
 		quickDateBtn: {
-			fontSize: '15px', // Tăng từ 14px lên 15px
-			padding: '10px 14px', // Tăng padding
+			fontSize: '15px',
+			padding: '10px 14px',
 		},
 		flex: {
 			display: 'flex',
@@ -176,30 +176,30 @@ const VoucherForm = ({ onClose, onSubmit }) => {
 		flexGap: {
 			display: 'flex',
 			alignItems: 'center',
-			gap: '12px', // Tăng từ 8px lên 12px
+			gap: '12px',
 		},
 		textDanger: {
 			color: '#f56e6e',
-			fontSize: '14px', // Tăng từ 12px lên 14px
+			fontSize: '14px',
 			marginTop: '6px',
 		},
 		asterisk: {
 			color: '#f56e6e',
-			fontSize: '18px', // Thêm kích thước font
+			fontSize: '18px',
 		},
 		row: {
 			display: 'flex',
-			marginLeft: '-12px', // Tăng từ -8px lên -12px
-			marginRight: '-12px', // Tăng từ -8px lên -12px
+			marginLeft: '-12px',
+			marginRight: '-12px',
 			flexWrap: 'wrap',
 		},
 		col: {
-			padding: '0 12px', // Tăng từ 8px lên 12px
+			padding: '0 12px',
 			flexBasis: '0',
 			flexGrow: '1',
 		},
 		col50: {
-			padding: '0 12px', // Tăng từ 8px lên 12px
+			padding: '0 12px',
 			flexBasis: '0',
 			flexGrow: '1',
 			maxWidth: '50%',
@@ -211,21 +211,20 @@ const VoucherForm = ({ onClose, onSubmit }) => {
 		dropdownMenu: {
 			position: 'absolute',
 			backgroundColor: '#fff',
-			minWidth: '160px', // Tăng từ 120px lên 160px
+			minWidth: '160px',
 			boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
 			zIndex: '1',
-			borderRadius: '6px', // Tăng từ 4px lên 6px
-			padding: '8px 0', // Tăng padding
+			borderRadius: '6px',
+			padding: '8px 0',
 		},
 		dropdownItem: {
 			color: '#333',
-			padding: '10px 16px', // Tăng padding
+			padding: '10px 16px',
 			textDecoration: 'none',
 			display: 'block',
-			fontSize: '15px', // Tăng từ 14px lên 15px
+			fontSize: '15px',
 			cursor: 'pointer',
 		},
-		// Thêm style cho checkbox và radio để tăng kích thước
 		checkboxInput: {
 			width: '18px',
 			height: '18px',
@@ -236,14 +235,13 @@ const VoucherForm = ({ onClose, onSubmit }) => {
 			height: '18px',
 			marginRight: '10px',
 		},
-		// Thêm style cho textarea
 		textarea: {
 			borderRadius: '6px',
 			border: '1px solid #ddd',
 			padding: '12px 16px',
 			fontSize: '16px',
 			width: '100%',
-			minHeight: '100px', // Tăng chiều cao
+			minHeight: '100px',
 		},
 	};
 
