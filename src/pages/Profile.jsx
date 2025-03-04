@@ -21,17 +21,19 @@ const Profile = () => {
 		const fetchUser = async () => {
 			try {
 				const response = await userService.getUserById(id);
-				setUserData((prev) => ({ ...prev, ...response })); // Gộp dữ liệu, giữ avatar nếu có
+				console.log('Data từ getUserById:', response);
+				setUserData((prev) => ({
+					...prev,
+					...response,
+					avatar: response.avatar || prev.avatar, // Giữ avatar cũ nếu backend không trả về
+				}));
 			} catch (error) {
 				console.error('Lỗi khi fetch user:', error);
 			}
 		};
 
-		if (!userData.avatar) {
-			// Chỉ fetch nếu chưa có avatar
-			fetchUser();
-		}
-	}, [id, userData.avatar]);
+		fetchUser();
+	}, [id]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -39,7 +41,7 @@ const Profile = () => {
 
 		// Validate khi nhập
 		let error = '';
-		if (name === 'name' && value.length > 30) {
+		if (name === 'full_name' && value.length > 30) {
 			error = 'Tên không được quá 30 ký tự';
 		}
 		if (name === 'email' && !value.endsWith('@gmail.com')) {
@@ -67,18 +69,26 @@ const Profile = () => {
 				return;
 			}
 
+			// Đồng bộ key với database
+			const updatedUserData = {
+				...userData,
+				full_name: userData.name || userData.full_name, // Chuyển name thành full_name nếu cần
+			};
 			console.log('User ID:', user.id);
-			console.log('UserData trước khi gửi:', userData);
+			console.log(
+				'UserData trước khi gửi:',
+				JSON.stringify(updatedUserData, null, 2),
+			);
 
 			try {
-				const updateResponse = await userService.updateUser(id, userData);
+				const updateResponse = await userService.updateUser(
+					user.id,
+					updatedUserData,
+				);
 				console.log('Response từ updateUser:', updateResponse);
 
 				if (Array.isArray(updateResponse) && updateResponse[0] === 1) {
-					// Fetch lại dữ liệu từ BE sau khi cập nhật
-					const fetchResponse = await userService.getUserById(id);
-					console.log('Response từ getUserById:', fetchResponse);
-					setUserData(fetchResponse); // Cập nhật userData bằng dữ liệu mới nhất
+					setUserData(updatedUserData);
 					alert('Cập nhật thành công!');
 					setIsEditing(false);
 				} else {
@@ -95,7 +105,6 @@ const Profile = () => {
 			setIsEditing(true);
 		}
 	};
-
 	// Profile.jsx
 	const handleFileUpload = async (e) => {
 		const file = e.target.files[0];
@@ -128,43 +137,61 @@ const Profile = () => {
 	return (
 		<div className='container mt-5 d-flex '>
 			{/* Sidebar */}
-			<div className='col-md-2'>
-				<h5 className='d-flex align-items-center'>
-					<img
-						src={userData.avatar}
-						alt='Avatar'
-						className='rounded-circle me-2'
-						style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-					/>
-					{userData.name || 'Tên User'}
-				</h5>
-				<ul className='list-group list-group-flush margin-right-10'>
-					<li className='list-group-item border-0'>
-						<i className='bi bi-person text-primary' />
-						Tài khoản của tôi
-						<ul>
-							<li className='list-group-item border-0'>Hồ sơ</li>
-							<li className='list-group-item border-0'>Ngân hàng</li>
-							<li className='list-group-item border-0'>Địa chỉ</li>
-							<li className='list-group-item border-0'>Đổi mật khẩu</li>
-						</ul>
-					</li>
-					<li className='list-group-item border-0'>
-						<i className='bi bi-card-list text-info' />
-						Đơn mua
-					</li>
-					<li className='list-group-item border-0'>
-						<i className='bi bi-ticket-perforated text-danger' />
-						Kho voucher
-					</li>
-				</ul>
+			<div className='col-md-3 col-lg-2 sidebar-container'>
+				<div className='d-flex align-items-center p-3 border-bottom'>
+					<div
+						className='rounded-circle bg-light me-2'
+						style={{ width: 40, height: 40, overflow: 'hidden' }}
+					>
+						<img
+							src={userData.avatar || 'https://via.placeholder.com/40'}
+							alt='Avatar'
+							className='w-100 h-100'
+							style={{ objectFit: 'cover' }}
+						/>
+					</div>
+					<div>
+						<div className='fw-bold'>{userData.full_name || 'Tên User'}</div>
+						<small className='text-muted'>Sửa Hồ Sơ</small>
+					</div>
+				</div>
+
+				<div className='py-2 sidebar-content'>
+					<div className='sidebar-item active'>
+						<i
+							className='bi bi-person text-primary sidebar-icon'
+							style={{ fontSize: 20 }}
+						/>
+						<span>Tài Khoản Của Tôi</span>
+					</div>
+					<ul className='list-group list-group-flush ps-4 submenu'>
+						<li className='list-group-item border-0'>Hồ sơ</li>
+						<li className='list-group-item border-0'>Ngân hàng</li>
+						<li className='list-group-item border-0'>Địa chỉ</li>
+						<li className='list-group-item border-0'>Đổi mật khẩu</li>
+					</ul>
+
+					<div className='sidebar-item'>
+						<i
+							className='bi bi-card-list text-info sidebar-icon'
+							style={{ fontSize: 20 }}
+						/>
+						<span className='text-danger'>Đơn Mua</span>
+					</div>
+
+					<div className='sidebar-item'>
+						<i
+							className='bi bi-ticket-perforated text-danger sidebar-icon'
+							style={{ fontSize: 20 }}
+						/>
+						<span>Kho Voucher</span>
+					</div>
+				</div>
 			</div>
 
 			{/* Profile Form */}
-			<div className='bg-light col-md-10 p-3'>
-				{' '}
-				{/* Container với nền trắng, padding, và bo góc */}
-				<div className='row '>
+			<div className='bg-light col-md-9 col-lg-10 p-3 profile-container'>
+				<div className='row profile-content'>
 					{/* Form Profile */}
 					<div className='col-md-8 border-right pt-3'>
 						<h4>Hồ sơ của tôi</h4>
@@ -173,13 +200,15 @@ const Profile = () => {
 							<label>Họ và tên:</label>
 							<input
 								type='text'
-								name='name'
+								name='full_name'
 								className='form-control'
-								value={userData.name}
+								value={userData.full_name}
 								onChange={handleChange}
 								disabled={!isEditing}
 							/>
-							{errors.name && <p className='text-danger'>{errors.name}</p>}
+							{errors.full_name && (
+								<p className='text-danger'>{errors.full_name}</p>
+							)}
 						</div>
 						<div className='form-group'>
 							<label>Email:</label>
@@ -230,7 +259,7 @@ const Profile = () => {
 								<input
 									type='radio'
 									name='gender'
-									value='Khác'
+									value='other'
 									checked={userData.gender === 'Khác'}
 									onChange={handleChange}
 									className='ms-3'

@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
 	const [toastVariant, setToastVariant] = useState('success');
 	const [user, setUser] = useState({
 		id: 14,
-		name: 'Trần Xuân Đông',
+		full_name: 'Trần Xuân Đông',
 		email: 'dongtx04@gmail.com',
 		avatar:
 			'https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg',

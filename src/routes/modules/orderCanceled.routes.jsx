@@ -2,7 +2,7 @@ import OrderCanceled from '../../pages/OrderCanceled';
 
 export const orderCanceledRoutes = [
 	{
-		path: '/order-canceled',
+		path: '/order_canceled',
 		element: <OrderCanceled />,
 	},
 ];
