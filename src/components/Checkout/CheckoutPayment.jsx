@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import PaymentModal from "../Modals/PaymentModal";
 
-const CheckoutPayment = ({ handlePlaceOrder, totalAmount }) => {
+const CheckoutPayment = ({ selectedMethodId = "cod", onPaymentChange }) => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("cod");
 
+  // Danh sách phương thức thanh toán
   const paymentMethods = {
     cod: {
+      id: "cod",
       name: "Thanh toán khi nhận hàng",
       description: "Thanh toán bằng tiền mặt khi nhận hàng",
       icon: (
@@ -17,6 +18,7 @@ const CheckoutPayment = ({ handlePlaceOrder, totalAmount }) => {
       )
     },
     bank: {
+      id: "bank",
       name: "Chuyển khoản trực tiếp",
       description: "Thanh toán qua tài khoản ngân hàng",
       icon: (
@@ -27,8 +29,14 @@ const CheckoutPayment = ({ handlePlaceOrder, totalAmount }) => {
     }
   };
 
-  // Get the currently selected payment method
-  const currentMethod = paymentMethods[selectedPaymentMethod];
+  // Lấy thông tin phương thức thanh toán đang được chọn
+  const selectedMethod = paymentMethods[selectedMethodId] || paymentMethods.cod;
+
+  // Xử lý khi chọn phương thức thanh toán mới
+  const handleSelectPaymentMethod = (methodId) => {
+    onPaymentChange(methodId);
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -46,21 +54,25 @@ const CheckoutPayment = ({ handlePlaceOrder, totalAmount }) => {
           <div className="mt-3">
             <div className="d-flex align-items-center">
               <div className="me-2">
-                {currentMethod.icon}
+                {selectedMethod.icon}
               </div>
-              <div className="text-secondary">{currentMethod.name}</div>
+              <div className="text-secondary">{selectedMethod.name}</div>
             </div>
-            <div className="small text-secondary mt-1 ms-4">{currentMethod.description}</div>
+            <div className="small text-secondary mt-1 ms-4">{selectedMethod.description}</div>
           </div>
         </div>
       </div>
       
-      <PaymentModal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        selectedMethod={selectedPaymentMethod}
-        onSelectMethod={setSelectedPaymentMethod}
-      />
+      {/* Modal chọn phương thức thanh toán */}
+      {showModal && (
+        <PaymentModal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          selectedMethodId={selectedMethodId}
+          paymentMethods={paymentMethods}
+          onSelectMethod={handleSelectPaymentMethod}
+        />
+      )}
     </>
   );
 };

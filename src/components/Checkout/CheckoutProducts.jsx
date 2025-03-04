@@ -1,6 +1,11 @@
 import React from "react";
 
-const CheckoutProducts = ({ selectedProducts, formatCurrency, note, setNote }) => {
+const CheckoutProducts = ({ 
+  products, 
+  formatCurrency, 
+  note, 
+  setNote
+}) => {
   return (
     <div className="card mb-3 shadow-sm">
       <div className="card-header bg-white">
@@ -24,8 +29,8 @@ const CheckoutProducts = ({ selectedProducts, formatCurrency, note, setNote }) =
           </button>
         </div> */}
 
-        {selectedProducts.map((product, index) => (
-          <div key={index} className="row py-3 border-top align-items-center">
+        {products.map((product) => (
+          <div key={product.id} className="row py-3 border-top align-items-center">
             <div className="col-6 d-flex align-items-center">
               <img
                 src={product.image || "https://via.placeholder.com/50"}
@@ -35,18 +40,24 @@ const CheckoutProducts = ({ selectedProducts, formatCurrency, note, setNote }) =
               />
               <div>
                 <p className="mb-1 small">{product.name}</p>
-                {/* <p className="text-secondary mb-0 small">Loại: 2 Máy</p> */}
+                <p className="text-secondary mb-0 small">{product.type}</p>
               </div>
             </div>
-            <div className="col-2 text-center">{product.price}</div>
+            <div className="col-2 text-center">{formatCurrency(product.price)}</div>
             <div className="col-2 text-center">{product.quantity}</div>
-            <div className="col-2 text-end">{product.price * product.quantity}</div>
+            <div className="col-2 text-end">{formatCurrency(product.price * product.quantity)}</div>
           </div>
         ))}
 
         {/* <div className="py-3 border-top">
           <div className="form-check">
-            <input className="form-check-input" type="checkbox" id="productInsurance" />
+            <input 
+              className="form-check-input" 
+              type="checkbox" 
+              id="productInsurance" 
+              checked={hasInsurance}
+              onChange={(e) => onInsuranceChange(e.target.checked)}
+            />
             <label className="form-check-label d-flex align-items-center" htmlFor="productInsurance">
               <span className="small">Bảo hiểm Thiệt hại sản phẩm</span>
               <span className="ms-2 text-secondary small">{formatCurrency(5999)}</span>
@@ -67,8 +78,10 @@ const CheckoutProducts = ({ selectedProducts, formatCurrency, note, setNote }) =
             Voucher của Shop
           </div>
           <div className="d-flex align-items-center">
-            <span className="text-danger me-2">-{formatCurrency(100000)}</span>
-            <button className="btn btn-link text-primary p-0 text-decoration-none small">
+            <span className="text-danger me-2">-{formatCurrency(0)}</span>
+            <button 
+              className="btn btn-link text-primary p-0 text-decoration-none small"
+            >
               Chọn Voucher Khác
             </button>
           </div>
