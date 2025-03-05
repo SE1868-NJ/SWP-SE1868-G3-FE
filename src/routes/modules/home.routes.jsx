@@ -6,6 +6,7 @@ import ListPage from '../../pages/ListPage';
 import ProductDetails from '../../pages/ProductDetails';
 import SearchProduct from '../../pages/SearchProduct';
 import PaymentPage from '../../pages/PaymentPage';
+import ShopPage from "../../pages/Shop";
 
 export const homeRoute = [
 	{
@@ -32,7 +33,12 @@ export const homeRoute = [
 		path: '/search',
 		element: <SearchProduct />,
 	},
-	{ path: '/checkout/payment',
-		element	: <PaymentPage />,
-	}
+	{
+		path: '/checkout/payment',
+		element: <PaymentPage />,
+	},
+	{
+		path: "/shop",
+		element: <ShopPage />,
+	},
 ];
