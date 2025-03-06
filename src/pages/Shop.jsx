@@ -26,7 +26,7 @@ function Shop() {
 			<Banner />
 
 			{/* Nội dung chính - kết hợp danh mục và sản phẩm */}
-			<div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+			<div style={{ display: 'flex', gap: '20px', marginTop: '20px', marginLeft: "15px", marginRight: "15px" }}>
 				<CategorySection activeCategory={activeCategory} onCategoryChange={handleNavigation} />
 				<ProductSection category={activeCategory} />
 			</div>
