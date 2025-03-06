@@ -1,128 +1,130 @@
 import React from 'react';
+import { Card } from 'react-bootstrap';
 
 const ProductCard = ({ product }) => {
 	const {
+		id,
 		name,
 		image,
 		price,
-		originalPrice,
 		discount,
-		additionalDiscount,
 		rating,
 		sold,
-		badge,
-		freeShipping,
-		isLiked
+		freeShipping
 	} = product;
 
 	return (
-		<div style={{
-			backgroundColor: 'white',
-			borderRadius: '4px',
-			overflow: 'hidden',
-			boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-		}}>
-			<div style={{
-				position: 'relative',
-				height: '200px'
-			}}>
-				<img src={image} alt={name} style={{
-					width: '100%',
-					height: '100%',
-					objectFit: 'cover'
-				}} />
-				{badge && (
-					<div style={{
-						position: 'absolute',
-						top: '10px',
-						left: '10px',
-						backgroundColor: '#ee4d2d',
-						color: 'white',
-						padding: '3px 8px',
-						borderRadius: '4px',
-						fontSize: '12px'
-					}}>{badge}</div>
-				)}
+		<Card
+			className='h-100 border-0 shadow-sm'
+			style={{
+				transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+				borderRadius: '8px',
+				overflow: 'hidden',
+				maxWidth: '100%'
+			}}
+			onMouseOver={(e) => {
+				e.currentTarget.style.transform = 'translateY(-3px)';
+				e.currentTarget.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+			}}
+			onMouseOut={(e) => {
+				e.currentTarget.style.transform = 'none';
+				e.currentTarget.style.boxShadow = '';
+			}}
+		>
+			<div className='position-relative'>
+				<Card.Img
+					variant='top'
+					src={image}
+					style={{
+						height: '180px',
+						objectFit: 'cover',
+						borderTopLeftRadius: '8px',
+						borderTopRightRadius: '8px',
+						transition: 'transform 0.3s ease'
+					}}
+					onMouseOver={(e) => {
+						e.currentTarget.style.transform = 'scale(1.05)';
+					}}
+					onMouseOut={(e) => {
+						e.currentTarget.style.transform = 'none';
+					}}
+				/>
+
 				{freeShipping && (
-					<div style={{
-						position: 'absolute',
-						bottom: '10px',
-						left: '10px',
-						backgroundColor: 'rgba(0, 0, 0, 0.5)',
-						color: 'white',
-						padding: '3px 8px',
-						borderRadius: '4px',
-						fontSize: '12px'
-					}}>MIỄN PHÍ VẬN CHUYỂN</div>
-				)}
-			</div>
-			<div style={{ padding: '10px' }}>
-				<div style={{
-					fontSize: '14px',
-					marginBottom: '5px',
-					display: '-webkit-box',
-					WebkitLineClamp: 2,
-					WebkitBoxOrient: 'vertical',
-					overflow: 'hidden'
-				}}>{name}</div>
-				<div style={{
-					display: 'flex',
-					alignItems: 'center',
-					marginBottom: '5px'
-				}}>
-					<div style={{
-						color: '#ee4d2d',
-						fontSize: '16px',
-						fontWeight: '600',
-						marginRight: '5px'
-					}}>₫{price.toLocaleString()}</div>
-					{discount && (
-						<div style={{
-							backgroundColor: '#ffeee8',
-							color: '#ee4d2d',
-							padding: '2px 4px',
+					<div
+						className='position-absolute bottom-0 start-0 m-2'
+						style={{
+							backgroundColor: 'rgba(0, 0, 0, 0.7)',
+							color: 'white',
+							padding: '4px 8px',
 							borderRadius: '4px',
-							fontSize: '12px'
-						}}>-{discount}</div>
-					)}
-				</div>
-				{additionalDiscount && (
-					<div style={{
-						display: 'inline-block',
-						backgroundColor: '#ffeee8',
-						color: '#ee4d2d',
-						padding: '2px 4px',
-						borderRadius: '4px',
-						fontSize: '12px',
-						marginBottom: '5px'
-					}}>{additionalDiscount}</div>
-				)}
-				<div style={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					fontSize: '12px',
-					color: '#888'
-				}}>
-					<div>
-						<span style={{ color: '#ffc107', marginRight: '2px' }}>★</span>
-						{rating}
+							fontSize: '11px',
+							fontWeight: '600',
+							backdropFilter: 'blur(2px)'
+						}}
+					>
+						MIỄN PHÍ VẬN CHUYỂN
 					</div>
-					<div>Đã bán {sold.toLocaleString()}</div>
+				)}
+			</div>
+
+			<Card.Body className='p-3'>
+				<div
+					style={{
+						fontSize: '18px',
+						lineHeight: '1.4',
+						height: '50px',
+						overflow: 'hidden',
+						display: '-webkit-box',
+						WebkitLineClamp: 2,
+						WebkitBoxOrient: 'vertical',
+						marginBottom: '2px',
+						color: '#333',
+						fontWeight: '500'
+					}}
+				>
+					{name}
 				</div>
-				<div style={{ marginTop: '5px' }}>
-					{isLiked && (
-						<div style={{
-							display: 'inline-block',
-							backgroundColor: '#ffeee8',
+
+				<div className='d-flex align-items-center gap-2 mb-1'>
+					<span
+						style={{
 							color: '#ee4d2d',
-							padding: '2px 4px',
-							borderRadius: '4px',
-							fontSize: '12px'
-						}}>Yêu thích</div>
+							fontSize: '16px',
+							fontWeight: '700'
+						}}
+					>
+						₫{price.toLocaleString()}
+					</span>
+
+					{discount && (
+						<span
+							style={{
+								backgroundColor: '#ffeee8',
+								color: '#ee4d2d',
+								padding: '2px 5px',
+								borderRadius: '4px',
+								fontSize: '13px',
+								fontWeight: '600',
+								border: '1px solid #ffdacf'
+							}}
+						>
+							-{discount}
+						</span>
 					)}
 				</div>
-			</div>
-		</div>
+
+				<div className='d-flex justify-content-between mt-2'>
+					<div className='d-flex align-items-center gap-1' style={{ fontSize: '13px', color: '#777' }}>
+						<span style={{ color: '#ffc107', fontWeight: '700' }}>★</span>
+						<span>{rating}</span>
+					</div>
+					<div style={{ fontSize: '13px', color: '#777' }}>
+						Đã bán {sold.toLocaleString()}
+					</div>
+				</div>
+			</Card.Body>
+		</Card>
 	);
 };
 
