@@ -21,17 +21,28 @@ const Profile = () => {
 		const fetchUser = async () => {
 			try {
 				const response = await userService.getUserById(id);
-				setUserData((prev) => ({ ...prev, ...response })); // Gộp dữ liệu, giữ avatar nếu có
+				console.log('Data from API:', response); // Log dữ liệu từ API
+
+				setUserData((prev) => ({
+					...prev,
+					id: response.id || prev.id,
+					full_name: response.full_name || prev.full_name,
+					email: response.email || prev.email,
+					phone: response.phone || prev.phone,
+					gender: response.gender || prev.gender,
+					avatar: response.avatar || prev.avatar,
+				  }));
+				localStorage.setItem('userData', JSON.stringify(response));
+				console.log('UserData sau khi cập nhật:', userData);
+
 			} catch (error) {
 				console.error('Lỗi khi fetch user:', error);
 			}
 		};
 
-		if (!userData.avatar) {
-			// Chỉ fetch nếu chưa có avatar
-			fetchUser();
-		}
-	}, [id, userData.avatar]);
+		// Luôn fetch lại user để đảm bảo dữ liệu luôn mới
+		fetchUser();
+	}, [id, isEditing]); // Chạy lại khi `id` thay đổi
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -39,7 +50,7 @@ const Profile = () => {
 
 		// Validate khi nhập
 		let error = '';
-		if (name === 'name' && value.length > 30) {
+		if (name === 'full_name' && value.length > 30) {
 			error = 'Tên không được quá 30 ký tự';
 		}
 		if (name === 'email' && !value.endsWith('@gmail.com')) {
@@ -75,11 +86,15 @@ const Profile = () => {
 				console.log('Response từ updateUser:', updateResponse);
 
 				if (Array.isArray(updateResponse) && updateResponse[0] === 1) {
-					// Fetch lại dữ liệu từ BE sau khi cập nhật
-					const fetchResponse = await userService.getUserById(id);
-					console.log('Response từ getUserById:', fetchResponse);
-					setUserData(fetchResponse); // Cập nhật userData bằng dữ liệu mới nhất
+					const fetchUser = await userService.getUserById(id);
+					console.log('Response từ getUserById:', fetchUser);
+
 					alert('Cập nhật thành công!');
+					const fetchResponse = await userService.getUserById(id);
+					setUserData(fetchResponse);
+					
+					// ✅ Lưu vào localStorage để giữ dữ liệu sau khi tải lại trang
+					localStorage.setItem('userData', JSON.stringify(fetchResponse));
 					setIsEditing(false);
 				} else {
 					throw new Error('Cập nhật thất bại: Response không hợp lệ');
@@ -136,7 +151,7 @@ const Profile = () => {
 						className='rounded-circle me-2'
 						style={{ width: '40px', height: '40px', objectFit: 'cover' }}
 					/>
-					{userData.name || 'Tên User'}
+					{userData.full_name || 'Tên User'}
 				</h5>
 				<ul className='list-group list-group-flush margin-right-10'>
 					<li className='list-group-item border-0'>
@@ -173,13 +188,15 @@ const Profile = () => {
 							<label>Họ và tên:</label>
 							<input
 								type='text'
-								name='name'
+								name='full_name'
 								className='form-control'
-								value={userData.name}
+								value={userData.full_name}
 								onChange={handleChange}
 								disabled={!isEditing}
 							/>
-							{errors.name && <p className='text-danger'>{errors.name}</p>}
+							{errors.full_name && (
+								<p className='text-danger'>{errors.full_name}</p>
+							)}
 						</div>
 						<div className='form-group'>
 							<label>Email:</label>
@@ -230,8 +247,8 @@ const Profile = () => {
 								<input
 									type='radio'
 									name='gender'
-									value='Khác'
-									checked={userData.gender === 'Khác'}
+									value='other'
+									checked={userData.gender === 'other'}
 									onChange={handleChange}
 									className='ms-3'
 									disabled={!isEditing}
