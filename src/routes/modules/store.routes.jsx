@@ -1,8 +1,9 @@
 import ShopPage from "../../pages/Shop";
 
+// modules/store.routes.js
 export const shopRoute = [
   {
-    path: "/shop",
+    path: ":id", // Sử dụng đường dẫn tương đối
     element: <ShopPage />,
   },
 ];

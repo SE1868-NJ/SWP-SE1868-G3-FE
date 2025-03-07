@@ -1,16 +1,38 @@
-// ShopHeader.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const ShopHeader = ({ activeCategory, onCategoryChange }) => {
-	const categories = [
-		'Đạo',
-		'TẤT CẢ SẢN PHẨM',
-		'Thời Trang Nam',
-		'Phụ Kiện & Trang Sức',
-		'Thời Trang Nữ',
-		'Túi Ví Nữ',
-		'Thêm'
-	];
+const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [] }) => {
+	const [isFollowing, setIsFollowing] = useState(false);
+
+	// Đảm bảo shopInfo luôn có dữ liệu hợp lệ
+	const safeShopInfo = shopInfo || {
+		shop_name: "KICHAELS",
+		follower_count: 0,
+		product_count: 0,
+		average_rating: 0,
+		rating_count: 0
+	};
+
+	const handleToggleFollow = () => {
+		setIsFollowing(!isFollowing);
+		// Thêm xử lý theo dõi/hủy theo dõi ở đây nếu cần
+	};
+
+	// Xây dựng danh mục từ dữ liệu API
+	const allProductsOption = 'TẤT CẢ SẢN PHẨM';
+
+	// Hiển thị tất cả danh mục, không giới hạn số lượng, không có mục "Thêm"
+	const visibleCategories = categories.length > 0
+		? [allProductsOption, ...categories.map(cat => cat.name)]
+		: [
+			allProductsOption,
+			'Thời Trang Nam',
+			'Thời Trang Nữ',
+			'Phụ Kiện & Trang Sức Nữ',
+			'Túi Ví Nữ',
+			'Balo & Túi Ví Nam',
+			'Thể Thao & Du Lịch',
+			'Gia Dụng Samsung'
+		];
 
 	const scrollToCategory = (category) => {
 		onCategoryChange(category);
@@ -29,8 +51,6 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 				display: 'flex',
 				padding: '25px',
 				backgroundColor: 'white',
-				// borderRadius: '10px 10px 0 0',
-				// margin: '15px 15px 0 15px',
 				boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)',
 				border: '1px solid #e8e8e8',
 			}}>
@@ -38,7 +58,6 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 					display: 'flex',
 					alignItems: 'center',
 					paddingRight: '80px',
-					// backgroundColor: 'gray',
 				}}>
 					<div style={{
 						position: 'relative',
@@ -48,17 +67,26 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 						borderRadius: '50%',
 						overflow: 'hidden',
 						border: '1px solid #f0f0f0',
-						boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
+						boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+						backgroundColor: '#f0f0f0',
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						color: '#888'
 					}}>
-						<img
-							src="https://down-cvs-vn.img.susercontent.com/26ced3b3074c7c0c2d53ec8065731bd9_tn.webp"
-							alt="Microsoft"
-							style={{
-								width: '100%',
-								height: '100%',
-								objectFit: 'cover'
-							}}
-						/>
+						{safeShopInfo.shop_logo ? (
+							<img
+								src={safeShopInfo.shop_logo}
+								alt={`${safeShopInfo.shop_name} logo`}
+								style={{
+									width: '100%',
+									height: '100%',
+									objectFit: 'cover'
+								}}
+							/>
+						) : (
+							<span>{safeShopInfo.shop_name?.charAt(0) || 'K'}</span>
+						)}
 					</div>
 
 					<div>
@@ -68,7 +96,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 							fontWeight: '700',
 							letterSpacing: '0.5px',
 							color: '#333'
-						}}>KICHAELS</h1>
+						}}>{safeShopInfo.shop_name}</h1>
 						<p style={{
 							color: '#777',
 							margin: '8px 0',
@@ -77,21 +105,24 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 						}}>Online 4 phút trước</p>
 						<div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
 
-							<button style={{
-								padding: '8px 15px',
-								borderRadius: '5px',
-								cursor: 'pointer',
-								fontSize: '13px',
-								border: '1px solid #ccc',
-								backgroundColor: 'white',
-								color: '#333',
-								display: 'flex',
-								alignItems: 'center',
-								gap: '5px',
-								transition: 'all 0.2s ease',
-								fontWeight: '600'
-							}}>
-								<span>+</span> Theo Dõi
+							<button
+								onClick={handleToggleFollow}
+								style={{
+									padding: '8px 15px',
+									borderRadius: '5px',
+									cursor: 'pointer',
+									fontSize: '13px',
+									border: '1px solid #ccc',
+									backgroundColor: isFollowing ? '#f5f5f5' : 'white',
+									color: '#333',
+									display: 'flex',
+									alignItems: 'center',
+									gap: '5px',
+									transition: 'all 0.2s ease',
+									fontWeight: '600'
+								}}
+							>
+								<span>{isFollowing ? '✓' : '+'}</span> {isFollowing ? 'Đã Theo Dõi' : 'Theo Dõi'}
 							</button>
 
 							<button style={{
@@ -124,12 +155,12 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 				}}>
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Sản Phẩm:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>74</span>
+						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>{safeShopInfo.product_count}</span>
 					</div>
 
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Người Theo Dõi:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>28,2k</span>
+						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>{safeShopInfo.follower_count}</span>
 					</div>
 
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
@@ -139,7 +170,9 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Đánh Giá:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>4.4 (52,7k Đánh Giá)</span>
+						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>
+							{safeShopInfo.average_rating} ({safeShopInfo.rating_count} Đánh Giá)
+						</span>
 					</div>
 
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
@@ -154,11 +187,10 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 				</div>
 			</div>
 
-			{/* Navigation Bar - căn giữa */}
+			{/* Navigation Bar - căn giữa và thêm thanh cuộn ngang nếu cần */}
 			<div style={{
 				backgroundColor: 'white',
 				margin: '0 0 15px',
-				// borderRadius: '0 0 10px 10px',
 				boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)',
 				overflow: 'hidden',
 				border: '1px solid #e8e8e8',
@@ -168,10 +200,15 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 			}}>
 				<div style={{
 					display: 'flex',
-					justifyContent: 'center',
-					width: 'fit-content'
+					justifyContent: 'flex-start',
+					width: '100%',
+					maxWidth: '1200px',
+					overflowX: 'auto',
+					WebkitOverflowScrolling: 'touch',
+					scrollbarWidth: 'none', // Firefox
+					msOverflowStyle: 'none', // IE/Edge
 				}}>
-					{categories.map((category, index) => (
+					{visibleCategories.map((category, index) => (
 						<div
 							key={index}
 							onClick={() => scrollToCategory(category)}
@@ -186,11 +223,10 @@ const ShopHeader = ({ activeCategory, onCategoryChange }) => {
 								position: 'relative',
 								display: 'flex',
 								alignItems: 'center',
-								gap: '5px'
+								whiteSpace: 'nowrap' // Không cho phép xuống dòng
 							}}
 						>
 							{category}
-							{category === 'Thêm' && <span style={{ fontSize: '12px', marginLeft: '2px' }}>▼</span>}
 						</div>
 					))}
 				</div>

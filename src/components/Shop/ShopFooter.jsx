@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 const ShopFooter = () => {
+	const { id } = useParams();
+	const [shopInfo, setShopInfo] = useState({
+		shop_address: '123 Đường ABC, TP. HCM',
+		shop_phone: '0123 456 789',
+		shop_email: 'contact@example.com'
+	});
+
+	// Trong thực tế, bạn có thể lấy thông tin shop từ context hoặc từ API
+	// Ở đây tôi chỉ hiển thị thông tin cố định
+
 	return (
 		<div style={{
 			backgroundColor: '#fff',
 			padding: '30px',
-			// margin: '15px',
 			marginTop: '30px',
-			// borderRadius: '10px',
 			boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
 			border: '1px solid #f0f0f0'
 		}}>
@@ -46,21 +55,21 @@ const ShopFooter = () => {
 						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>📍</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
-								Địa chỉ: 123 Đường ABC, TP. HCM
+								Địa chỉ: {shopInfo.shop_address}
 							</span>
 						</div>
 
 						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>📞</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
-								Điện thoại: 0123 456 789
+								Điện thoại: {shopInfo.shop_phone}
 							</span>
 						</div>
 
 						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>✉️</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
-								Email: contact@example.com
+								Email: {shopInfo.shop_email}
 							</span>
 						</div>
 					</div>
@@ -91,7 +100,7 @@ const ShopFooter = () => {
 
 					<div style={{ paddingLeft: '85px' }}>
 						<div style={{ marginBottom: '12px' }}>
-							<a href="#"
+							<a href={`/shop/${id}/about`}
 								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
 								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
 								onMouseOut={(e) => e.target.style.color = '#555'}>
@@ -101,7 +110,7 @@ const ShopFooter = () => {
 						</div>
 
 						<div style={{ marginBottom: '12px' }}>
-							<a href="#"
+							<a href={`/shop/${id}/policy`}
 								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
 								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
 								onMouseOut={(e) => e.target.style.color = '#555'}>
@@ -111,7 +120,7 @@ const ShopFooter = () => {
 						</div>
 
 						<div style={{ marginBottom: '12px' }}>
-							<a href="#"
+							<a href={`/shop/${id}/support`}
 								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
 								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
 								onMouseOut={(e) => e.target.style.color = '#555'}>
@@ -147,7 +156,7 @@ const ShopFooter = () => {
 
 					<div style={{ paddingLeft: '55px' }}>
 						<div style={{ marginBottom: '12px' }}>
-							<a href="#"
+							<a href={`/shop/${id}/buying-guide`}
 								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
 								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
 								onMouseOut={(e) => e.target.style.color = '#555'}>
@@ -157,7 +166,7 @@ const ShopFooter = () => {
 						</div>
 
 						<div style={{ marginBottom: '12px' }}>
-							<a href="#"
+							<a href={`/shop/${id}/payment`}
 								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
 								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
 								onMouseOut={(e) => e.target.style.color = '#555'}>
@@ -167,7 +176,7 @@ const ShopFooter = () => {
 						</div>
 
 						<div style={{ marginBottom: '12px' }}>
-							<a href="#"
+							<a href={`/shop/${id}/shipping`}
 								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
 								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
 								onMouseOut={(e) => e.target.style.color = '#555'}>

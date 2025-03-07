@@ -1,6 +1,12 @@
 import React from 'react';
 
-const Banner = () => {
+const Banner = ({ banners = [] }) => {
+	// URL thật để thay thế, đảm bảo URL này tồn tại
+	const DEFAULT_IMAGE = "https://placehold.co/1200x400/f5f5f5/cccccc?text=Shop+Banner";
+
+	// Kiểm tra xem banners có dữ liệu hợp lệ không
+	const hasBanners = Array.isArray(banners) && banners.length > 0 && banners[0]?.image_url;
+
 	return (
 		<div style={{
 			margin: '15px',
@@ -15,16 +21,33 @@ const Banner = () => {
 				boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)',
 				border: '1px solid #e8e8e8'
 			}}>
-				<img
-					src="https://down-ws-vn.img.susercontent.com/vn-11134210-7ra0g-m6qe8rj3fvdtfc.webp"
-					alt="Tết Promotion"
-					style={{
-						width: '100%',
-						height: '515px',
-						objectFit: 'cover',
-						display: 'block'
-					}}
-				/>
+				{/* Sử dụng hình ảnh cứng tạm thời */}
+				<div style={{
+					width: '100%',
+					height: '515px',
+					backgroundColor: '#f5f5f5',
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					color: '#888',
+					fontSize: '20px',
+					fontWeight: 'bold'
+				}}>
+					{hasBanners ? (
+						<img
+							src={DEFAULT_IMAGE} // Tạm thời sử dụng ảnh mặc định
+							alt="Shop Banner"
+							style={{
+								width: '100%',
+								height: '100%',
+								objectFit: 'cover'
+							}}
+						/>
+					) : (
+						"Khuyến mãi tháng 3 - Mua gia dụng Samsung nhận ưu đãi gấp đôi"
+					)}
+				</div>
+
 				<div style={{
 					position: 'absolute',
 					bottom: '20px',
@@ -60,6 +83,7 @@ const Banner = () => {
 				</div>
 			</div>
 
+			{/* Phần ưu đãi */}
 			<div style={{ display: 'flex', gap: '20px' }}>
 				{[
 					{ title: 'Giảm 10%', desc: 'Đơn Tối Thiểu ₫49k Giảm tối đa ₫20k', exp: 'HSD: 14.03.2025' },

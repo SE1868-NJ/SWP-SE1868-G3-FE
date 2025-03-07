@@ -1,140 +1,68 @@
+// ProductSection.jsx - Phiên bản sửa lỗi
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
+import { shopService } from '../../services/shopService';
 
-const ProductSection = ({ category }) => {
+const ProductSection = ({ category, shopId }) => {
 	const [sortBy, setSortBy] = useState('Phổ Biến');
-	const [filteredProducts, setFilteredProducts] = useState([]);
+	const [products, setProducts] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 	const [showPriceDropdown, setShowPriceDropdown] = useState(false);
-	const [priceDirection, setPriceDirection] = useState(''); // 'asc' hoặc 'desc'
+	const [priceDirection, setPriceDirection] = useState('');
+	const [totalPages, setTotalPages] = useState(1);
 
-	// Base product data
-	const allProducts = [
-		{
-			id: 1,
-			name: 'Thắt lưng nam',
-			image: 'https://down-vn.img.susercontent.com/file/vn-11134258-7ra0g-m6muwp6dhg0obe',
-			price: 1000,
-			originalPrice: 10000,
-			discount: '90%',
-			additionalDiscount: 'Giảm ₫1k',
-			rating: 4.6,
-			sold: 7000,
-			freeShipping: true,
-			isLiked: true,
-			category: 'Thời Trang Nam'
-		},
-		{
-			id: 2,
-			name: 'Thắt lưng nam',
-			image: 'https://th.bing.com/th/id/OIP.dX_I3L5xTBHNmmqBJbYuHgHaHr?w=187&h=194&c=7&r=0&o=5&dpr=2&pid=1.7',
-			price: 1000,
-			originalPrice: 8333,
-			discount: '88%',
-			additionalDiscount: 'Giảm ₫1k',
-			rating: 4.5,
-			sold: 10100,
-			freeShipping: true,
-			isLiked: true,
-			category: 'Thời Trang Nam'
-		},
-		{
-			id: 3,
-			name: 'Áo giữ nhiệt nam',
-			image: 'https://down-vn.img.susercontent.com/file/c1153dd0a2c84ab5aa12a4f6c12b394e',
-			price: 25678,
-			originalPrice: 71328,
-			discount: '64%',
-			additionalDiscount: '10% Giảm',
-			rating: 4.5,
-			sold: 19400,
-			freeShipping: true,
-			isLiked: true,
-			category: 'Thời Trang Nam'
-		},
-		{
-			id: 4,
-			name: 'Quần lót nam',
-			image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lgthvt8izu4n11',
-			price: 1000,
-			originalPrice: 10000,
-			discount: '90%',
-			additionalDiscount: 'Giảm ₫1k',
-			rating: 4.3,
-			sold: 10500,
-			freeShipping: true,
-			isLiked: true,
-			category: 'Thời Trang Nam'
-		},
-		{
-			id: 5,
-			name: 'Quần lót nam',
-			image: 'https://down-vn.img.susercontent.com/file/vn-11134201-23030-3en6qlttygov13',
-			price: 1000,
-			originalPrice: 10000,
-			discount: '90%',
-			additionalDiscount: 'Giảm ₫1k',
-			rating: 4.4,
-			sold: 62200,
-			freeShipping: true,
-			isLiked: true,
-			category: 'Thời Trang Nam'
-		},
-		{
-			id: 6,
-			name: 'Túi xách nữ đẹp chất liệu da cao cấp',
-			image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lf4njgj7emwdb3',
-			price: 159000,
-			originalPrice: 300000,
-			discount: '47%',
-			additionalDiscount: 'Giảm ₫15k',
-			rating: 4.8,
-			sold: 3250,
-			freeShipping: true,
-			isLiked: false,
-			category: 'Túi Ví Nữ'
-		},
-		{
-			id: 7,
-			name: 'Đầm dự tiệc nữ thời trang cao cấp',
-			image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lexj1lrp4bkx6d',
-			price: 245000,
-			originalPrice: 450000,
-			discount: '46%',
-			additionalDiscount: '',
-			rating: 4.7,
-			sold: 1870,
-			freeShipping: true,
-			isLiked: true,
-			category: 'Thời Trang Nữ'
-		},
-		{
-			id: 8,
-			name: 'Balo du lịch đi phượt chống nước',
-			image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-ll74bw1mtmxq58',
-			price: 189000,
-			originalPrice: 350000,
-			discount: '46%',
-			additionalDiscount: 'Giảm ₫20k',
-			rating: 4.9,
-			sold: 2340,
-			freeShipping: true,
-			isLiked: false,
-			category: 'Thể Thao & Du Lịch'
-		}
-	];
-
-	// Filter products based on selected category
+	// Lấy dữ liệu sản phẩm từ API
+	// Trong useEffect của ProductSection
 	useEffect(() => {
-		if (category === 'TẤT CẢ SẢN PHẨM' || category === 'Đạo' || category === 'Sản Phẩm') {
-			setFilteredProducts(allProducts);
-		} else {
-			setFilteredProducts(allProducts.filter(product => product.category === category));
-		}
-	}, [category]);
+		const fetchProducts = async () => {
+			try {
+				setLoading(true);
 
-	// Sorting options
+				// Gọi API
+				let result = await shopService.getProductsByShopAndCategory(shopId);
+
+				// Debug
+				console.log("API Result:", result);
+
+				// Kiểm tra cấu trúc dữ liệu
+				if (result && result.status === "success" && result.data && Array.isArray(result.data.products)) {
+					console.log(`Đã tìm thấy ${result.data.products.length} sản phẩm`);
+
+					let filteredProducts = result.data.products;
+
+					// Lọc sản phẩm theo danh mục nếu không phải "TẤT CẢ SẢN PHẨM"
+					if (category && category !== 'TẤT CẢ SẢN PHẨM') {
+						filteredProducts = result.data.products.filter(product =>
+							product.category && product.category.name === category
+						);
+						console.log(`Đã lọc ${filteredProducts.length} sản phẩm theo danh mục "${category}"`);
+					}
+
+					setProducts(filteredProducts);
+
+					if (result.data.pagination) {
+						setTotalPages(result.data.pagination.totalPages || 1);
+					}
+				} else {
+					console.error("===== CẤU TRÚC API KHÔNG ĐÚNG =====", result);
+					setError("Cấu trúc dữ liệu API không đúng");
+					setProducts([]);
+				}
+			} catch (err) {
+				console.error("Lỗi khi gọi API:", err);
+				setError(`Lỗi: ${err.message}`);
+				setProducts([]);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProducts();
+	}, [shopId, category]); // Quan trọng: thêm category vào dependencies
+
+	// Các hàm xử lý sắp xếp
 	const handleSort = (sort) => {
-
 		if (sort === 'Giá') {
 			setShowPriceDropdown(!showPriceDropdown);
 			if (sortBy !== 'Giá') {
@@ -143,48 +71,45 @@ const ProductSection = ({ category }) => {
 			return;
 		}
 
-		// Ẩn dropdown nếu chọn option khác
 		setShowPriceDropdown(false);
 		setSortBy(sort);
-		let sorted = [...filteredProducts];
+
+		let sortedProducts = [...products];
 
 		switch (sort) {
 			case 'Phổ Biến':
-				// Already sorted by popularity
+				sortedProducts.sort((a, b) => b.average_rating - a.average_rating);
 				break;
 			case 'Mới Nhất':
-				// Sort by id (newest first)
-				sorted = sorted.sort((a, b) => b.id - a.id);
+				// Giả định: id lớn hơn = mới hơn
+				sortedProducts.sort((a, b) => b.id - a.id);
 				break;
 			case 'Bán Chạy':
-				// Sort by sold items
-				sorted = sorted.sort((a, b) => b.sold - a.sold);
+				sortedProducts.sort((a, b) => b.sold_count - a.sold_count);
 				break;
 			default:
 				break;
 		}
 
-		setFilteredProducts(sorted);
+		setProducts(sortedProducts);
 	};
 
-	// Xử lý khi chọn cách sắp xếp giá
 	const handlePriceSort = (direction) => {
 		setPriceDirection(direction);
 		setSortBy('Giá');
 		setShowPriceDropdown(false);
 
-		let sorted = [...filteredProducts];
+		let sortedProducts = [...products];
 
 		if (direction === 'asc') {
-			sorted = sorted.sort((a, b) => a.price - b.price);
-		} else if (direction === 'desc') {
-			sorted = sorted.sort((a, b) => b.price - a.price);
+			sortedProducts.sort((a, b) => parseFloat(a.sale_price) - parseFloat(b.sale_price));
+		} else {
+			sortedProducts.sort((a, b) => parseFloat(b.sale_price) - parseFloat(a.sale_price));
 		}
 
-		setFilteredProducts(sorted);
+		setProducts(sortedProducts);
 	};
 
-	// Hiển thị icon tương ứng với hướng sắp xếp giá
 	const getPriceIcon = () => {
 		if (priceDirection === 'asc') return '▲';
 		if (priceDirection === 'desc') return '▼';
@@ -200,8 +125,7 @@ const ProductSection = ({ category }) => {
 			boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)',
 			border: '1px solid #e8e8e8'
 		}}>
-
-
+			{/* Phần sắp xếp */}
 			<div style={{
 				display: 'flex',
 				alignItems: 'center',
@@ -240,6 +164,7 @@ const ProductSection = ({ category }) => {
 							{option}
 						</div>
 					))}
+
 					{/* Button Giá với dropdown */}
 					<div style={{ position: 'relative' }}>
 						<div
@@ -287,8 +212,6 @@ const ProductSection = ({ category }) => {
 										backgroundColor: priceDirection === 'asc' ? '#f8f8f8' : 'white',
 										transition: 'background-color 0.2s ease'
 									}}
-									onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f8f8'}
-									onMouseLeave={(e) => e.target.style.backgroundColor = priceDirection === 'asc' ? '#f8f8f8' : 'white'}
 								>
 									Giá: Thấp đến Cao
 								</div>
@@ -302,8 +225,6 @@ const ProductSection = ({ category }) => {
 										backgroundColor: priceDirection === 'desc' ? '#f8f8f8' : 'white',
 										transition: 'background-color 0.2s ease'
 									}}
-									onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f8f8'}
-									onMouseLeave={(e) => e.target.style.backgroundColor = priceDirection === 'desc' ? '#f8f8f8' : 'white'}
 								>
 									Giá: Cao đến Thấp
 								</div>
@@ -318,7 +239,9 @@ const ProductSection = ({ category }) => {
 					alignItems: 'center',
 					gap: '12px'
 				}}>
-					<span style={{ fontSize: '14px', color: '#777', fontWeight: '500' }}>1/2</span>
+					<span style={{ fontSize: '14px', color: '#777', fontWeight: '500' }}>
+						1/{totalPages || 1}
+					</span>
 					<button style={{
 						width: '32px',
 						height: '32px',
@@ -329,7 +252,8 @@ const ProductSection = ({ category }) => {
 						border: '1px solid #e0e0e0',
 						borderRadius: '5px',
 						cursor: 'pointer',
-						fontWeight: '600'
+						fontWeight: '600',
+						opacity: 0.5
 					}}>‹</button>
 					<button style={{
 						width: '32px',
@@ -341,20 +265,49 @@ const ProductSection = ({ category }) => {
 						border: '1px solid #e0e0e0',
 						borderRadius: '5px',
 						cursor: 'pointer',
-						fontWeight: '600'
+						fontWeight: '600',
+						opacity: 0.5
 					}}>›</button>
 				</div>
 			</div>
 
-			<div style={{
-				display: 'grid',
-				gridTemplateColumns: 'repeat(5, 1fr)',
-				gap: '18px'
-			}}>
-				{filteredProducts.map(product => (
-					<ProductCard key={product.id} product={product} />
-				))}
-			</div>
+			{/* Hiển thị sản phẩm */}
+			{loading ? (
+				<div style={{ textAlign: 'center', padding: '40px 0' }}>
+					<p>Đang tải sản phẩm...</p>
+				</div>
+			) : error ? (
+				<div style={{ textAlign: 'center', padding: '40px 0', color: 'red' }}>
+					<p>{error}</p>
+					<button
+						onClick={() => window.location.reload()}
+						style={{
+							padding: '8px 16px',
+							backgroundColor: '#ee4d2d',
+							color: 'white',
+							border: 'none',
+							borderRadius: '4px',
+							cursor: 'pointer'
+						}}
+					>
+						Thử lại
+					</button>
+				</div>
+			) : products.length === 0 ? (
+				<div style={{ textAlign: 'center', padding: '40px 0' }}>
+					<p>Không tìm thấy sản phẩm nào</p>
+				</div>
+			) : (
+				<div style={{
+					display: 'grid',
+					gridTemplateColumns: 'repeat(5, 1fr)',
+					gap: '18px'
+				}}>
+					{products.map(product => (
+						<ProductCard key={product.id} product={product} />
+					))}
+				</div>
+			)}
 		</div>
 	);
 };

@@ -1,15 +1,22 @@
 import React from 'react';
 
-const CategorySection = ({ activeCategory, onCategoryChange }) => {
-	const categories = [
-		'Sản Phẩm',
-		'Thời Trang Nam',
-		'Phụ Kiện & Trang Sức Nữ',
-		'Thời Trang Nữ',
-		'Túi Ví Nữ',
-		'Balo & Túi Ví Nam',
-		'Thể Thao & Du Lịch'
-	];
+const CategorySection = ({ activeCategory, onCategoryChange, categories = [] }) => {
+	// Tạo danh sách "TẤT CẢ SẢN PHẨM" ở đầu
+	const allProductsOption = 'TẤT CẢ SẢN PHẨM';
+
+	// Xử lý categories từ API
+	const displayCategories = categories.length > 0
+		? [allProductsOption, ...categories.map(cat => cat.name)]
+		: [
+			allProductsOption,
+			'Thời Trang Nam',
+			'Thời Trang Nữ',
+			'Phụ Kiện & Trang Sức Nữ',
+			'Túi Ví Nữ',
+			'Balo & Túi Ví Nam',
+			'Thể Thao & Du Lịch',
+			'Gia Dụng Samsung'
+		];
 
 	return (
 		<div
@@ -33,7 +40,7 @@ const CategorySection = ({ activeCategory, onCategoryChange }) => {
 				borderBottom: '1px solid #f0f0f0'
 			}}>Danh Mục</div>
 
-			{categories.map((category, index) => {
+			{displayCategories.map((category, index) => {
 				const isActive = activeCategory === category;
 
 				return (
