@@ -1,4 +1,3 @@
-// ProductSection.jsx - Phiên bản sửa lỗi
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { shopService } from '../../services/shopService';
@@ -7,51 +6,28 @@ const ProductSection = ({ category, shopId }) => {
 	const [sortBy, setSortBy] = useState('Phổ Biến');
 	const [products, setProducts] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
 	const [showPriceDropdown, setShowPriceDropdown] = useState(false);
 	const [priceDirection, setPriceDirection] = useState('');
 	const [totalPages, setTotalPages] = useState(1);
 
-	// Lấy dữ liệu sản phẩm từ API
-	// Trong useEffect của ProductSection
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
 				setLoading(true);
-
-				// Gọi API
-				let result = await shopService.getProductsByShopAndCategory(shopId);
-
-				// Debug
-				console.log("API Result:", result);
-
-				// Kiểm tra cấu trúc dữ liệu
-				if (result && result.status === "success" && result.data && Array.isArray(result.data.products)) {
-					console.log(`Đã tìm thấy ${result.data.products.length} sản phẩm`);
-
-					let filteredProducts = result.data.products;
-
-					// Lọc sản phẩm theo danh mục nếu không phải "TẤT CẢ SẢN PHẨM"
+				const respond = await shopService.getProductsByShopAndCategory(shopId);
+				if (respond?.status === "success" && respond?.data?.products && Array.isArray(respond.data.products)) {
+					let filteredProducts = respond.data.products;
 					if (category && category !== 'TẤT CẢ SẢN PHẨM') {
-						filteredProducts = result.data.products.filter(product =>
-							product.category && product.category.name === category
+						filteredProducts = respond.data.products.filter(product =>
+							product.category?.name === category
 						);
-						console.log(`Đã lọc ${filteredProducts.length} sản phẩm theo danh mục "${category}"`);
 					}
-
 					setProducts(filteredProducts);
-
-					if (result.data.pagination) {
-						setTotalPages(result.data.pagination.totalPages || 1);
-					}
+					setTotalPages(respond.data.pagination?.totalPages || 1);
 				} else {
-					console.error("===== CẤU TRÚC API KHÔNG ĐÚNG =====", result);
-					setError("Cấu trúc dữ liệu API không đúng");
 					setProducts([]);
 				}
 			} catch (err) {
-				console.error("Lỗi khi gọi API:", err);
-				setError(`Lỗi: ${err.message}`);
 				setProducts([]);
 			} finally {
 				setLoading(false);
@@ -59,9 +35,8 @@ const ProductSection = ({ category, shopId }) => {
 		};
 
 		fetchProducts();
-	}, [shopId, category]); // Quan trọng: thêm category vào dependencies
+	}, [shopId, category]);
 
-	// Các hàm xử lý sắp xếp
 	const handleSort = (sort) => {
 		if (sort === 'Giá') {
 			setShowPriceDropdown(!showPriceDropdown);
@@ -74,14 +49,12 @@ const ProductSection = ({ category, shopId }) => {
 		setShowPriceDropdown(false);
 		setSortBy(sort);
 
-		let sortedProducts = [...products];
-
+		const sortedProducts = [...products];
 		switch (sort) {
 			case 'Phổ Biến':
 				sortedProducts.sort((a, b) => b.average_rating - a.average_rating);
 				break;
 			case 'Mới Nhất':
-				// Giả định: id lớn hơn = mới hơn
 				sortedProducts.sort((a, b) => b.id - a.id);
 				break;
 			case 'Bán Chạy':
@@ -99,7 +72,7 @@ const ProductSection = ({ category, shopId }) => {
 		setSortBy('Giá');
 		setShowPriceDropdown(false);
 
-		let sortedProducts = [...products];
+		const sortedProducts = [...products];
 
 		if (direction === 'asc') {
 			sortedProducts.sort((a, b) => parseFloat(a.sale_price) - parseFloat(b.sale_price));
@@ -125,7 +98,6 @@ const ProductSection = ({ category, shopId }) => {
 			boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)',
 			border: '1px solid #e8e8e8'
 		}}>
-			{/* Phần sắp xếp */}
 			<div style={{
 				display: 'flex',
 				alignItems: 'center',
@@ -165,7 +137,6 @@ const ProductSection = ({ category, shopId }) => {
 						</div>
 					))}
 
-					{/* Button Giá với dropdown */}
 					<div style={{ position: 'relative' }}>
 						<div
 							onClick={() => handleSort('Giá')}
@@ -187,7 +158,6 @@ const ProductSection = ({ category, shopId }) => {
 							Giá <span style={{ fontSize: '12px', marginLeft: '2px' }}>{getPriceIcon()}</span>
 						</div>
 
-						{/* Dropdown cho Giá */}
 						{showPriceDropdown && (
 							<div style={{
 								position: 'absolute',
@@ -239,8 +209,9 @@ const ProductSection = ({ category, shopId }) => {
 					alignItems: 'center',
 					gap: '12px'
 				}}>
+					{/* Xu ly phan trang */}
 					<span style={{ fontSize: '14px', color: '#777', fontWeight: '500' }}>
-						1/{totalPages || 1}
+						1/{totalPages}
 					</span>
 					<button style={{
 						width: '32px',
@@ -271,27 +242,9 @@ const ProductSection = ({ category, shopId }) => {
 				</div>
 			</div>
 
-			{/* Hiển thị sản phẩm */}
 			{loading ? (
 				<div style={{ textAlign: 'center', padding: '40px 0' }}>
 					<p>Đang tải sản phẩm...</p>
-				</div>
-			) : error ? (
-				<div style={{ textAlign: 'center', padding: '40px 0', color: 'red' }}>
-					<p>{error}</p>
-					<button
-						onClick={() => window.location.reload()}
-						style={{
-							padding: '8px 16px',
-							backgroundColor: '#ee4d2d',
-							color: 'white',
-							border: 'none',
-							borderRadius: '4px',
-							cursor: 'pointer'
-						}}
-					>
-						Thử lại
-					</button>
 				</div>
 			) : products.length === 0 ? (
 				<div style={{ textAlign: 'center', padding: '40px 0' }}>

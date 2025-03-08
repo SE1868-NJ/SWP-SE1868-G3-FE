@@ -1,22 +1,9 @@
 import React from 'react';
 
 const CategorySection = ({ activeCategory, onCategoryChange, categories = [] }) => {
-	// Tạo danh sách "TẤT CẢ SẢN PHẨM" ở đầu
 	const allProductsOption = 'TẤT CẢ SẢN PHẨM';
 
-	// Xử lý categories từ API
-	const displayCategories = categories.length > 0
-		? [allProductsOption, ...categories.map(cat => cat.name)]
-		: [
-			allProductsOption,
-			'Thời Trang Nam',
-			'Thời Trang Nữ',
-			'Phụ Kiện & Trang Sức Nữ',
-			'Túi Ví Nữ',
-			'Balo & Túi Ví Nam',
-			'Thể Thao & Du Lịch',
-			'Gia Dụng Samsung'
-		];
+	const displayCategories = [allProductsOption, ...categories.map(cat => cat.name)];
 
 	return (
 		<div

@@ -1,59 +1,26 @@
-// ProductCard.jsx - Phiên bản hoàn chỉnh
 import React from 'react';
 import { Card } from 'react-bootstrap';
 
 const ProductCard = ({ product }) => {
-	// Kiểm tra và sử dụng tên trường chính xác từ API
-	const {
-		id,
-		name,
-		product_name,
-		image,
-		image_url,
-		price,
-		sale_price,
-		originalPrice,
-		import_price,
-		discount,
-		discount_percent,
-		additionalDiscount,
-		rating,
-		average_rating,
-		sold,
-		sold_count,
-		freeShipping = true // Mặc định có miễn phí vận chuyển
-	} = product;
 
-	// Xử lý dữ liệu sản phẩm từ API
-	const displayName = product_name || name || "Sản phẩm";
-	const displayImage = image_url || image || "https://placehold.co/300x300/e74c3c/white?text=No+Image";
-	const displayPrice = sale_price || price || 0;
-	const displayOriginalPrice = import_price || originalPrice || 0;
-
-	// Xử lý discount
 	let displayDiscount = '';
-	if (discount) {
-		// Nếu đã có discount từ prop
-		displayDiscount = discount;
-	} else if (discount_percent && discount_percent > 0) {
-		// Nếu có discount_percent từ API và là số dương
-		displayDiscount = `${Math.abs(discount_percent)}%`;
-	} else if (displayOriginalPrice && displayPrice && displayOriginalPrice > displayPrice) {
-		// Tính discount từ giá gốc và giá bán
-		const discountPercent = Math.round(((displayOriginalPrice - displayPrice) / displayOriginalPrice) * 100);
-		if (discountPercent > 0) {
-			displayDiscount = `${discountPercent}%`;
+	if (product?.discount) {
+		displayDiscount = product.discount;
+	} else if (product?.discount_percent > 0) {
+		displayDiscount = `${Math.abs(product.discount_percent)}%`;
+	} else {
+		const originalPrice = product?.originalPrice;
+		const currentPrice = product?.price;
+
+		if (originalPrice && currentPrice && originalPrice > currentPrice) {
+			const discountPercent = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+			if (discountPercent > 0) {
+				displayDiscount = `${discountPercent}%`;
+			}
 		}
 	}
 
-	// Xử lý rating và số lượng đã bán
-	const displayRating = average_rating || rating || 0;
-	const displaySold = sold_count || sold || 0;
-
-	// Format số để hiển thị
-	const formatNumber = (num) => {
-		return new Intl.NumberFormat('vi-VN').format(parseFloat(num));
-	};
+	const formatNumber = (num) => new Intl.NumberFormat('vi-VN').format(parseFloat(num || 0));
 
 	return (
 		<Card
@@ -76,7 +43,7 @@ const ProductCard = ({ product }) => {
 			<div className='position-relative'>
 				<Card.Img
 					variant='top'
-					src={displayImage}
+					src={product?.image_url}
 					style={{
 						height: '180px',
 						objectFit: 'cover',
@@ -84,10 +51,6 @@ const ProductCard = ({ product }) => {
 						borderTopRightRadius: '8px',
 						transition: 'transform 0.3s ease',
 						backgroundColor: '#e74c3c'
-					}}
-					onError={(e) => {
-						// Fallback khi hình ảnh lỗi
-						e.target.src = `https://placehold.co/300x300/e74c3c/white?text=${encodeURIComponent(displayName.substring(0, 15))}`;
 					}}
 					onMouseOver={(e) => {
 						e.currentTarget.style.transform = 'scale(1.05)';
@@ -97,7 +60,7 @@ const ProductCard = ({ product }) => {
 					}}
 				/>
 
-				{freeShipping && (
+				{product?.freeShipping && (
 					<div
 						className='position-absolute bottom-0 start-0 m-2'
 						style={{
@@ -130,7 +93,7 @@ const ProductCard = ({ product }) => {
 						fontWeight: '500'
 					}}
 				>
-					{displayName}
+					{product?.product_name || "Sản phẩm"}
 				</div>
 
 				<div className='d-flex align-items-center gap-2 mb-1'>
@@ -141,7 +104,7 @@ const ProductCard = ({ product }) => {
 							fontWeight: '700'
 						}}
 					>
-						₫{formatNumber(displayPrice)}
+						₫{formatNumber(product?.import_price)}
 					</span>
 
 					{displayDiscount && (
@@ -164,10 +127,12 @@ const ProductCard = ({ product }) => {
 				<div className='d-flex justify-content-between mt-2'>
 					<div className='d-flex align-items-center gap-1' style={{ fontSize: '13px', color: '#777' }}>
 						<span style={{ color: '#ffc107', fontWeight: '700' }}>★</span>
-						<span>{typeof displayRating === 'number' ? displayRating.toFixed(1) : parseFloat(displayRating).toFixed(1)}</span>
+						<span>
+							{parseFloat(product?.average_rating || 0).toFixed(1)}
+						</span>
 					</div>
 					<div style={{ fontSize: '13px', color: '#777' }}>
-						Đã bán {formatNumber(displaySold)}
+						Đã bán {formatNumber(product?.sold_count)}
 					</div>
 				</div>
 			</Card.Body>

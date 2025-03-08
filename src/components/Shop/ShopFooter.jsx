@@ -1,16 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 
-const ShopFooter = () => {
+const ShopFooter = ({ shopInfo }) => {
 	const { id } = useParams();
-	const [shopInfo, setShopInfo] = useState({
-		shop_address: '123 Đường ABC, TP. HCM',
-		shop_phone: '0123 456 789',
-		shop_email: 'contact@example.com'
-	});
-
-	// Trong thực tế, bạn có thể lấy thông tin shop từ context hoặc từ API
-	// Ở đây tôi chỉ hiển thị thông tin cố định
 
 	return (
 		<div style={{
@@ -28,7 +20,6 @@ const ShopFooter = () => {
 				flexWrap: 'wrap',
 				gap: '40px'
 			}}>
-				{/* Cột 1: Thông Tin Liên Hệ */}
 				<div style={{ flex: '1', minWidth: '200px', maxWidth: '300px', marginBottom: '20px' }}>
 					<h4 style={{
 						fontWeight: '700',
@@ -55,27 +46,26 @@ const ShopFooter = () => {
 						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>📍</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
-								Địa chỉ: {shopInfo.shop_address}
+								Địa chỉ: {shopInfo?.shop_address || 'Đang cập nhật'}
 							</span>
 						</div>
 
 						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>📞</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
-								Điện thoại: {shopInfo.shop_phone}
+								Điện thoại: {shopInfo?.shop_phone || 'Đang cập nhật'}
 							</span>
 						</div>
 
 						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>✉️</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
-								Email: {shopInfo.shop_email}
+								Email: {shopInfo?.shop_email || 'Đang cập nhật'}
 							</span>
 						</div>
 					</div>
 				</div>
 
-				{/* Cột 2: Liên Kết */}
 				<div style={{ flex: '1', minWidth: '200px', maxWidth: '300px', marginBottom: '20px' }}>
 					<h4 style={{
 						fontWeight: '700',
@@ -131,7 +121,6 @@ const ShopFooter = () => {
 					</div>
 				</div>
 
-				{/* Cột 3: Dịch Vụ Khách Hàng */}
 				<div style={{ flex: '1', minWidth: '200px', maxWidth: '300px', marginBottom: '20px' }}>
 					<h4 style={{
 						fontWeight: '700',

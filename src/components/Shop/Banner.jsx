@@ -1,11 +1,16 @@
 import React from 'react';
 
 const Banner = ({ banners = [] }) => {
-	// URL thật để thay thế, đảm bảo URL này tồn tại
-	const DEFAULT_IMAGE = "https://placehold.co/1200x400/f5f5f5/cccccc?text=Shop+Banner";
 
-	// Kiểm tra xem banners có dữ liệu hợp lệ không
-	const hasBanners = Array.isArray(banners) && banners.length > 0 && banners[0]?.image_url;
+	const bannerImageUrl = banners?.[0]?.image_url;
+	const bannerTitle = banners?.[0]?.title;
+
+	// // Danh sách khuyến mãi cố định
+	// const promotions = [
+	// 	{ title: 'Giảm 10%', desc: 'Đơn Tối Thiểu ₫49k Giảm tối đa ₫20k', exp: 'HSD: 14.03.2025' },
+	// 	{ title: 'Giảm ₫6k', desc: 'Đơn Tối Thiểu ₫0', badge: 'Sản phẩm nhất định', exp: 'HSD: 04.04.2025' },
+	// 	{ title: 'Giảm ₫1k', desc: 'Đơn Tối Thiểu ₫0', badge: 'Sản phẩm nhất định', exp: 'HSD: 30.05.2025' }
+	// ];
 
 	return (
 		<div style={{
@@ -14,6 +19,7 @@ const Banner = ({ banners = [] }) => {
 			flexDirection: 'column',
 			gap: '20px'
 		}}>
+
 			<div style={{
 				position: 'relative',
 				borderRadius: '10px',
@@ -21,7 +27,6 @@ const Banner = ({ banners = [] }) => {
 				boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)',
 				border: '1px solid #e8e8e8'
 			}}>
-				{/* Sử dụng hình ảnh cứng tạm thời */}
 				<div style={{
 					width: '100%',
 					height: '515px',
@@ -33,10 +38,10 @@ const Banner = ({ banners = [] }) => {
 					fontSize: '20px',
 					fontWeight: 'bold'
 				}}>
-					{hasBanners ? (
+					{banners?.length > 0 ? (
 						<img
-							src={DEFAULT_IMAGE} // Tạm thời sử dụng ảnh mặc định
-							alt="Shop Banner"
+							src={bannerImageUrl}
+							alt={bannerTitle}
 							style={{
 								width: '100%',
 								height: '100%',
@@ -44,7 +49,7 @@ const Banner = ({ banners = [] }) => {
 							}}
 						/>
 					) : (
-						"Khuyến mãi tháng 3 - Mua gia dụng Samsung nhận ưu đãi gấp đôi"
+						bannerTitle
 					)}
 				</div>
 
@@ -56,40 +61,25 @@ const Banner = ({ banners = [] }) => {
 					display: 'flex',
 					gap: '10px'
 				}}>
-					<span style={{
-						width: '10px',
-						height: '10px',
-						borderRadius: '50%',
-						backgroundColor: '#ee4d2d',
-						display: 'block',
-						border: '1px solid rgba(255, 255, 255, 0.5)'
-					}}></span>
-					<span style={{
-						width: '10px',
-						height: '10px',
-						borderRadius: '50%',
-						backgroundColor: 'rgba(255, 255, 255, 0.7)',
-						display: 'block',
-						border: '1px solid rgba(255, 255, 255, 0.5)'
-					}}></span>
-					<span style={{
-						width: '10px',
-						height: '10px',
-						borderRadius: '50%',
-						backgroundColor: 'rgba(255, 255, 255, 0.7)',
-						display: 'block',
-						border: '1px solid rgba(255, 255, 255, 0.5)'
-					}}></span>
+					{Array(3).fill().map((_, index) => (
+						<span
+							key={index}
+							style={{
+								width: '10px',
+								height: '10px',
+								borderRadius: '50%',
+								backgroundColor: index === 0 ? '#ee4d2d' : 'rgba(255, 255, 255, 0.7)',
+								display: 'block',
+								border: '1px solid rgba(255, 255, 255, 0.5)'
+							}}
+						></span>
+					))}
 				</div>
 			</div>
 
-			{/* Phần ưu đãi */}
-			<div style={{ display: 'flex', gap: '20px' }}>
-				{[
-					{ title: 'Giảm 10%', desc: 'Đơn Tối Thiểu ₫49k Giảm tối đa ₫20k', exp: 'HSD: 14.03.2025' },
-					{ title: 'Giảm ₫6k', desc: 'Đơn Tối Thiểu ₫0', badge: 'Sản phẩm nhất định', exp: 'HSD: 04.04.2025' },
-					{ title: 'Giảm ₫1k', desc: 'Đơn Tối Thiểu ₫0', badge: 'Sản phẩm nhất định', exp: 'HSD: 30.05.2025' }
-				].map((promo, index) => (
+			{/* Voucher */}
+			{/* <div style={{ display: 'flex', gap: '20px' }}>
+				{promotions.map((promo, index) => (
 					<div key={index} style={{
 						flex: '1',
 						backgroundColor: '#fff6f6',
@@ -145,7 +135,7 @@ const Banner = ({ banners = [] }) => {
 						}}>Lưu</button>
 					</div>
 				))}
-			</div>
+			</div> */}
 		</div>
 	);
 };

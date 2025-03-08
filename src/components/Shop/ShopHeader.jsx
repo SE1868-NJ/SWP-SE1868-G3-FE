@@ -1,43 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [] }) => {
 	const [isFollowing, setIsFollowing] = useState(false);
 
-	// Đảm bảo shopInfo luôn có dữ liệu hợp lệ
-	const safeShopInfo = shopInfo || {
-		shop_name: "KICHAELS",
-		follower_count: 0,
-		product_count: 0,
-		average_rating: 0,
-		rating_count: 0
-	};
+	// const handleToggleFollow = () => {
+	// 	setIsFollowing(!isFollowing);
+	// };
 
-	const handleToggleFollow = () => {
-		setIsFollowing(!isFollowing);
-		// Thêm xử lý theo dõi/hủy theo dõi ở đây nếu cần
-	};
-
-	// Xây dựng danh mục từ dữ liệu API
 	const allProductsOption = 'TẤT CẢ SẢN PHẨM';
-
-	// Hiển thị tất cả danh mục, không giới hạn số lượng, không có mục "Thêm"
-	const visibleCategories = categories.length > 0
-		? [allProductsOption, ...categories.map(cat => cat.name)]
-		: [
-			allProductsOption,
-			'Thời Trang Nam',
-			'Thời Trang Nữ',
-			'Phụ Kiện & Trang Sức Nữ',
-			'Túi Ví Nữ',
-			'Balo & Túi Ví Nam',
-			'Thể Thao & Du Lịch',
-			'Gia Dụng Samsung'
-		];
+	const visibleCategories = [allProductsOption, ...categories.map(cat => cat.name)];
 
 	const scrollToCategory = (category) => {
 		onCategoryChange(category);
-
-		// Scroll xuống phần category section
 		const categorySection = document.getElementById('category-section');
 		if (categorySection) {
 			categorySection.scrollIntoView({ behavior: 'smooth' });
@@ -46,7 +20,6 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 
 	return (
 		<div>
-			{/* Header */}
 			<div style={{
 				display: 'flex',
 				padding: '25px',
@@ -74,10 +47,10 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 						alignItems: 'center',
 						color: '#888'
 					}}>
-						{safeShopInfo.shop_logo ? (
+						{shopInfo.shop_logo ? (
 							<img
-								src={safeShopInfo.shop_logo}
-								alt={`${safeShopInfo.shop_name} logo`}
+								src={shopInfo.shop_logo}
+								alt={`${shopInfo.shop_name} logo`}
 								style={{
 									width: '100%',
 									height: '100%',
@@ -85,7 +58,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 								}}
 							/>
 						) : (
-							<span>{safeShopInfo.shop_name?.charAt(0) || 'K'}</span>
+							<span>{shopInfo.shop_name.charAt(0)}</span>
 						)}
 					</div>
 
@@ -96,7 +69,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 							fontWeight: '700',
 							letterSpacing: '0.5px',
 							color: '#333'
-						}}>{safeShopInfo.shop_name}</h1>
+						}}>{shopInfo.shop_name}</h1>
 						<p style={{
 							color: '#777',
 							margin: '8px 0',
@@ -106,7 +79,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 						<div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
 
 							<button
-								onClick={handleToggleFollow}
+								// onClick={handleToggleFollow}
 								style={{
 									padding: '8px 15px',
 									borderRadius: '5px',
@@ -155,12 +128,12 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 				}}>
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Sản Phẩm:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>{safeShopInfo.product_count}</span>
+						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>{shopInfo.product_count}</span>
 					</div>
 
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Người Theo Dõi:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>{safeShopInfo.follower_count}</span>
+						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>{shopInfo.follower_count}</span>
 					</div>
 
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
@@ -171,11 +144,11 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Đánh Giá:</span>
 						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>
-							{safeShopInfo.average_rating} ({safeShopInfo.rating_count} Đánh Giá)
+							{shopInfo.average_rating} ({shopInfo.rating_count} Đánh Giá)
 						</span>
 					</div>
 
-					<div style={{ fontSize: '14px', fontWeight: '500' }}>
+					{/* <div style={{ fontSize: '14px', fontWeight: '500' }}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Tỉ Lệ Phản Hồi Chat:</span>
 						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>98% (Trong Vài Giờ)</span>
 					</div>
@@ -183,11 +156,10 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 					<div style={{ fontSize: '14px', fontWeight: '500' }}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Tham Gia:</span>
 						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>5 Năm Trước</span>
-					</div>
+					</div> */}
 				</div>
 			</div>
 
-			{/* Navigation Bar - căn giữa và thêm thanh cuộn ngang nếu cần */}
 			<div style={{
 				backgroundColor: 'white',
 				margin: '0 0 15px',
@@ -205,8 +177,8 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 					maxWidth: '1200px',
 					overflowX: 'auto',
 					WebkitOverflowScrolling: 'touch',
-					scrollbarWidth: 'none', // Firefox
-					msOverflowStyle: 'none', // IE/Edge
+					scrollbarWidth: 'none',
+					msOverflowStyle: 'none',
 				}}>
 					{visibleCategories.map((category, index) => (
 						<div
@@ -223,7 +195,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 								position: 'relative',
 								display: 'flex',
 								alignItems: 'center',
-								whiteSpace: 'nowrap' // Không cho phép xuống dòng
+								whiteSpace: 'nowrap'
 							}}
 						>
 							{category}
