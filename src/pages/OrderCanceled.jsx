@@ -166,7 +166,8 @@ function OrderCanceled() {
 												Yêu thích
 											</span>
 											<span className='fw-bold'>
-												{order.shop_name || 'TỦ GHÉP-LƯỚI SẮT-CHUỒNG...'}
+												{order.OrderDetails?.[0]?.Product?.shop?.shop_name ||
+													'Không có'}
 											</span>
 										</div>
 										<div className='d-flex align-items-center'>
@@ -200,7 +201,8 @@ function OrderCanceled() {
 														</h6>
 														<p className='text-muted mb-1'>
 															Phân loại hàng:{' '}
-															{order.OrderDetails?.[0]?.variant || 'Không có'}
+															{order.OrderDetails?.[0]?.Product?.category
+																?.name || 'không có'}
 														</p>
 														<p className='mb-0'>
 															x{order.OrderDetails?.[0]?.quantity || 1}
