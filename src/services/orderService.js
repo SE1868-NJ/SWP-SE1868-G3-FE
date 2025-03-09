@@ -1,6 +1,10 @@
 import api from './axios';
 
 const orderService = {
+	createOrder: async (dataOrder) => {
+		const response = await api.post('/order/create_order', dataOrder);
+		return response;
+	},
 	// Lấy danh sách tất cả đơn hàng theo userId
 	getOrdersByUserId: async (userId) => {
 		try {
