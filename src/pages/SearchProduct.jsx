@@ -20,15 +20,18 @@ function SearchProduct() {
 	const [sortPrice, setSortPrice] = useState('asc');
 	const { handleAddCart, user } = useAuth();
 
+	const searchTerm = query.get('query')?.toLowerCase() || '';
+	const selectedCategory = query.get('category') || '';
+
 	const [filters, setFilters] = useState({
-		categories: [],
+		categories:selectedCategory ? [selectedCategory] : [],
 		priceRange: { min: 0, max: 10000000 } // Mặc định là full range
 	});
 
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
-				const searchTerm = query.get('query')?.toLowerCase() || '';
+				//const searchTerm = query.get('query')?.toLowerCase() || '';
 
 				const params = {
 					page: currentPage,
@@ -55,7 +58,7 @@ function SearchProduct() {
 		setSortPrice(order);
 	};
 
-	const searchTerm = query.get('query') || '';
+	//const searchTerm = query.get('query') || '';
 
 	return (
 		<div className='container-fluid mt-4'>

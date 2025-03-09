@@ -31,8 +31,8 @@ export const homeRoute = [
 		path: '/search',
 		element: <SearchProduct />,
 	},
-	{
-		path: '/completed_order',
-    element: <CompletedOrder />,
-	}
+	// {
+	// 	path: '/completed_order',
+  //   element: <CompletedOrder />,
+	// }
 ];
