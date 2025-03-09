@@ -1,5 +1,97 @@
+import { useState, useEffect } from "react";
+import supplierService from "../../services/supplierService";
 
 function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = false }) {
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [province, setProvince] = useState("");
+  const [district, setDistrict] = useState("");
+  const [ward, setWard] = useState("");
+
+  useEffect(() => {
+    if (supplier.address) {
+      const [wardPart, districtPart, provincePart] = supplier.address.split(", ");
+      setWard(wardPart || "");
+      setDistrict(districtPart || "");
+      setProvince(provincePart || "");
+    }
+  }, [supplier.address]);
+
+  useEffect(() => {
+    async function loadProvinces() {
+      try {
+        const data = await supplierService.getProvinces();
+        setProvinces(data);
+      } catch (error) {
+      }
+    }
+    loadProvinces();
+  }, []);
+
+  useEffect(() => {
+    async function loadDistricts() {
+      try {
+        if (province) {
+          const provinceObj = provinces.find((p) => p.name === province);
+          if (provinceObj) {
+            const data = await supplierService.getDistricts(provinceObj.code);
+            setDistricts(data);
+          }
+        } else {
+          setDistricts([]);
+        }
+      } catch (error) {
+      }
+    }
+    loadDistricts();
+  }, [province, provinces]);
+
+  useEffect(() => {
+    async function loadWards() {
+      try {
+        if (district) {
+          const districtObj = districts.find((d) => d.name === district);
+          if (districtObj) {
+            const data = await supplierService.getWards(districtObj.code);
+            setWards(data);
+          }
+        } else {
+          setWards([]);
+        }
+      } catch (error) {
+      }
+    }
+    loadWards();
+  }, [district, districts]);
+
+  const handleProvinceChange = (e) => {
+    const value = e.target.value;
+    setProvince(value);
+    setDistrict("");
+    setWard("");
+    setDistricts([]);
+    setWards([]);
+    const newAddress = `${ward}, ${district}, ${value}`.replace(/, , /g, ", ").replace(/^, |, $/g, "");
+    handleChange({ target: { name: "address", value: newAddress } });
+  };
+
+  const handleDistrictChange = (e) => {
+    const value = e.target.value;
+    setDistrict(value);
+    setWard("");
+    setWards([]);
+    const newAddress = `${ward}, ${value}, ${province}`.replace(/, , /g, ", ").replace(/^, |, $/g, "");
+    handleChange({ target: { name: "address", value: newAddress } });
+  };
+
+  const handleWardChange = (e) => {
+    const value = e.target.value;
+    setWard(value);
+    const newAddress = `${value}, ${district}, ${province}`.replace(/, , /g, ", ").replace(/^, |, $/g, "");
+    handleChange({ target: { name: "address", value: newAddress } });
+  };
+
   return (
     <>
       <h5 className="fw-bold text-decoration-underline">Thông Tin Cơ Bản</h5>
@@ -58,17 +150,68 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
       </div>
 
       <h5 className="fw-bold text-decoration-underline">Địa Chỉ Nhà Cung Cấp</h5>
-      <div className='mb-3'>
-        <label className='form-label'>Địa Chỉ <span className="text-danger">*</span></label>
-        <input
-          type='text'
-          name='address'
-          className={`form-control ${errors.address ? 'is-invalid' : ''}`}
-          value={supplier.address}
-          onChange={handleChange}
+      <div className="mb-3">
+        <label className="form-label">
+          Tỉnh/Thành phố <span className="text-danger">*</span>
+        </label>
+        <select
+          value={province}
+          onChange={handleProvinceChange}
+          className={`form-select ${errors.address ? "is-invalid" : ""}`}
           disabled={readOnly}
-        />
-        {errors.address && <div className="invalid-feedback">{errors.address}</div>}
+        >
+          <option value="">-- Chọn Tỉnh/Thành phố --</option>
+          {provinces.map((prov) => (
+            <option key={prov.code} value={prov.name}>
+              {prov.name}
+            </option>
+          ))}
+        </select>
+        {errors.address && province === "" && (
+          <div className="invalid-feedback">Tỉnh/Thành phố không được để trống</div>
+        )}
+      </div>
+      <div className="mb-3">
+        <label className="form-label">
+          Quận/Huyện <span className="text-danger">*</span>
+        </label>
+        <select
+          value={district}
+          onChange={handleDistrictChange}
+          className={`form-select ${errors.address ? "is-invalid" : ""}`}
+          disabled={readOnly || !province}
+        >
+          <option value="">-- Chọn Quận/Huyện --</option>
+          {districts.map((dist) => (
+            <option key={dist.code} value={dist.name}>
+              {dist.name}
+            </option>
+          ))}
+        </select>
+        {errors.address && district === "" && (
+          <div className="invalid-feedback">Quận/Huyện không được để trống</div>
+        )}
+      </div>
+      <div className="mb-3">
+        <label className="form-label">
+          Xã/Phường <span className="text-danger">*</span>
+        </label>
+        <select
+          value={ward}
+          onChange={handleWardChange}
+          className={`form-select ${errors.address ? "is-invalid" : ""}`}
+          disabled={readOnly || !district}
+        >
+          <option value="">-- Chọn Xã/Phường --</option>
+          {wards.map((w) => (
+            <option key={w.code} value={w.name}>
+              {w.name}
+            </option>
+          ))}
+        </select>
+        {errors.address && ward === "" && (
+          <div className="invalid-feedback">Xã/Phường không được để trống</div>
+        )}
       </div>
 
       <h5 className="fw-bold text-decoration-underline">Thông Tin Liên Hệ</h5>
