@@ -21,8 +21,7 @@ const Profile = () => {
 		const fetchUser = async () => {
 			try {
 				const response = await userService.getUserById(id);
-				console.log('Data from API:', response); // Log dữ liệu từ API
-
+				
 				setUserData((prev) => ({
 					...prev,
 					id: response.id || prev.id,
@@ -40,9 +39,8 @@ const Profile = () => {
 			}
 		};
 
-		// Luôn fetch lại user để đảm bảo dữ liệu luôn mới
 		fetchUser();
-	}, [id, isEditing]); // Chạy lại khi `id` thay đổi
+	}, [id, isEditing]); 
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -85,28 +83,24 @@ const Profile = () => {
 				const updateResponse = await userService.updateUser(id, userData);
 				console.log('Response từ updateUser:', updateResponse);
 
-				if (Array.isArray(updateResponse) && updateResponse[0] === 1) {
-					const fetchUser = await userService.getUserById(id);
-					console.log('Response từ getUserById:', fetchUser);
-
-					alert('Cập nhật thành công!');
-					const fetchResponse = await userService.getUserById(id);
-					setUserData(fetchResponse);
-					
-					// ✅ Lưu vào localStorage để giữ dữ liệu sau khi tải lại trang
-					localStorage.setItem('userData', JSON.stringify(fetchResponse));
-					setIsEditing(false);
+				if (updateResponse) {
+				  alert('Cập nhật thành công!');
+				  const fetchResponse = await userService.getUserById(id);
+				  setUserData(fetchResponse);
+				  
+				  localStorage.setItem('userData', JSON.stringify(fetchResponse));
+				  setIsEditing(false);
 				} else {
-					throw new Error('Cập nhật thất bại: Response không hợp lệ');
+				  throw new Error('Cập nhật thất bại: Response không hợp lệ');
 				}
-			} catch (error) {
+			  } catch (error) {
 				console.error(
-					'Lỗi khi cập nhật thông tin:',
-					error.response?.data || error.message,
+				  'Lỗi khi cập nhật thông tin:',
+				  error.response?.data || error.message,
 				);
 				alert('Cập nhật thất bại!');
-			}
-		} else {
+			  }
+			} else {
 			setIsEditing(true);
 		}
 	};
@@ -122,12 +116,9 @@ const Profile = () => {
 		setUserData((prev) => ({ ...prev, avatar: URL.createObjectURL(file) }));
 
 		try {
-			console.log('Starting upload for user:', user.id);
 			const response = await userService.uploadAvatar(user.id, file);
-			console.log('API Response:', response);
 
 			if (response && response.avatar) {
-				console.log('Avatar URL received:', response.avatar);
 				setUserData((prev) => ({ ...prev, avatar: response.avatar }));
 			} else {
 				console.error('Lỗi: API không trả về avatar hợp lệ');
