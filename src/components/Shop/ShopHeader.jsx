@@ -30,7 +30,8 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 				<div style={{
 					display: 'flex',
 					alignItems: 'center',
-					paddingRight: '80px',
+					paddingRight: '45px',
+					paddingLeft: '90px',
 				}}>
 					<div style={{
 						position: 'relative',

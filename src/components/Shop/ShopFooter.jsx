@@ -1,26 +1,25 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 
 const ShopFooter = ({ shopInfo }) => {
-	const { id } = useParams();
-
 	return (
 		<div style={{
 			backgroundColor: '#fff',
-			padding: '30px',
-			marginTop: '30px',
+			padding: '10px',
+			marginTop: '10px',
 			boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
 			border: '1px solid #f0f0f0'
 		}}>
 			<div style={{
-				display: 'flex',
-				justifyContent: 'center',
 				maxWidth: '1200px',
 				margin: '0 auto',
-				flexWrap: 'wrap',
-				gap: '40px'
+				display: 'flex',
+				justifyContent: 'center'
 			}}>
-				<div style={{ flex: '1', minWidth: '200px', maxWidth: '300px', marginBottom: '20px' }}>
+				<div style={{
+					minWidth: '200px',
+					maxWidth: '300px',
+					marginBottom: '20px'
+				}}>
 					<h4 style={{
 						fontWeight: '700',
 						marginBottom: '18px',
@@ -62,116 +61,6 @@ const ShopFooter = ({ shopInfo }) => {
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
 								Email: {shopInfo?.shop_email || 'Đang cập nhật'}
 							</span>
-						</div>
-					</div>
-				</div>
-
-				<div style={{ flex: '1', minWidth: '200px', maxWidth: '300px', marginBottom: '20px' }}>
-					<h4 style={{
-						fontWeight: '700',
-						marginBottom: '18px',
-						fontSize: '17px',
-						textAlign: 'center',
-						position: 'relative',
-						paddingBottom: '10px'
-					}}>
-						Liên Kết
-						<span style={{
-							position: 'absolute',
-							bottom: '0',
-							left: '50%',
-							transform: 'translateX(-50%)',
-							width: '40px',
-							height: '3px',
-							backgroundColor: '#ee4d2d',
-							borderRadius: '2px'
-						}}></span>
-					</h4>
-
-					<div style={{ paddingLeft: '85px' }}>
-						<div style={{ marginBottom: '12px' }}>
-							<a href={`/shop/${id}/about`}
-								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
-								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
-								onMouseOut={(e) => e.target.style.color = '#555'}>
-								<span style={{ marginRight: '10px', minWidth: '15px' }}>›</span>
-								<span>Về Chúng Tôi</span>
-							</a>
-						</div>
-
-						<div style={{ marginBottom: '12px' }}>
-							<a href={`/shop/${id}/policy`}
-								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
-								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
-								onMouseOut={(e) => e.target.style.color = '#555'}>
-								<span style={{ marginRight: '10px', minWidth: '15px' }}>›</span>
-								<span>Chính Sách</span>
-							</a>
-						</div>
-
-						<div style={{ marginBottom: '12px' }}>
-							<a href={`/shop/${id}/support`}
-								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
-								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
-								onMouseOut={(e) => e.target.style.color = '#555'}>
-								<span style={{ marginRight: '10px', minWidth: '15px' }}>›</span>
-								<span>Hỗ Trợ</span>
-							</a>
-						</div>
-					</div>
-				</div>
-
-				<div style={{ flex: '1', minWidth: '200px', maxWidth: '300px', marginBottom: '20px' }}>
-					<h4 style={{
-						fontWeight: '700',
-						marginBottom: '18px',
-						fontSize: '17px',
-						textAlign: 'center',
-						position: 'relative',
-						paddingBottom: '10px'
-					}}>
-						Dịch Vụ Khách Hàng
-						<span style={{
-							position: 'absolute',
-							bottom: '0',
-							left: '50%',
-							transform: 'translateX(-50%)',
-							width: '40px',
-							height: '3px',
-							backgroundColor: '#ee4d2d',
-							borderRadius: '2px'
-						}}></span>
-					</h4>
-
-					<div style={{ paddingLeft: '55px' }}>
-						<div style={{ marginBottom: '12px' }}>
-							<a href={`/shop/${id}/buying-guide`}
-								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
-								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
-								onMouseOut={(e) => e.target.style.color = '#555'}>
-								<span style={{ marginRight: '10px', minWidth: '15px' }}>›</span>
-								<span>Hướng Dẫn Mua Hàng</span>
-							</a>
-						</div>
-
-						<div style={{ marginBottom: '12px' }}>
-							<a href={`/shop/${id}/payment`}
-								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
-								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
-								onMouseOut={(e) => e.target.style.color = '#555'}>
-								<span style={{ marginRight: '10px', minWidth: '15px' }}>›</span>
-								<span>Phương Thức Thanh Toán</span>
-							</a>
-						</div>
-
-						<div style={{ marginBottom: '12px' }}>
-							<a href={`/shop/${id}/shipping`}
-								style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center' }}
-								onMouseOver={(e) => e.target.style.color = '#ee4d2d'}
-								onMouseOut={(e) => e.target.style.color = '#555'}>
-								<span style={{ marginRight: '10px', minWidth: '15px' }}>›</span>
-								<span>Chính Sách Vận Chuyển</span>
-							</a>
 						</div>
 					</div>
 				</div>

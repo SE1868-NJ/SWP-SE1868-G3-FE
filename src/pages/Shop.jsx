@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ShopHeader from '../components/Shop/ShopHeader';
+import ShopDescription from '../components/Shop/ShopDescription';
+import PopularProducts from '../components/Shop/PopularProducts'; // Import component sản phẩm nổi bật
 import Banner from '../components/Shop/Banner';
 import ShopFooter from '../components/Shop/ShopFooter';
 import CategorySection from '../components/Shop/CategorySection';
@@ -78,6 +80,10 @@ function ShopPage() {
 					categories={shopData.categories || []}
 				/>
 			</div>
+
+			<PopularProducts shopId={id} />
+
+			<ShopDescription description={shopData.shopInfo?.shop_description} />
 
 			<Banner banners={shopData.banners || []} />
 
