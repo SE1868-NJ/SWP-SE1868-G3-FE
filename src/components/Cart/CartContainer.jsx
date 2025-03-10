@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import cartService from "../../services/cartService";
 import CartHeader from "./CartHeader";
 import CartList from "./CartList";
@@ -12,6 +13,7 @@ const CartContainer = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartData = async () => {
@@ -131,32 +133,61 @@ const CartContainer = () => {
     setSelectAll(items.length > 0 && selectedItems.length === items.length);
   }, [items, selectedItems]);
 
+  const handleContinueShopping = () => {
+    navigate("/");
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div className="container mt-4 d-flex flex-column" style={{ minHeight: "100vh" }}>
-      <CartHeader totalItems={items.length} selectAll={selectAll} toggleSelectAll={toggleSelectAll} />
-      <div style={{ paddingBottom: "100px" }}>
-        <CartList
-          items={items}
-          selectedItems={selectedItems}
-          toggleSelectItem={toggleSelectItem}
-          updateQuantity={updateQuantity}
-          removeItem={removeItem}
-          toggleSelectStore={toggleSelectStore}
-          removeItems={removeItems}
-        />
-      </div>
-      <CartFooter
-        selectAll={selectAll}
-        toggleSelectAll={toggleSelectAll}
-        totalQuantity={totalQuantity}
-        totalPrice={totalPrice}
-        items={items}
-        selectedItems={selectedItems}
-        removeItems={removeItems}
-      />
+      {items.length === 0 ? (
+        <div className="text-center mt-5 d-flex flex-column align-items-center justify-content-center">
+          <img
+            src="https://ecommerce-frontend-view.netlify.app/empty-cart.png"
+            alt="Empty Cart"
+            className="mb-4"
+            style={{ maxWidth: '250px', height: 'auto' }}
+          />
+          <h2 className="mb-3">Giỏ hàng hiện tại đang trống</h2>
+          <button
+            className="btn btn-danger"
+            onClick={handleContinueShopping}
+            style={{
+              padding: '10px 20px',
+              fontSize: '16px',
+              fontWeight: 'bold'
+            }}
+          >
+            TIẾP TỤC MUA SẮM
+          </button>
+        </div>
+      ) : (
+        <>
+          <CartHeader totalItems={items.length} selectAll={selectAll} toggleSelectAll={toggleSelectAll} />
+          <div style={{ paddingBottom: "100px" }}>
+            <CartList
+              items={items}
+              selectedItems={selectedItems}
+              toggleSelectItem={toggleSelectItem}
+              updateQuantity={updateQuantity}
+              removeItem={removeItem}
+              toggleSelectStore={toggleSelectStore}
+              removeItems={removeItems}
+            />
+          </div>
+          <CartFooter
+            selectAll={selectAll}
+            toggleSelectAll={toggleSelectAll}
+            totalQuantity={totalQuantity}
+            totalPrice={totalPrice}
+            items={items}
+            selectedItems={selectedItems}
+            removeItems={removeItems}
+          />
+        </>
+      )}
     </div>
   );
 };

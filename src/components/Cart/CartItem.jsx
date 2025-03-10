@@ -8,17 +8,44 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
   const isSelected = selectedItems.includes(id);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [localQuantity, setLocalQuantity] = useState(quantity.toString());
+
+  React.useEffect(() => {
+    setLocalQuantity(quantity.toString());
+  }, [quantity]);
 
   const originalPricePerUnit = Number(price);
   const originalPrice = originalPricePerUnit * quantity;
 
   const handleUpdateQuantity = (delta) => {
-    const newQuantity = Math.max(1, quantity + delta);
+    const newQuantity = Math.max(1, Number(localQuantity) + delta);
     if (newQuantity > stock) {
       alert(`Số lượng vượt quá kho (${stock} sản phẩm). Vui lòng chọn số lượng nhỏ hơn hoặc bằng ${stock}.`);
       return;
     }
+    setLocalQuantity(newQuantity.toString());
     updateQuantity(id, delta);
+  };
+
+  const handleQuantityChange = (e) => {
+    const inputValue = e.target.value;
+
+    const numericValue = inputValue.replace(/[^\d]/g, '');
+    setLocalQuantity(numericValue);
+  };
+
+  const handleQuantityBlur = () => {
+    const newQuantity = parseInt(localQuantity, 10) || 1;
+
+    if (newQuantity > stock) {
+      alert(`Số lượng vượt quá kho (${stock} sản phẩm). Vui lòng chọn số lượng nhỏ hơn hoặc bằng ${stock}.`);
+      setLocalQuantity(quantity.toString());
+      return;
+    }
+
+    if (newQuantity !== quantity) {
+      updateQuantity(id, newQuantity - quantity);
+    }
   };
 
   const handleDeleteClick = () => {
@@ -55,7 +82,14 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
 
       <div className="col-2 d-flex justify-content-center align-items-center">
         <button className="btn btn-sm" onClick={() => handleUpdateQuantity(-1)}>-</button>
-        <span className="mx-2 border rounded px-3 py-1">{quantity}</span>
+        <input
+          type="text"
+          className="mx-2 border rounded text-center"
+          style={{ width: "50px", height: "30px" }}
+          value={localQuantity}
+          onChange={handleQuantityChange}
+          onBlur={handleQuantityBlur}
+        />
         <button className="btn btn-sm" onClick={() => handleUpdateQuantity(1)}>+</button>
       </div>
 
