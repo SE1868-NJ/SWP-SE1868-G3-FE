@@ -13,10 +13,12 @@ const Profile = () => {
 		...user,
 	});
 
+	const [avatarFile, setAvatarFile] = useState(null);
 	const [errors, setErrors] = useState({});
 	const [isEditing, setIsEditing] = useState(false);
 	const errorRefs = useRef({});
-	// Lấy thông tin user từ BE
+
+
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
@@ -46,7 +48,6 @@ const Profile = () => {
 		const { name, value } = e.target;
 		setUserData({ ...userData, [name]: value });
 
-		// Validate khi nhập
 		let error = '';
 		if (name === 'full_name' && value.length > 30) {
 			error = 'Tên không được quá 30 ký tự';
@@ -90,6 +91,7 @@ const Profile = () => {
 				  
 				  localStorage.setItem('userData', JSON.stringify(fetchResponse));
 				  setIsEditing(false);
+				  setAvatarFile(null);
 				} else {
 				  throw new Error('Cập nhật thất bại: Response không hợp lệ');
 				}
@@ -105,7 +107,7 @@ const Profile = () => {
 		}
 	};
 
-	// Profile.jsx
+
 	const handleFileUpload = async (e) => {
 		const file = e.target.files[0];
 		if (!file || !user) {
@@ -113,22 +115,10 @@ const Profile = () => {
 			return;
 		}
 
+		setAvatarFile(file);
+		
 		setUserData((prev) => ({ ...prev, avatar: URL.createObjectURL(file) }));
 
-		try {
-			const response = await userService.uploadAvatar(user.id, file);
-
-			if (response && response.avatar) {
-				setUserData((prev) => ({ ...prev, avatar: response.avatar }));
-			} else {
-				console.error('Lỗi: API không trả về avatar hợp lệ');
-				alert('Cập nhật ảnh thất bại. API không trả về avatar hợp lệ.');
-			}
-		} catch (error) {
-			console.error('Upload error:', error.message || error);
-			setUserData((prev) => ({ ...prev, avatar: user.avatar || null }));
-			alert('Cập nhật ảnh thất bại. Vui lòng thử lại!');
-		}
 	};
 
 	return (
@@ -169,7 +159,7 @@ const Profile = () => {
 			{/* Profile Form */}
 			<div className='bg-light col-md-10 p-3'>
 				{' '}
-				{/* Container với nền trắng, padding, và bo góc */}
+				
 				<div className='row '>
 					{/* Form Profile */}
 					<div className='col-md-8 border-right pt-3'>
@@ -273,6 +263,9 @@ const Profile = () => {
 									disabled={!isEditing}
 								/>
 							</label>
+							{avatarFile && isEditing && (
+								<p className="mt-1 text-success">Ảnh mới sẽ được cập nhật khi bạn nhấn Lưu</p>
+							)}
 						</div>
 					</div>
 				</div>

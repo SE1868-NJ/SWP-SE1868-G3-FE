@@ -21,47 +21,34 @@ const userService = {
         }
     },
 
-    updateUser: async (id, userData) => {
+    updateUser: async (id, userData, file = null) => {
         try {
-            const response = await api.put(`/user/update/${id}`, userData);
-            return response.data;
-        } catch (error) {
-            console.error("Lỗi khi cập nhật người dùng:", error);
-            throw error;
-        }
-    },
-    
-
-    uploadAvatar: async (id, file) => {
-        try {
-            if (!file) throw new Error("No file provided");
-            
             const formData = new FormData();
-            formData.append("avatar", file);
             
-            const response = await api.post(`/user/upload/${id}`, formData, {
+            Object.keys(userData).forEach(key => {
+                formData.append(key, userData[key]);
+            });
+            
+            if (file) {
+                formData.append("avatar", file);
+            }
+            
+            const response = await api.put(`/user/update/${id}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
             
-            console.log("Full response:", response);
-
-            if (!response.data || !response.data.avatar) {
-                throw new Error("Response không chứa avatar hoặc không hợp lệ");
-            }
+            console.log("Update response:", response);
+            
             return response.data;
         } catch (error) {
-            console.error("Lỗi khi upload avatar:", error.message);
+            console.error("Lỗi khi cập nhật thông tin người dùng và avatar:", error.message);
             if (error.response) {
                 console.error("Status:", error.response.status);
                 console.error("Data:", error.response.data);
             }
-            throw error;  
+            throw error;
         }
     }
-    
-    
-    
-    
 };
 
 export default userService;
