@@ -5,7 +5,7 @@ import orderService from '../services/orderService';
 
 function CompletedOrder() {
 	const [activeTab, setActiveTab] = useState('completed');
-	const [orders, setOrders] = useState([]);
+	const [order, setOrder] = useState(null);
 	const userId = '4';
 
 	useEffect(() => {
@@ -13,10 +13,10 @@ function CompletedOrder() {
 			try {
 				const data = await orderService.getCompletedOrders(userId);
 				console.log('Completed orders from API:', data);
-				setOrders(data); // Gán dữ liệu trực tiếp vì orderService đã đảm bảo trả về mảng
+				setOrder(data);
 			} catch (error) {
 				console.error('Error fetching completed orders:', error.message);
-				setOrders([]);
+				setOrder(null);
 			}
 		};
 		fetchCompletedOrders();
@@ -133,103 +133,82 @@ function CompletedOrder() {
 
 					{/* Order Items */}
 					<div className='container'>
-						{activeTab === 'completed' && orders.length > 0 ? (
-							orders.map((order) => (
-								<div
-									className='card mb-3 order-card'
-									key={order.order_id || Math.random()}
-								>
-									<div className='card-header bg-white d-flex justify-content-between align-items-center py-2'>
-										<div className='d-flex align-items-center'>
-											<span className='badge badge-favorite me-2'>
-												Yêu thích
-											</span>
-											{/* <span className='fw-bold'>{'Shop không xác định'}</span> */}
-											<span className='fw-bold'>
-												{order.OrderDetails?.[0]?.Product?.shop?.shop_name ||
-													'Khong co'}
-											</span>
-										</div>
-										<div className='d-flex align-items-center'>
-											<button className='btn btn-sm btn-outline-secondary me-2'>
-												<MessageCircle size={16} className='me-1' />
-												Chat
-											</button>
-											<button className='btn btn-sm btn-outline-secondary'>
-												<Eye size={16} className='me-1' />
-												Xem Shop
-											</button>
-											<span className='ms-3 text-success fw-bold'>
-												HOÀN THÀNH
-											</span>
-										</div>
+						{activeTab === 'completed' && order ? (
+							<div className='card mb-3 order-card'>
+								<div className='card-header bg-white d-flex justify-content-between align-items-center py-2'>
+									<div className='d-flex align-items-center'>
+										<span className='badge badge-favorite me-2'>Yêu thích</span>
+										<span className='fw-bold'>
+											{order?.OrderDetails?.[0]?.Product?.shop?.shop_name ||
+												'Không xác định'}
+										</span>
 									</div>
-									<div className='card-body'>
-										<div className='row'>
-											<div className='col-md-8'>
-												<div className='d-flex'>
-													<img
-														src={
-															order.OrderDetails?.[0]?.Product?.image_url ||
-															'https://via.placeholder.com/80'
-														}
-														alt='Product'
-														className='product-image me-3'
-													/>
-													<div>
-														<h6 className='mb-1'>
-															{order.OrderDetails?.[0]?.Product?.product_name ||
-																'Sản phẩm không xác định'}
-														</h6>
-														<p className='text-muted mb-1'>
-															Phân loại hàng:{' '}
-															{order.OrderDetails?.[0]?.Product?.category
-																?.name || 'Không xác định'}
-														</p>
-														<p className='mb-0'>
-															x{order.OrderDetails?.[0]?.quantity || 1}
-														</p>
-													</div>
-												</div>
-											</div>
-											<div className='col-md-4 text-end'>
-												<p className='price-original mb-0'>
-													₫
-													{order.OrderDetails?.[0]?.Product?.import_price ||
-														'0'}
-												</p>
-												<p className='price-discounted mb-0'>
-													₫
-													{order.OrderDetails?.[0]?.subtotal ||
-														order.total ||
-														'0'}
-												</p>
-											</div>
-										</div>
-									</div>
-									<div className='card-footer bg-white d-flex justify-content-between align-items-center py-3'>
-										<div>
-											<small className='text-muted'>
-												{order.note || 'Đơn hàng đã được giao thành công'}
-											</small>
-											<i className='ms-2 text-muted bi bi-info-circle'></i>
-										</div>
-										<div className='d-flex align-items-center'>
-											<span className='me-3'>Thành tiền:</span>
-											<span className='total-price'>₫{order.total || '0'}</span>
-										</div>
-									</div>
-									<div className='card-footer bg-white border-top-0 text-end py-2'>
-										<button className='btn btn-danger me-2'>Mua Lại</button>
-										<button className='btn btn-outline-secondary me-2'>
-											Đánh Giá
+									<div className='d-flex align-items-center'>
+										<button className='btn btn-sm btn-outline-secondary me-2'>
+											<MessageCircle size={16} className='me-1' />
+											Chat
 										</button>
-										<button className='btn btn-outline-secondary'>
-											Liên Hệ Người Bán
+										<button className='btn btn-sm btn-outline-secondary'>
+											<Eye size={16} className='me-1' />
+											Xem Shop
 										</button>
+										<span className='ms-3 text-success fw-bold'>
+											HOÀN THÀNH
+										</span>
 									</div>
 								</div>
-							))
+								<div className='card-body'>
+									<div className='row'>
+										<div className='col-md-8'>
+											<div className='d-flex'>
+												<img
+													src={
+														order?.OrderDetails?.[0]?.Product?.image_url ||
+														'https://via.placeholder.com/80'
+													}
+													alt='Product'
+													className='product-image me-3'
+												/>
+												<div>
+													<h6 className='mb-1'>
+														{order?.OrderDetails?.[0]?.Product?.product_name ||
+															'Sản phẩm không xác định'}
+													</h6>
+													<p className='text-muted mb-1'>
+														Phân loại hàng:{' '}
+														{order?.OrderDetails?.[0]?.Product?.category
+															?.name || 'Không xác định'}
+													</p>
+													<p className='mb-0'>
+														x{order?.OrderDetails?.[0]?.quantity || 1}
+													</p>
+												</div>
+											</div>
+										</div>
+										<div className='col-md-4 text-end'>
+											<p className='price-original mb-0'>
+												₫
+												{order?.OrderDetails?.[0]?.Product?.import_price || '0'}
+											</p>
+											<p className='price-discounted mb-0'>
+												₫
+												{order?.OrderDetails?.[0]?.subtotal ||
+													order?.total ||
+													'0'}
+											</p>
+										</div>
+									</div>
+								</div>
+								<div className='card-footer bg-white d-flex justify-content-between align-items-center py-3'>
+									<small className='text-muted'>
+										{order?.note || 'Đơn hàng đã được giao thành công'}
+									</small>
+									<div className='d-flex align-items-center'>
+										<span className='me-3'>Thành tiền:</span>
+										<span className='total-price'>₫{order?.total || '0'}</span>
+									</div>
+								</div>
+							</div>
 						) : (
 							<p>Không có đơn hàng nào đã hoàn thành.</p>
 						)}

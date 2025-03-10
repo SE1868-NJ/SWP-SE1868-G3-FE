@@ -5,7 +5,7 @@ const orderService = {
 		const response = await api.post('/order/create_order', dataOrder);
 		return response;
 	},
-	// Lấy danh sách tất cả đơn hàng theo userId
+
 	getOrdersByUserId: async (userId) => {
 		try {
 			const response = await api.get(`/order/${userId}`);
@@ -20,27 +20,25 @@ const orderService = {
 		}
 	},
 
-	// Lấy danh sách đơn hàng đã hoàn thành theo userId
-	getCompletedOrders: async (userId) => {
-		try {
-			const response = await api.get(`/order/completed/${userId}`);
-			console.log('API response for completed orders:', response.data);
-			if (Array.isArray(response.data)) {
-				return response.data; // Nếu là mảng, trả về trực tiếp
-			} else if (response.data && typeof response.data === 'object') {
-				return [response.data]; // Nếu là đối tượng, chuyển thành mảng 1 phần tử
-			} else {
-				console.warn('Dữ liệu trả về không hợp lệ:', response.data);
-				return [];
-			}
-		} catch (error) {
-			console.error(
-				'Lỗi khi lấy danh sách đơn hàng đã hoàn thành:',
-				error.response?.data || error.message,
-			);
-			throw error;
-		}
-	},
+getCompletedOrders: async (userId) => {
+  try {
+    const response = await api.get(`/order/completed/${userId}`);
+    console.log('API response for completed orders:', response.data);
+
+    if (response.data && typeof response.data === 'object') {
+      return response.data;
+    } else {
+      console.warn('Dữ liệu trả về không hợp lệ:', response.data);
+      return null;
+    }
+  } catch (error) {
+    console.error(
+      'Lỗi khi lấy danh sách đơn hàng đã hoàn thành:',
+      error.response?.data || error.message,
+    );
+    throw error;
+  }
+},
 };
 
 export default orderService;

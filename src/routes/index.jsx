@@ -8,12 +8,12 @@ import { sellerRoutes } from './modules/seller.routes';
 import SellerLayout from '../layout/SellerLayout';
 import { supplierRoutes } from './modules/supplier.routes';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
-
+import { orderDetailRoutes } from './modules/orderDetail.routes';
 const routes = [
 	{
 		path: '/',
 		element: <Layout />,
-		children: [...homeRoute, ...authRoutes, ...userRoutes],
+		children: [...homeRoute, ...authRoutes, ...userRoutes, ...orderDetailRoutes],
 	},
 	{
 		path: '/seller',
