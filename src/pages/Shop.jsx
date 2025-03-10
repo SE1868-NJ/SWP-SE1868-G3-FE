@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ShopHeader from '../components/Shop/ShopHeader';
-import ShopDescription from '../components/Shop/ShopDescription';
-import PopularProducts from '../components/Shop/PopularProducts'; // Import component sản phẩm nổi bật
-import Banner from '../components/Shop/Banner';
+import PopularProducts from '../components/Shop/PopularProducts';
 import ShopFooter from '../components/Shop/ShopFooter';
 import CategorySection from '../components/Shop/CategorySection';
 import ProductSection from '../components/Shop/ProductSection';
@@ -14,6 +12,8 @@ function ShopPage() {
 	const [activeCategory, setActiveCategory] = useState('TẤT CẢ SẢN PHẨM');
 	const [shopData, setShopData] = useState(null);
 	const [loading, setLoading] = useState(true);
+
+	const categoriesWithProducts = shopData?.categories?.filter(category => category.product_count > 0) || [];
 
 	useEffect(() => {
 		const fetchShopData = async () => {
@@ -77,21 +77,17 @@ function ShopPage() {
 					activeCategory={activeCategory}
 					onCategoryChange={handleNavigation}
 					shopInfo={shopData.shopInfo}
-					categories={shopData.categories || []}
+					categories={categoriesWithProducts}
 				/>
 			</div>
 
 			<PopularProducts shopId={id} />
 
-			<ShopDescription description={shopData.shopInfo?.shop_description} />
-
-			<Banner banners={shopData.banners || []} />
-
 			<div style={{ display: 'flex', gap: '20px', margin: '20px 15px' }}>
 				<CategorySection
 					activeCategory={activeCategory}
 					onCategoryChange={handleNavigation}
-					categories={shopData.categories || []}
+					categories={categoriesWithProducts}
 				/>
 				<ProductSection
 					category={activeCategory}

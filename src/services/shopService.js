@@ -28,21 +28,4 @@ export const shopService = {
         }
     },
 
-    // checkFollowStatus: async (userId, shopId) => {
-    //     try {
-    //         const response = await api.get(`/shop/follow-status/${userId}/${shopId}`);
-    //         return response.data;
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // },
-
-    // toggleFollowShop: async (userId, shopId) => {
-    //     try {
-    //         const response = await api.post('/shop/toggle-follow', { userId, shopId });
-    //         return response.data;
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
 };

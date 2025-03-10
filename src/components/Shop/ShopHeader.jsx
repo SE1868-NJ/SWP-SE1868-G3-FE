@@ -3,10 +3,6 @@ import React, { useState } from 'react';
 const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [] }) => {
 	const [isFollowing, setIsFollowing] = useState(false);
 
-	// const handleToggleFollow = () => {
-	// 	setIsFollowing(!isFollowing);
-	// };
-
 	const allProductsOption = 'TẤT CẢ SẢN PHẨM';
 	const visibleCategories = [allProductsOption, ...categories.map(cat => cat.name)];
 
@@ -26,6 +22,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 				backgroundColor: 'white',
 				boxShadow: '0 2px 5px rgba(0, 0, 0, 0.08)',
 				border: '1px solid #e8e8e8',
+				alignItems: 'center'
 			}}>
 				<div style={{
 					display: 'flex',
@@ -78,9 +75,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 							fontWeight: '500'
 						}}>Online 4 phút trước</p>
 						<div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
-
 							<button
-								// onClick={handleToggleFollow}
 								style={{
 									padding: '8px 15px',
 									borderRadius: '5px',
@@ -120,44 +115,62 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 				</div>
 
 				<div style={{
-					marginLeft: '25px',
-					display: 'grid',
-					gridTemplateColumns: 'repeat(2, 1fr)',
-					gridGap: '18px',
-					padding: '10px 0 0 15px',
-					borderLeft: '1px solid #f0f0f0',
+					height: '80px',
+					width: '1px',
+					backgroundColor: '#e0e0e0',
+					marginRight: '20px'
+				}} />
+
+				<div style={{
+					display: 'flex',
+					flexDirection: 'column',
+					marginRight: '20px',
+					gap: '10px'
 				}}>
-					<div style={{ fontSize: '14px', fontWeight: '500' }}>
+					<div style={{
+						fontSize: '14px',
+						fontWeight: '500',
+						display: 'flex',
+						alignItems: 'center'
+					}}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Sản Phẩm:</span>
 						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>{shopInfo.product_count}</span>
 					</div>
 
-					<div style={{ fontSize: '14px', fontWeight: '500' }}>
-						<span style={{ color: '#777', marginRight: '5px' }}>Người Theo Dõi:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>{shopInfo.follower_count}</span>
-					</div>
-
-					<div style={{ fontSize: '14px', fontWeight: '500' }}>
-						<span style={{ color: '#777', marginRight: '5px' }}>Đang Theo:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>0</span>
-					</div>
-
-					<div style={{ fontSize: '14px', fontWeight: '500' }}>
+					<div style={{
+						fontSize: '14px',
+						fontWeight: '500',
+						display: 'flex',
+						alignItems: 'center'
+					}}>
 						<span style={{ color: '#777', marginRight: '5px' }}>Đánh Giá:</span>
 						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>
 							{shopInfo.average_rating} ({shopInfo.rating_count} Đánh Giá)
 						</span>
 					</div>
+				</div>
 
-					{/* <div style={{ fontSize: '14px', fontWeight: '500' }}>
-						<span style={{ color: '#777', marginRight: '5px' }}>Tỉ Lệ Phản Hồi Chat:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>98% (Trong Vài Giờ)</span>
-					</div>
+				<div style={{
+					height: '80px',
+					width: '1px',
+					backgroundColor: '#e0e0e0',
+					marginRight: '20px'
+				}} />
 
-					<div style={{ fontSize: '14px', fontWeight: '500' }}>
-						<span style={{ color: '#777', marginRight: '5px' }}>Tham Gia:</span>
-						<span style={{ color: '#ee4d2d', fontWeight: '600' }}>5 Năm Trước</span>
-					</div> */}
+				<div style={{
+					fontSize: '14px',
+					color: '#555',
+					lineHeight: '1.6'
+				}}>
+					<h4 style={{
+						fontSize: '16px',
+						fontWeight: '700',
+						marginBottom: '10px',
+						color: '#333'
+					}}>
+						Giới Thiệu Cửa Hàng:
+					</h4>
+					{shopInfo.shop_description || 'Cửa hàng thời trang và gia dụng chất lượng cao'}
 				</div>
 			</div>
 
@@ -173,7 +186,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 			}}>
 				<div style={{
 					display: 'flex',
-					justifyContent: 'flex-start',
+					justifyContent: 'center',
 					width: '100%',
 					maxWidth: '1200px',
 					overflowX: 'auto',
