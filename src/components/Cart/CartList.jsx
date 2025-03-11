@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 import CartItem from "./CartItem";
 import Checkbox from "./Checkbox";
 import CartFooter from "./CartFooter";
@@ -10,7 +11,6 @@ const CartList = ({
   updateQuantity,
   removeItem,
   toggleSelectStore,
-  removeItems,
 }) => {
   const groupedItems = items.reduce((acc, item) => {
     if (!acc[item.storeName]) acc[item.storeName] = [];
@@ -39,6 +39,7 @@ const CartList = ({
       {Object.keys(groupedItems).map((storeName) => {
         const storeItems = groupedItems[storeName];
         const allSelected = storeItems.every(item => selectedItems.includes(item.id));
+        const shopId = storeItems[0]?.shopId;
 
         return (
           <div key={storeName} className="mb-4 border rounded bg-white p-3 shadow-sm position-relative">
@@ -49,7 +50,12 @@ const CartList = ({
                   onChange={() => toggleSelectStore(storeName)}
                   className="me-2"
                 />
-                <span className="fw-bold text-danger fs-5">{storeName}</span>
+                <Link
+                  to={`/shop/${shopId}/homepage`}
+                  className="fw-bold text-danger fs-5 text-decoration-none"
+                >
+                  {storeName}
+                </Link>
                 <i className="bi bi-chat-left-dots-fill ms-2 text-danger"></i>
               </div>
             </div>
@@ -69,21 +75,6 @@ const CartList = ({
           </div>
         );
       })}
-      <CartFooter
-        selectAll={items.length > 0 && items.every(item => selectedItems.includes(item.id))}
-        toggleSelectAll={() => {
-          if (items.length > 0 && items.every(item => selectedItems.includes(item.id))) {
-            toggleSelectStore(items[0].storeName);
-          } else {
-            items.forEach(item => toggleSelectItem(item.id));
-          }
-        }}
-        totalQuantity={totalQuantity}
-        totalPrice={totalPrice}
-        items={items}
-        selectedItems={selectedItems}
-        removeItems={removeItems}
-      />
     </div>
   );
 };
