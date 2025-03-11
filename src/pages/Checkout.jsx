@@ -19,12 +19,13 @@ const Checkout = () => {
   const [toastVariant, setToastVariant] = useState('success');
 
   const selectedProducts = location.state?.selectedProducts || [];
+  console.log(selectedProducts);
 
   const [selectedAddressId, setSelectedAddressId] = useState("1");
   const [shippingMethodId, setShippingMethodId] = useState("nhanh");
   const [shippingFee, setShippingFee] = useState(20700);
   const [voucherId, setVoucherId] = useState(1);
-  const [voucherDiscount, setVoucherDiscount] = useState(100000);
+  const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [note, setNote] = useState("");
   const [paymentMethodId, setPaymentMethodId] = useState("cod");
   //Status Handle
@@ -45,7 +46,7 @@ const Checkout = () => {
         user_id: user.id,
         address_id: selectedAddressId,
         items: selectedProducts.map(item => ({
-          product_id: item.id,
+          product_id: item.productId,
           quantity: item.quantity,
           price: item.price
         })),

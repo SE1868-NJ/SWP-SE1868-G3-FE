@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
             }
         };
         getCountCart(user.id);
-    }, []);
+    }, [showToast]);
 
     const handleAddCart = async (productId, mockUserId) => {
         try {
