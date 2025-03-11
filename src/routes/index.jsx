@@ -10,6 +10,8 @@ import { sellerRoutes } from './modules/seller.routes';
 import SellerLayout from '../layout/SellerLayout';
 import { supplierRoutes } from './modules/supplier.routes';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
+import ShopLayout from '../layout/ShopLayout';
+import { shopRoute } from './modules/store.routes';
 
 const routes = [
 	{
@@ -26,6 +28,11 @@ const routes = [
 		path: "/order",
 		element: <CartLayout />,
 		children: orderRoutes,
+	},
+	{
+		path: "/shop",
+		element: <ShopLayout />,
+		children: shopRoute,
 	},
 ];
 
