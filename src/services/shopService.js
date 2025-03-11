@@ -8,5 +8,24 @@ export const shopService = {
         } catch (error) {
             throw error;
         }
-    }
+    },
+
+    getShopHomepage: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/${shopId}/homepage`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    getProductsByShopAndCategory: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/${shopId}/products`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
 };
