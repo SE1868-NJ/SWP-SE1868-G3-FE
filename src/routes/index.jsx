@@ -9,6 +9,7 @@ import SellerLayout from '../layout/SellerLayout';
 import { supplierRoutes } from './modules/supplier.routes';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
 import { orderDetailRoutes } from './modules/orderDetail.routes';
+import { OrderProvider } from '../layout/OrderLayout/OrderContext';
 const routes = [
 	{
 		path: '/',
@@ -27,7 +28,9 @@ const router = createBrowserRouter(routes);
 function AppRoutes() {
 	return (
 		<AuthProvider>
+			<OrderProvider>
 			<RouterProvider router={router} />
+      </OrderProvider>
 		</AuthProvider>
 	);
 }
