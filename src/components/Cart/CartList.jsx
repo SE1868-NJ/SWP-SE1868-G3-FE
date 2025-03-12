@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import CartItem from "./CartItem";
 import Checkbox from "./Checkbox";
-import CartFooter from "./CartFooter";
 
 const CartList = ({
   items,
@@ -18,31 +17,18 @@ const CartList = ({
     return acc;
   }, {});
 
-  const calculateTotal = () => {
-    let totalQty = 0;
-    let totalPrice = 0;
-
-    items.forEach(item => {
-      if (selectedItems.includes(item.id)) {
-        totalQty += item.quantity;
-        totalPrice += item.price * item.quantity;
-      }
-    });
-
-    return { totalQuantity: totalQty, totalPrice: totalPrice };
-  };
-
-  const { totalQuantity, totalPrice } = calculateTotal();
-
   return (
     <div className="w-100">
-      {Object.keys(groupedItems).map((storeName) => {
-        const storeItems = groupedItems[storeName];
+      {Object.entries(groupedItems).map(([storeName, storeItems]) => {
         const allSelected = storeItems.every(item => selectedItems.includes(item.id));
+
         const shopId = storeItems[0]?.shopId;
 
         return (
-          <div key={storeName} className="mb-4 border rounded bg-white p-3 shadow-sm position-relative">
+          <div
+            key={storeName}
+            className="mb-4 border rounded bg-white p-3 shadow-sm position-relative"
+          >
             <div className="d-flex align-items-center justify-content-between mb-2 px-3 py-2 border-bottom">
               <div className="d-flex align-items-center">
                 <Checkbox
