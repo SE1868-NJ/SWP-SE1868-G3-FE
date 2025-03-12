@@ -1,11 +1,12 @@
 import { Card, Button } from "react-bootstrap";
-import {useChat} from "../../hooks/contexts/chatContext";
+import { Link } from "react-router-dom";
+import { useChat } from "../../hooks/contexts/chatContext";
 
 const ShopInfo = ({ shop }) => {
-    const {openChat} = useChat();
+    const { openChat } = useChat();
 
     const handleChatClick = () => {
-        openChat(shop.shop_id); 
+        openChat(shop.shop_id);
     };
 
     return (
@@ -27,7 +28,9 @@ const ShopInfo = ({ shop }) => {
 
                 <div className="d-flex gap-2">
                     <Button variant="danger" className="fw-bold px-4" onClick={handleChatClick}>Chat Ngay</Button>
-                    <Button variant="outline-secondary px-4">Xem Shop</Button>
+                    <Link to={`/shop/${shop.shop_id}/homepage`}>
+                        <Button variant="outline-secondary px-4">Xem Shop</Button>
+                    </Link>
                 </div>
             </div>
 
@@ -61,6 +64,5 @@ const ShopInfo = ({ shop }) => {
         </Card>
     );
 };
-
 
 export default ShopInfo;
