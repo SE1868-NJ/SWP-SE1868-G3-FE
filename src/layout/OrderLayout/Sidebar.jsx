@@ -1,8 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useOrderContext } from "../../layout/OrderLayout/OrderContext";
 
 const Sidebar = () => {
+  const { status, handleStatusChange } = useOrderContext();
+  const navigate = useNavigate(); 
+
+  const handleItemClick = (key) => {
+    handleStatusChange(key);
+    if (key === "order") {
+      navigate("/orders"); 
+    }
+  };
+
   return (
     <div>
+      {/* Hồ sơ */}
       <div className="d-flex align-items-center p-3 border-bottom">
         <div
           className="rounded-circle bg-light me-3"
@@ -19,19 +32,27 @@ const Sidebar = () => {
           <small className="text-muted">Sửa Hồ Sơ</small>
         </div>
       </div>
+
+      {/* Danh mục */}
       <div className="py-3">
         {[
-          { icon: "bi-bell", label: "Thông Báo" },
-          { icon: "bi-person", label: "Tài Khoản Của Tôi" },
-          { icon: "bi-file-earmark-text", label: "Đơn Mua", active: true },
-          { icon: "bi-gift", label: "Kho Voucher" },
-          { icon: "bi-coin", label: "Shop Xu" },
-        ].map((item, index) => (
+          { key: "notification", icon: "bi-bell", label: "Thông Báo" },
+          { key: "account", icon: "bi-person", label: "Tài Khoản Của Tôi" },
+          { key: "order", icon: "bi-file-earmark-text", label: "Đơn Mua" },
+          { key: "voucher", icon: "bi-gift", label: "Kho Voucher" },
+          { key: "coin", icon: "bi-coin", label: "Shop Xu" },
+        ].map((item) => (
           <div
-            key={index}
+            key={item.key}
             className={`sidebar-item d-flex align-items-center mb-3 ${
-              item.active ? "text-danger" : ""
+              status === item.key ? "text-danger" : ""
             }`}
+            onClick={() => handleItemClick(item.key)} 
+            style={{
+              cursor: "pointer",
+              fontWeight: status === item.key ? "bold" : "normal",
+              color: status === item.key ? "#dc3545" : "#000",
+            }}
           >
             <i className={`bi ${item.icon} fs-5 me-3`}></i>
             <span>{item.label}</span>

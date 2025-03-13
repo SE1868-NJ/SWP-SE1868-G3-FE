@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const OrderContext = createContext();
 
@@ -7,6 +8,7 @@ export const useOrderContext = () => useContext(OrderContext);
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState("completed");
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Gọi API hoặc cập nhật dữ liệu theo trạng thái
@@ -28,10 +30,13 @@ export const OrderProvider = ({ children }) => {
     setOrders(allOrders[status] || []);
   };
 
-  // Thêm hàm xử lý sự kiện khi click để chuyển trạng thái
+
   const handleStatusChange = (newStatus) => {
     if (newStatus !== status) {
       setStatus(newStatus);
+      if (newStatus === "account"){
+        navigate('/profile');
+      }
     }
   };
 

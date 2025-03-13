@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import avt1 from "../assets/images/avt1.png";
+import Sidebar from "../layout/OrderLayout/Sidebar";
+import { useOrderContext } from "../layout/OrderLayout/OrderContext";
 
 const Profile = () => {
+  const { status, handleStatusChange } = useOrderContext();
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -50,33 +53,11 @@ const Profile = () => {
   };
 
   return (
-    <div className="container mt-5 d-flex">
+    <div className="container mt-3 d-flex">
       {/* Sidebar */}
       <div className="col-md-3">
-        <h5 className="d-flex align-items-center">
-          <img
-            src={avatar}
-            alt="Avatar"
-            className="rounded-circle me-2"
-            style={{ width: "40px", height: "40px", objectFit: "cover" }}
-          />
-          {userData.name || "Tên User"}
-        </h5>
-        <ul className="list-group list-group-flush margin-right-10">
-          <li className="list-group-item border-0">
-            Tài khoản của tôi
-            <ul>
-              <li className="list-group-item border-0">Hồ sơ</li>
-              <li className="list-group-item border-0">Ngân hàng</li>
-              <li className="list-group-item border-0">Địa chỉ</li>
-              <li className="list-group-item border-0">Đổi mật khẩu</li>
-            </ul>
-          </li>
-          <li className="list-group-item border-0">Đơn mua</li>
-          <li className="list-group-item border-0">Kho voucher</li>
-        </ul>
+        <Sidebar status={status} handleStatusChange={handleStatusChange} />
       </div>
-
       {/* Profile Form */}
       <div className="col-md-6 border p-3">
         <h4>Hồ sơ của tôi</h4>

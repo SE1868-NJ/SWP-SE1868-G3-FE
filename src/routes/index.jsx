@@ -10,29 +10,36 @@ import { supplierRoutes } from './modules/supplier.routes';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
 import { orderDetailRoutes } from './modules/orderDetail.routes';
 import { OrderProvider } from '../layout/OrderLayout/OrderContext';
+
 const routes = [
-	{
-		path: '/',
-		element: <Layout />,
-		children: [...homeRoute, ...authRoutes, ...userRoutes, ...orderDetailRoutes],
-	},
-	{
-		path: '/seller',
-		element: <SellerLayout />,
-		children: [...sellerRoutes, ...supplierRoutes, ...shopRoutes],
-	},
+  {	
+    path: '/',
+    element: (
+      <OrderProvider> 
+        <Layout />
+      </OrderProvider>
+    ),
+    children: [...homeRoute, ...authRoutes, ...userRoutes, ...orderDetailRoutes],
+  },
+  {
+    path: '/seller',
+    element: (
+      <OrderProvider>
+        <SellerLayout />
+      </OrderProvider>
+    ),
+    children: [...sellerRoutes, ...supplierRoutes, ...shopRoutes],
+  },
 ];
 
 const router = createBrowserRouter(routes);
 
 function AppRoutes() {
-	return (
-		<AuthProvider>
-			<OrderProvider>
-			<RouterProvider router={router} />
-      </OrderProvider>
-		</AuthProvider>
-	);
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
 }
 
 export default AppRoutes;
