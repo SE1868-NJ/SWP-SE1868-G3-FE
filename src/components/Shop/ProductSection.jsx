@@ -73,13 +73,11 @@ const ProductSection = ({ category, shopId }) => {
 		setShowPriceDropdown(false);
 
 		const sortedProducts = [...products];
-
 		if (direction === 'asc') {
 			sortedProducts.sort((a, b) => parseFloat(a.sale_price) - parseFloat(b.sale_price));
 		} else {
 			sortedProducts.sort((a, b) => parseFloat(b.sale_price) - parseFloat(a.sale_price));
 		}
-
 		setProducts(sortedProducts);
 	};
 
