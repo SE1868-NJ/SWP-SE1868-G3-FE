@@ -106,7 +106,7 @@ const ProductCard = ({ product }) => {
 								fontWeight: '700'
 							}}
 						>
-							₫{formatNumber(product?.import_price)}
+							₫{formatNumber(product?.sale_price)}
 						</span>
 
 						{displayDiscount && (
