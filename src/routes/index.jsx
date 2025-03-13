@@ -19,10 +19,10 @@ const routes = [
 	{
 		path: '/',
 		element: (
-  <OrderProvider> 
-    <Layout />
-  </OrderProvider>
-    ),
+			<OrderProvider>
+				<Layout />
+			</OrderProvider>
+		),
 		children: [...homeRoute, ...authRoutes, ...userRoutes, ...orderDetailRoutes],
 	},
 	{
@@ -45,11 +45,11 @@ const routes = [
 const router = createBrowserRouter(routes);
 
 function AppRoutes() {
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  );
+	return (
+		<AuthProvider>
+			<RouterProvider router={router} />
+		</AuthProvider>
+	);
 }
 
 export default AppRoutes;
