@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useOrderContext } from '../hooks/contexts/OrderContext';
 import OrderCard from '../layout/OrderLayout/OrderCard';
-import orderService from '../services/orderService';
+import {orderService} from '../services/orderService';
 
 const CompletedOrder = () => {
 	const [orders, setOrders] = useState([]);

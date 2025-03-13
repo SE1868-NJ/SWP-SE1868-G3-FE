@@ -32,7 +32,7 @@ export const homeRoute = [
 	{
 		path: '/search',
 		element: <SearchProduct />,
-	}
+	},
 	{
 		path: '/checkout/payment',
 		element: <PaymentPage />,

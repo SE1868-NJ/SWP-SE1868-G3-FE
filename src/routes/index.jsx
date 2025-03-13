@@ -13,6 +13,7 @@ import { AuthProvider } from '../hooks/contexts/AuthContext';
 import { orderDetailRoutes } from './modules/orderDetail.routes';
 import { OrderProvider } from '../hooks/contexts/OrderContext';
 import ShopLayout from '../layout/ShopLayout';
+import { shopRoute } from './modules/store.routes';
 
 const routes = [
 	{
