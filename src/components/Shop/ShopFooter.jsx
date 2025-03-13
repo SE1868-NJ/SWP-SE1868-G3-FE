@@ -18,11 +18,10 @@ const ShopFooter = ({ shopInfo }) => {
 				<div style={{
 					minWidth: '200px',
 					maxWidth: '300px',
-					marginBottom: '20px'
 				}}>
 					<h4 style={{
 						fontWeight: '700',
-						marginBottom: '18px',
+						marginBottom: '15px',
 						fontSize: '17px',
 						textAlign: 'center',
 						position: 'relative',
@@ -42,21 +41,21 @@ const ShopFooter = ({ shopInfo }) => {
 					</h4>
 
 					<div style={{ paddingLeft: '30px' }}>
-						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>📍</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
 								Địa chỉ: {shopInfo?.shop_address || 'Đang cập nhật'}
 							</span>
 						</div>
 
-						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>📞</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
 								Điện thoại: {shopInfo?.shop_phone || 'Đang cập nhật'}
 							</span>
 						</div>
 
-						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+						<div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
 							<span style={{ color: '#ee4d2d', marginRight: '10px', minWidth: '15px' }}>✉️</span>
 							<span style={{ fontSize: '14px', color: '#555', fontWeight: '500' }}>
 								Email: {shopInfo?.shop_email || 'Đang cập nhật'}
