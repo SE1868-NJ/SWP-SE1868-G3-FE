@@ -1,6 +1,6 @@
 import api from './axios';
 
-const orderService = {
+export const orderService = {
 	createOrder: async (dataOrder) => {
 		const response = await api.post('/order/create_order', dataOrder);
 		return response;
@@ -33,6 +33,9 @@ const orderService = {
 			throw error;
 		}
 	},
+  
+   createOrder: async (dataOrder) => {
+        const response = await api.post('/order/create_order',dataOrder);
+        return response;
+    },
 };
-
-export default orderService;

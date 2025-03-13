@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     const [toastVariant, setToastVariant] = useState('success');
     const [user, setUser] = useState(
         {
-            id: 14,
+            id: 15,
             name: "Trần Xuân Đông",
             email: "dongtx04@gmail.com",
             avatar: "",
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
             }
         };
         getCountCart(user.id);
-    }, []);
+    }, [showToast]);
 
     const handleAddCart = async (productId, mockUserId) => {
         try {
