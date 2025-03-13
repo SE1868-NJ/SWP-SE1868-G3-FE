@@ -111,14 +111,62 @@ function Sidebar() {
 											Nhà cung cấp
 										</Link>
 									</li>
-									<li className='list-group-item px-0'>
+									{/* <li className='list-group-item px-0'>
 										<Link to={'/seller/orders'} className='nav-link'>
 											Đơn hàng
+										</Link>
+									</li> */}
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders'} className='nav-link'>
+											Khuyến mại
+										</Link>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					{/* Manage */}
+
+					{/* Manage */}
+					<div className='accordion-item'>
+						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
+							<button
+								className='accordion-button'
+								type='button'
+								data-bs-toggle='collapse'
+								data-bs-target='#manage'
+								aria-expanded='true'
+								aria-controls='manage'
+							>
+								<i className='bi bi-kanban h6 m-0 p-0 me-3' />
+								<h6 className=' fw-bold m-0 p-0'>Đơn hàng</h6>
+							</button>
+						</h2>
+						<div
+							id='manage'
+							className='accordion-collapse collapse show'
+							data-bs-parent='#accordionExample'
+						>
+							<div className='accordion-body'>
+								<ul className='list-group list-group-flush'>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/products'} className='nav-link'>
+											Đơn hàng mới
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/suppliers'} className='nav-link'>
+											Đơn hàng đang xử lý
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/orders'} className='nav-link'>
-											Khuyến mại
+											Đơn hàng đã hoàn thành
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders'} className='nav-link'>
+											Đơn hàng đã hủy
 										</Link>
 									</li>
 								</ul>
