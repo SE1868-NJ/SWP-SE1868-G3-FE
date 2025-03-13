@@ -68,12 +68,6 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 							letterSpacing: '0.5px',
 							color: '#333'
 						}}>{shopInfo.shop_name}</h1>
-						<p style={{
-							color: '#777',
-							margin: '8px 0',
-							fontSize: '14px',
-							fontWeight: '500'
-						}}>Online 4 phút trước</p>
 						<div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
 							<button
 								style={{

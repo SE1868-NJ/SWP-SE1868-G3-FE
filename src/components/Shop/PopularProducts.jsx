@@ -11,24 +11,20 @@ const PopularProducts = ({ shopId }) => {
       try {
         setLoading(true);
         const response = await shopService.getProductsByShopAndCategory(shopId);
-
         if (response?.status === "success" && response?.data?.products && Array.isArray(response.data.products)) {
           const sorted = response.data.products
             .sort((a, b) => b.sold_count - a.sold_count || b.average_rating - a.average_rating)
             .slice(0, 6);
-
           setPopularProducts(sorted);
         } else {
           setPopularProducts([]);
         }
       } catch (err) {
-        console.error("Error fetching popular products:", err);
         setPopularProducts([]);
       } finally {
         setLoading(false);
       }
     };
-
     if (shopId) {
       fetchPopularProducts();
     }
@@ -50,8 +46,6 @@ const PopularProducts = ({ shopId }) => {
   }
 
   if (popularProducts.length === 0) return null;
-
-  const formatNumber = (num) => new Intl.NumberFormat('vi-VN').format(parseFloat(num || 0));
 
   return (
     <div style={{

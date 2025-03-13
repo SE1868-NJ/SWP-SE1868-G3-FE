@@ -1,34 +1,16 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Checkbox from "./Checkbox";
 import { Modal } from "react-bootstrap";
 
 const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, items, selectedItems, removeItems }) => {
-  const isAnyItemSelected = selectedItems && selectedItems.length > 0;
+  const isAnyItemSelected = selectedItems?.length > 0;
   const navigate = useNavigate();
-
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  const handleDeleteClick = () => {
-    if (isAnyItemSelected) {
-      setShowDeleteConfirm(true);
-    }
-  };
-
-  const handleConfirmDelete = () => {
-    if (removeItems) {
-      removeItems(selectedItems);
-    }
-    setShowDeleteConfirm(false);
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteConfirm(false);
-  };
 
   const handleCheckout = () => {
     if (isAnyItemSelected) {
-      const selectedProducts = items.filter((item) => selectedItems.includes(item.id));
+      const selectedProducts = items.filter(item => selectedItems.includes(item.id));
       navigate("/order/checkout", { state: { selectedProducts } });
     } else {
       alert("Vui lòng chọn sản phẩm trước khi thanh toán!");
@@ -44,7 +26,7 @@ const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, ite
           <button
             className="btn btn-link text-danger me-1 fw-bold"
             style={{ fontSize: "1rem", textDecoration: "none" }}
-            onClick={handleDeleteClick}
+            onClick={() => isAnyItemSelected && setShowDeleteConfirm(true)}
           >
             Xóa
           </button>
@@ -66,14 +48,20 @@ const CartFooter = ({ selectAll, toggleSelectAll, totalQuantity, totalPrice, ite
         </div>
       </div>
 
-      <Modal show={showDeleteConfirm} onHide={handleCancelDelete} centered>
+      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} centered>
         <Modal.Body className="text-center p-4">
           <p>Bạn có muốn xóa {selectedItems.length} sản phẩm?</p>
           <div className="d-flex justify-content-center gap-3">
-            <button className="btn btn-secondary" onClick={handleCancelDelete}>
+            <button className="btn btn-secondary" onClick={() => setShowDeleteConfirm(false)}>
               Trở lại
             </button>
-            <button className="btn btn-danger" onClick={handleConfirmDelete}>
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                removeItems(selectedItems);
+                setShowDeleteConfirm(false);
+              }}
+            >
               Có
             </button>
           </div>

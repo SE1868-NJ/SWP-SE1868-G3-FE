@@ -97,7 +97,7 @@ function Header() {
       <header className='py-3 border-bottom bg-danger'>
         <div className='container d-flex flex-wrap justify-content-center'>
           <Link
-            to='/home'
+            to='/'
             className='d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none text-light'
           >
             <i
