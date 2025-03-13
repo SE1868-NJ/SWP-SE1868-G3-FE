@@ -9,7 +9,7 @@ import SellerLayout from '../layout/SellerLayout';
 import { supplierRoutes } from './modules/supplier.routes';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
 import { orderDetailRoutes } from './modules/orderDetail.routes';
-import { OrderProvider } from '../layout/OrderLayout/OrderContext';
+import { OrderProvider } from '../hooks/contexts/OrderContext';
 
 const routes = [
   {	

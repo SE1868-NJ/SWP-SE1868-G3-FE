@@ -11,7 +11,6 @@ const OrderLayout = () => {
         <div className="col-md-5 col-lg-3" style={{ minHeight: "100vh" }}>
           <Sidebar />
         </div>
-
         {/* Main Content */}
         <div className="col-md-9 col-lg-9 bg-light">
           <OrderTabs />

@@ -20,25 +20,19 @@ const orderService = {
 		}
 	},
 
-getCompletedOrders: async (userId) => {
-  try {
-    const response = await api.get(`/order/completed/${userId}`);
-    console.log('API response for completed orders:', response.data);
-
-    if (response.data && typeof response.data === 'object') {
-      return response.data;
-    } else {
-      console.warn('Dữ liệu trả về không hợp lệ:', response.data);
-      return null;
-    }
-  } catch (error) {
-    console.error(
-      'Lỗi khi lấy danh sách đơn hàng đã hoàn thành:',
-      error.response?.data || error.message,
-    );
-    throw error;
-  }
-},
+	getCompletedOrders: async (userId) => {
+		try {
+			const response = await api.get(`/order/completed/${userId}`);
+			console.log('API response for completed orders:', typeof response.data);
+			return response.data;
+		} catch (error) {
+			console.error(
+				'Lỗi khi lấy danh sách đơn hàng đã hoàn thành:',
+				error.response?.data || error.message,
+			);
+			throw error;
+		}
+	},
 };
 
 export default orderService;

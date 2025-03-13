@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOrderContext } from './OrderContext';
+import { useOrderContext } from '../../hooks/contexts/OrderContext';
 
 const OrderTabs = () => {
 	const { status, handleStatusChange } = useOrderContext();
@@ -25,9 +25,9 @@ const OrderTabs = () => {
 							onClick={() => handleStatusChange(tab.key)}
 							style={{
 								width: '100%',
-								color: '#000', 
+								color: '#000',
 								fontWeight: 'bold',
-							}} 
+							}}
 						>
 							{tab.label}
 						</button>
