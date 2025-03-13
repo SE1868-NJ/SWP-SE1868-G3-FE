@@ -42,12 +42,10 @@ const OrderCard = ({ order, activeTab }) => {
 
 				<div className='d-flex align-items-center'>
 					<button className='btn btn-sm btn-outline-secondary me-2'>
-						<MessageCircle size={16} className='me-1' />
-						Chat
+					<i className='bi bi-chat-left-dots' /> Chat
 					</button>
 					<button className='btn btn-sm btn-outline-secondary'>
-						<Eye size={16} className='me-1' />
-						Xem Shop
+					<i className='bi bi-eye' /> Xem Shop
 					</button>
 					{getStatusText(order.status || activeTab)}
 				</div>
