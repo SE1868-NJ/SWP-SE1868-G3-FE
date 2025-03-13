@@ -10,14 +10,19 @@ import { sellerRoutes } from './modules/seller.routes';
 import SellerLayout from '../layout/SellerLayout';
 import { supplierRoutes } from './modules/supplier.routes';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
+import { orderDetailRoutes } from './modules/orderDetail.routes';
+import { OrderProvider } from '../hooks/contexts/OrderContext';
 import ShopLayout from '../layout/ShopLayout';
-import { shopRoute } from './modules/store.routes';
 
 const routes = [
 	{
 		path: '/',
-		element: <Layout />,
-		children: [...homeRoute, ...authRoutes, ...userRoutes],
+		element: (
+  <OrderProvider> 
+    <Layout />
+  </OrderProvider>
+    ),
+		children: [...homeRoute, ...authRoutes, ...userRoutes, ...orderDetailRoutes],
 	},
 	{
 		path: '/seller',
@@ -39,11 +44,11 @@ const routes = [
 const router = createBrowserRouter(routes);
 
 function AppRoutes() {
-	return (
-		<AuthProvider>
-			<RouterProvider router={router} />
-		</AuthProvider>
-	);
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
 }
 
 export default AppRoutes;

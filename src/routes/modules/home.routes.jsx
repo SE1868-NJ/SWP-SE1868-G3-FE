@@ -1,6 +1,7 @@
 import { element } from 'prop-types';
 import Cart from '../../pages/Cart';
 import Checkout from '../../pages/Checkout';
+import CompletedOrder from '../../pages/CompletedOrder';
 import Home from '../../pages/Home';
 import ListPage from '../../pages/ListPage';
 import ProductDetails from '../../pages/ProductDetails';
@@ -31,7 +32,7 @@ export const homeRoute = [
 	{
 		path: '/search',
 		element: <SearchProduct />,
-	},
+	}
 	{
 		path: '/checkout/payment',
 		element: <PaymentPage />,
