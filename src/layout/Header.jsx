@@ -1,14 +1,41 @@
 // import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 // import Container from '../components/Container';
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/contexts/AuthContext';
-function Header() {
-  const { cartCount } = useAuth();
 
+function Header() {
+  const { cartCount, user } = useAuth();
+  const [userData, setUserData] = useState(user);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
+  // Lấy thông tin user từ localStorage mỗi khi component mount
+  useEffect(() => {
+    const storedUserData = JSON.parse(localStorage.getItem('userData'));
+    if (storedUserData) {
+      setUserData(storedUserData);
+    } else {
+      setUserData(user);
+    }
+  }, [user]);
+
+  // Lắng nghe thay đổi trong localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedUserData = JSON.parse(localStorage.getItem('userData'));
+      if (storedUserData) {
+        setUserData(storedUserData);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -47,7 +74,13 @@ function Header() {
                 role='button'
                 data-bs-toggle='dropdown'
               >
-                Tài khoản
+                <img
+                  src={user.avatar || 'https://via.placeholder.com/40'}
+                  alt='Avatar'
+                  className='rounded-circle me-2'
+                  style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                />
+                {user.full_name || 'Tài khoản'}
               </a>
               <ul className='dropdown-menu dropdown-menu-end border-0 shadow-sm bg-body-tertiary'>
                 <li>

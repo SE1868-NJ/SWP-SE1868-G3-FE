@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from '../layout';
-import CartLayout from "../layout/CartLayout/";
+import CartLayout from '../layout/CartLayout/';
 import { authRoutes } from './modules/auth.routes';
 import { shopRoutes } from './modules/shop.routes';
 import { userRoutes } from './modules/user.routes';
@@ -14,6 +14,7 @@ import { orderDetailRoutes } from './modules/orderDetail.routes';
 import { OrderProvider } from '../hooks/contexts/OrderContext';
 import ShopLayout from '../layout/ShopLayout';
 import { shopRoute } from './modules/store.routes';
+import ProfileLayout from '../layout/ProfileLayout/ProfileLayout';
 
 const routes = [
 	{
@@ -23,20 +24,30 @@ const routes = [
 				<Layout />
 			</OrderProvider>
 		),
-		children: [...homeRoute, ...authRoutes, ...userRoutes, ...orderDetailRoutes],
+		children: [...homeRoute, ...authRoutes, ...orderDetailRoutes],
 	},
+	{
+		path: '/',
+		element: (
+			<OrderProvider>
+				<ProfileLayout />
+			</OrderProvider>
+		), 	
+		children: userRoutes,
+	},
+
 	{
 		path: '/seller',
 		element: <SellerLayout />,
 		children: [...sellerRoutes, ...supplierRoutes, ...shopRoutes],
 	},
 	{
-		path: "/order",
+		path: '/order',
 		element: <CartLayout />,
 		children: orderRoutes,
 	},
 	{
-		path: "/shop",
+		path: '/shop',
 		element: <ShopLayout />,
 		children: shopRoute,
 	},
