@@ -124,7 +124,7 @@ const CartContainer = () => {
       {items.length === 0 ? (
         <div className="text-center mt-5 d-flex flex-column align-items-center justify-content-center">
           <img
-            src="https://ecommerce-frontend-view.netlify.app/empty-cart.png"
+            src="http://127.0.0.1:9000/data/cart/1741942901268_empty-cart.png"
             alt="Empty Cart"
             className="mb-4"
             style={{ maxWidth: '250px', height: 'auto' }}
