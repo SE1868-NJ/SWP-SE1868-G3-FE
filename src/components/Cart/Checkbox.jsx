@@ -1,4 +1,3 @@
-// components/Cart/Checkbox.jsx
 import React from "react";
 
 const Checkbox = ({ checked, onChange, ...props }) => {

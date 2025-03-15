@@ -1,8 +1,6 @@
-// import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// import Container from '../components/Container';
 import React, { useState } from 'react';
-import { useAuth } from '../hooks/contexts/AuthContext';
+import { useAuth } from '../../hooks/contexts/AuthContext';
 function Header() {
   const { cartCount } = useAuth();
 
@@ -106,7 +104,6 @@ function Header() {
             />
             <span className='fs-4 fw-bold'>Chợ Làng</span>
           </Link>
-
           <form
             className='col-12 col-lg-auto mb-3 mb-lg-0'
             role='search'

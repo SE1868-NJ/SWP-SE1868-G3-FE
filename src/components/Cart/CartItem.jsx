@@ -1,37 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Checkbox from "./Checkbox";
-import avt from "../../assets/images/avt.jpg";
 import { Modal } from "react-bootstrap";
 
 const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, removeItem }) => {
-  const { id, name, price, quantity, stock = 1000 } = item;
-  const isSelected = selectedItems.includes(id);
+  const isSelected = selectedItems.includes(item.id);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showQuantityConfirm, setShowQuantityConfirm] = useState(false);
+  const [localQuantity, setLocalQuantity] = useState(item.quantity.toString());
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const originalPricePerUnit = Number(price);
-  const originalPrice = originalPricePerUnit * quantity;
+  useEffect(() => {
+    setLocalQuantity(item.quantity.toString());
+  }, [item.quantity]);
+
+  const originalPrice = Number(item.price) * item.quantity;
+
+  const validateQuantity = (newQuantity) => {
+    if (newQuantity > item.stock) {
+      setErrorMessage(`Số lượng vượt quá kho (${item.stock} sản phẩm). Vui lòng chọn số lượng nhỏ hơn hoặc bằng ${item.stock}.`);
+      setShowQuantityConfirm(true);
+      return false;
+    }
+    return true;
+  };
 
   const handleUpdateQuantity = (delta) => {
-    const newQuantity = Math.max(1, quantity + delta);
-    if (newQuantity > stock) {
-      alert(`Số lượng vượt quá kho (${stock} sản phẩm). Vui lòng chọn số lượng nhỏ hơn hoặc bằng ${stock}.`);
+    const newQuantity = Math.max(1, Number(localQuantity) + delta);
+    if (!validateQuantity(newQuantity)) {
       return;
     }
-    updateQuantity(id, delta);
+    setLocalQuantity(newQuantity.toString());
+    updateQuantity(item.id, newQuantity);
   };
 
-  const handleDeleteClick = () => {
-    setShowDeleteConfirm(true);
+  const handleQuantityChange = (e) => {
+    const numericValue = e.target.value.replace(/[^\d]/g, '');
+    setLocalQuantity(numericValue);
   };
 
-  const handleConfirmDelete = () => {
-    removeItem(id);
-    setShowDeleteConfirm(false);
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteConfirm(false);
+  const handleQuantityBlur = () => {
+    const newQuantity = parseInt(localQuantity, 10) || 1;
+    if (!validateQuantity(newQuantity)) {
+      setLocalQuantity(item.quantity.toString());
+      return;
+    }
+    if (newQuantity !== item.quantity) {
+      updateQuantity(item.id, newQuantity);
+    }
   };
 
   return (
@@ -39,23 +56,36 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
       <div className="col-5 d-flex align-items-center text-start">
         <Checkbox
           checked={isSelected}
-          onChange={() => toggleSelectItem(id)}
+          onChange={() => toggleSelectItem(item.id)}
           className="me-3"
         />
-        <img src={avt} alt={name} style={{ width: "80px", height: "80px", objectFit: "cover" }} className="me-2" />
+        <Link to={`/product/${item.productId}`}>
+          <img src={item.image} alt={item.name} style={{ width: "80px", height: "80px", objectFit: "cover" }} className="me-2" />
+        </Link>
         <div>
-          <div className="fw-bold">{name}</div>
-          <div className="text-muted">Kho: {stock}</div>
+          <div className="fw-bold">
+            <Link to={`/product/${item.productId}`} className="text-dark text-decoration-none">
+              {item.name}
+            </Link>
+          </div>
+          <div className="text-muted">Kho: {item.stock}</div>
         </div>
       </div>
 
       <div className="col-2 text-center">
-        <span>{originalPricePerUnit.toLocaleString()}đ</span>
+        <span>{Number(item.price).toLocaleString()}đ</span>
       </div>
 
       <div className="col-2 d-flex justify-content-center align-items-center">
         <button className="btn btn-sm" onClick={() => handleUpdateQuantity(-1)}>-</button>
-        <span className="mx-2 border rounded px-3 py-1">{quantity}</span>
+        <input
+          type="text"
+          className="mx-2 border rounded text-center"
+          style={{ width: "50px", height: "30px" }}
+          value={localQuantity}
+          onChange={handleQuantityChange}
+          onBlur={handleQuantityBlur}
+        />
         <button className="btn btn-sm" onClick={() => handleUpdateQuantity(1)}>+</button>
       </div>
 
@@ -64,20 +94,37 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
       </div>
 
       <div className="col-1 text-center">
-        <button className="btn btn-sm text-danger" onClick={handleDeleteClick}>
+        <button className="btn btn-sm text-danger" onClick={() => setShowDeleteConfirm(true)}>
           <i className="bi bi-trash" />
         </button>
       </div>
 
-      <Modal show={showDeleteConfirm} onHide={handleCancelDelete} centered>
+      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} centered>
         <Modal.Body className="text-center p-4">
           <p>Bạn có muốn xóa sản phẩm này?</p>
           <div className="d-flex justify-content-center gap-3">
-            <button className="btn btn-secondary" onClick={handleCancelDelete}>
+            <button className="btn btn-secondary" onClick={() => setShowDeleteConfirm(false)}>
               Trở lại
             </button>
-            <button className="btn btn-danger" onClick={handleConfirmDelete}>
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                removeItem(item.id);
+                setShowDeleteConfirm(false);
+              }}
+            >
               Có
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showQuantityConfirm} onHide={() => setShowQuantityConfirm(false)} centered>
+        <Modal.Body className="text-center p-4">
+          <p>{errorMessage}</p>
+          <div className="d-flex justify-content-center gap-3">
+            <button className="btn btn-secondary" onClick={() => setShowQuantityConfirm(false)}>
+              OK
             </button>
           </div>
         </Modal.Body>
