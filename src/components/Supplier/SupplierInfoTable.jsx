@@ -24,29 +24,16 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   });
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
-  // Ngăn chặn form submit khi có lỗi
   useEffect(() => {
-    // Tìm form chứa component này
     const form = document.querySelector('form');
     if (!form) return;
-
-    // Lưu trữ handler submit gốc
     const originalSubmit = form.onsubmit;
-
-    // Ghi đè handler submit
     form.onsubmit = (e) => {
-      // Đánh dấu là đã cố gắng submit
       setAttemptedSubmit(true);
-
-      // Kiểm tra tính hợp lệ của toàn bộ form
       const isFormValid = validateForm();
-
       if (!isFormValid) {
-        // Ngăn chặn submit
         e.preventDefault();
         e.stopPropagation();
-
-        // Focus vào trường lỗi đầu tiên
         setTimeout(() => {
           const firstInvalidField = document.querySelector('.is-invalid');
           if (firstInvalidField) {
@@ -54,11 +41,9 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
             firstInvalidField.focus();
           }
         }, 100);
-
         return false;
       }
 
-      // Gọi handler submit gốc nếu có
       if (originalSubmit && typeof originalSubmit === 'function') {
         return originalSubmit(e);
       }
@@ -66,38 +51,30 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
       return true;
     };
 
-    // Thêm phương thức validate vào đối tượng supplier
     supplier.validateAddressForm = () => {
       setAttemptedSubmit(true);
       return validateAddressFields();
     };
 
-    // Cleanup khi component unmount
     return () => {
       form.onsubmit = originalSubmit;
     };
   }, [supplier]);
 
-  // Hàm kiểm tra tính hợp lệ của các trường địa chỉ
   const validateAddressFields = () => {
     return province !== "" &&
       (province === "" || district !== "") &&
       (district === "" || ward !== "");
   };
 
-  // Hàm kiểm tra tính hợp lệ của toàn bộ form
   const validateForm = () => {
     let isValid = true;
-
-    // Kiểm tra các trường bắt buộc
     if (!supplier.supplier_name) isValid = false;
     if (!supplier.delivery_time) isValid = false;
     if (!supplier.contact_name) isValid = false;
     if (!supplier.phone_number) isValid = false;
 
-    // Kiểm tra các trường địa chỉ
     if (!validateAddressFields()) isValid = false;
-
     return isValid;
   };
 
@@ -229,7 +206,6 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     setTouched(prev => ({ ...prev, [field]: true }));
   };
 
-  // Hiển thị lỗi dựa trên trạng thái touched và attemptedSubmit
   const showFieldError = (fieldName) => {
     return (touched[fieldName] || attemptedSubmit) && !supplier[fieldName];
   };
