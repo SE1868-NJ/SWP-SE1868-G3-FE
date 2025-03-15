@@ -5,7 +5,7 @@ import userService from '../services/userService';
 import { Modal, Button } from 'react-bootstrap';
 
 const Profile = () => {
-	const { user, setUser } = useAuth(); // Lấy user từ context
+	const { user, setUser } = useAuth();
 	const id = user.id;
 
 	const navigate = useNavigate();
@@ -19,6 +19,9 @@ const Profile = () => {
 	const [isEditing, setIsEditing] = useState(false);
 	const errorRefs = useRef({});
 	const [showModal, setShowModal] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
+	const [showErrorModal, setShowErrorModal] = useState(false);
+
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
@@ -34,7 +37,6 @@ const Profile = () => {
 					avatar: response.avatar || prev.avatar,
 				}));
 				localStorage.setItem('userData', JSON.stringify(response));
-				console.log('UserData sau khi cập nhật:', userData);
 			} catch (error) {
 				console.error('Lỗi khi fetch user:', error);
 			}
@@ -71,7 +73,8 @@ const Profile = () => {
 			}
 
 			if (Object.values(errors).some((error) => error)) {
-				alert('Vui lòng sửa các lỗi trước khi lưu!');
+				setErrorMessage('Vui lòng sửa các lỗi trước khi lưu!');
+				setShowErrorModal(true);
 				return;
 			}
 
@@ -85,10 +88,17 @@ const Profile = () => {
 				if (updateResponse) {
 					setShowModal(true);
 					const fetchResponse = await userService.getUserById(id);
-					setUserData(fetchResponse);
-					setUser(fetchResponse);
+					const updatedUserData = {
+						...fetchResponse,
+						id: id,
+					};
 
-					localStorage.setItem('userData', JSON.stringify(fetchResponse));
+					setUserData(updatedUserData);
+					setUser(updatedUserData);
+
+					localStorage.setItem('userData', JSON.stringify(updatedUserData));
+
+					window.dispatchEvent(new Event('userDataChanged'));
 					setIsEditing(false);
 					setAvatarFile(null);
 				} else {
@@ -109,7 +119,6 @@ const Profile = () => {
 	const handleFileUpload = async (e) => {
 		const file = e.target.files[0];
 		if (!file || !user) {
-			console.log('No file or user:', { file, user });
 			return;
 		}
 
@@ -209,6 +218,18 @@ const Profile = () => {
 							<Modal.Body>Cập nhật thành công!</Modal.Body>
 							<Modal.Footer>
 								<Button variant='secondary' onClick={() => setShowModal(false)}>
+									Đóng
+								</Button>
+							</Modal.Footer>
+						</Modal>
+
+						<Modal show={showErrorModal} onHide={() => setShowErrorModal(false)} centered>
+							<Modal.Header closeButton>
+								<Modal.Title>Lỗi</Modal.Title>
+							</Modal.Header>
+							<Modal.Body>{errorMessage}</Modal.Body>
+							<Modal.Footer>
+								<Button variant='secondary' onClick={() => setShowErrorModal(false)}>
 									Đóng
 								</Button>
 							</Modal.Footer>
