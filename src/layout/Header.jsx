@@ -1,7 +1,4 @@
-// import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// import Container from '../components/Container';
-// import React, { useState } from 'react';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/contexts/AuthContext';
 
@@ -11,31 +8,21 @@ function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
-  // Lấy thông tin user từ localStorage mỗi khi component mount
   useEffect(() => {
-    const storedUserData = JSON.parse(localStorage.getItem('userData'));
-    if (storedUserData) {
-      setUserData(storedUserData);
-    } else {
-      setUserData(user);
-    }
-  }, [user]);
-
-  // Lắng nghe thay đổi trong localStorage
-  useEffect(() => {
-    const handleStorageChange = () => {
+    const updateUserData = () => {
       const storedUserData = JSON.parse(localStorage.getItem('userData'));
-      if (storedUserData) {
-        setUserData(storedUserData);
-      }
+      setUserData(storedUserData || user);
     };
-
-    window.addEventListener('storage', handleStorageChange);
-    
+  
+    updateUserData(); 
+  
+    window.addEventListener('storage', updateUserData);
+  
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storage', updateUserData);
     };
-  }, []);
+  }, [user]);
+  
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {

@@ -13,7 +13,6 @@ const ProfileLayout = () => {
 					<div className='col-md-3 col-lg-3 p-0'>
 						<Sidebar />
 					</div>
-
 					{/* Main Content */}
 					<div className='col-md-9 col-lg-9 bg-light'>
 						<Outlet />

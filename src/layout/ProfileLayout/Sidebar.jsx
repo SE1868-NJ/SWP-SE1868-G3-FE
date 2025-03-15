@@ -9,31 +9,19 @@ const Sidebar = () => {
 	const [userData, setUserData] = useState(user);
 
 	useEffect(() => {
-		// Lấy thông tin user từ localStorage
-		const storedUserData = JSON.parse(localStorage.getItem('userData'));
-		if (storedUserData) {
-			setUserData(storedUserData);
-		} else {
-			setUserData(user);
-		}
-	}, [user]);
-
-	useEffect(() => {
-		const handleStorageChange = () => {
+		const updateUserData = () => {
 			const storedUserData = JSON.parse(localStorage.getItem('userData'));
-			if (storedUserData) {
-				setUserData(storedUserData);
-			}
+			setUserData(storedUserData || user);
 		};
 
-		// Đăng ký event listener cho storage changes
-		window.addEventListener('storage', handleStorageChange);
+		updateUserData();
 
-		// Cleanup function
+		window.addEventListener('storage', updateUserData);
+
 		return () => {
-			window.removeEventListener('storage', handleStorageChange);
+			window.removeEventListener('storage', updateUserData);
 		};
-	}, []);
+	}, [user]);
 
 	const handleItemClick = (key) => {
 		handleStatusChange(key);
@@ -43,13 +31,6 @@ const Sidebar = () => {
 			navigate('/profile');
 		}
 	};
-
-	// const handleItemClick = (key) => {
-	// 	handleStatusChange(key);
-	// 	if (key === 'order') {
-	// 		navigate('/orders');
-	// 	}
-	// };
 
 	return (
 		<div className='border-end h-100'>
