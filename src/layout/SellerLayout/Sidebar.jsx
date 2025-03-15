@@ -127,24 +127,24 @@ function Sidebar() {
 					</div>
 					{/* Manage */}
 
-					{/* Manage */}
+					{/* Orders */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
 								className='accordion-button'
 								type='button'
 								data-bs-toggle='collapse'
-								data-bs-target='#manage'
+								data-bs-target='#orders'
 								aria-expanded='true'
-								aria-controls='manage'
+								aria-controls='orders'
 							>
-								<i className='bi bi-kanban h6 m-0 p-0 me-3' />
+								<i className='bi bi-box-seam h6 m-0 p-0 me-3' />
 								<h6 className=' fw-bold m-0 p-0'>Đơn hàng</h6>
 							</button>
 						</h2>
 						<div
-							id='manage'
-							className='accordion-collapse collapse show'
+							id='orders'
+							className='accordion-collapse collapse'
 							data-bs-parent='#accordionExample'
 						>
 							<div className='accordion-body'>
@@ -173,7 +173,7 @@ function Sidebar() {
 							</div>
 						</div>
 					</div>
-					{/* Manage */}
+					{/* Orders */}
 
 					{/* Social */}
 					<div className='accordion-item'>
