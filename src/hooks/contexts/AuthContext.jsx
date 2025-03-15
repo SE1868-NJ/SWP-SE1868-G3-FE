@@ -90,6 +90,7 @@ export const AuthProvider = ({ children }) => {
             toastVariant,
             setShowToast,
             user,
+            setUser
             // loading,
             // login,
             // logout
