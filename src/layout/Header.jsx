@@ -3,9 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 // import Container from '../components/Container';
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/contexts/AuthContext';
+import MiniCartModal from '../components/Modals/MiniCartModal';
+
 function Header() {
   const { cartCount } = useAuth();
-
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
@@ -127,18 +128,8 @@ function Header() {
                   <i className='bi bi-search' />
                 </button>
               </div>
-              <Link
-                to='/order/cart'
-                className='btn btn-outline-light border-2 position-relative'
-              >
-                <i className='bi bi-basket-fill' />
-                {cartCount > 0 && (
-                  <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'>
-                    {cartCount}
-                    <span className='visually-hidden'>items in cart</span>
-                  </span>
-                )}
-              </Link>
+
+              <MiniCartModal />
             </div>
           </form>
         </div>
