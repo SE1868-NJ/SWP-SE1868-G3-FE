@@ -111,11 +111,11 @@ function Sidebar() {
 											Nhà cung cấp
 										</Link>
 									</li>
-									<li className='list-group-item px-0'>
+									{/* <li className='list-group-item px-0'>
 										<Link to={'/seller/orders'} className='nav-link'>
 											Đơn hàng
 										</Link>
-									</li>
+									</li> */}
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/orders'} className='nav-link'>
 											Khuyến mại
@@ -127,6 +127,53 @@ function Sidebar() {
 					</div>
 					{/* Manage */}
 
+					{/* Orders */}
+					<div className='accordion-item'>
+						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
+							<button
+								className='accordion-button'
+								type='button'
+								data-bs-toggle='collapse'
+								data-bs-target='#orders'
+								aria-expanded='true'
+								aria-controls='orders'
+							>
+								<i className='bi bi-box-seam h6 m-0 p-0 me-3' />
+								<h6 className=' fw-bold m-0 p-0'>Đơn hàng</h6>
+							</button>
+						</h2>
+						<div
+							id='orders'
+							className='accordion-collapse collapse'
+							data-bs-parent='#accordionExample'
+						>
+							<div className='accordion-body'>
+								<ul className='list-group list-group-flush'>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/new'} className='nav-link'>
+											Đơn hàng mới
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/processing'} className='nav-link'>
+											Đơn hàng đang xử lý
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/completed'} className='nav-link'>
+											Đơn hàng đã hoàn thành
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/cancelled'} className='nav-link'>
+											Đơn hàng đã hủy
+										</Link>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					{/* Orders */}
 					{/* Social */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
