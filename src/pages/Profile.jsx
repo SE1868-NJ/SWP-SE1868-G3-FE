@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { AuthProvider, useAuth } from '../hooks/contexts/AuthContext';
 import userService from '../services/userService';
+import { Modal, Button } from 'react-bootstrap';
 
 const Profile = () => {
 	const { user, setUser } = useAuth(); // Lấy user từ context
@@ -17,7 +18,7 @@ const Profile = () => {
 	const [errors, setErrors] = useState({});
 	const [isEditing, setIsEditing] = useState(false);
 	const errorRefs = useRef({});
-
+	const [showModal, setShowModal] = useState(false);
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
@@ -82,7 +83,7 @@ const Profile = () => {
 				);
 
 				if (updateResponse) {
-					alert('Cập nhật thành công!');
+					setShowModal(true);
 					const fetchResponse = await userService.getUserById(id);
 					setUserData(fetchResponse);
 					setUser(fetchResponse);
@@ -91,7 +92,7 @@ const Profile = () => {
 					setIsEditing(false);
 					setAvatarFile(null);
 				} else {
-					throw new Error('Cập nhật thất bại: Response không hợp lệ');
+					throw new Error('Cập nhật thất bại');
 				}
 			} catch (error) {
 				console.error(
@@ -201,6 +202,17 @@ const Profile = () => {
 						<button className='btn btn-danger mt-3' onClick={handleEditSave}>
 							{isEditing ? 'Lưu' : 'Cập nhật'}
 						</button>
+						<Modal show={showModal} onHide={() => setShowModal(false)} centered>
+							<Modal.Header closeButton>
+								<Modal.Title>Thông báo</Modal.Title>
+							</Modal.Header>
+							<Modal.Body>Cập nhật thành công!</Modal.Body>
+							<Modal.Footer>
+								<Button variant='secondary' onClick={() => setShowModal(false)}>
+									Đóng
+								</Button>
+							</Modal.Footer>
+						</Modal>
 					</div>
 
 					{/* Avatar Upload */}
