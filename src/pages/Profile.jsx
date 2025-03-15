@@ -109,7 +109,8 @@ const Profile = () => {
 					'Lỗi khi cập nhật thông tin:',
 					error.response?.data || error.message,
 				);
-				alert('Cập nhật thất bại!');
+				setErrorMessage('Cập nhật thất bại!');
+				setShowErrorModal(true);
 			}
 		} else {
 			setIsEditing(true);
@@ -223,13 +224,20 @@ const Profile = () => {
 							</Modal.Footer>
 						</Modal>
 
-						<Modal show={showErrorModal} onHide={() => setShowErrorModal(false)} centered>
+						<Modal
+							show={showErrorModal}
+							onHide={() => setShowErrorModal(false)}
+							centered
+						>
 							<Modal.Header closeButton>
 								<Modal.Title>Lỗi</Modal.Title>
 							</Modal.Header>
 							<Modal.Body>{errorMessage}</Modal.Body>
 							<Modal.Footer>
-								<Button variant='secondary' onClick={() => setShowErrorModal(false)}>
+								<Button
+									variant='secondary'
+									onClick={() => setShowErrorModal(false)}
+								>
 									Đóng
 								</Button>
 							</Modal.Footer>

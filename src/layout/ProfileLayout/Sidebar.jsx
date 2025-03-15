@@ -8,23 +8,14 @@ const Sidebar = () => {
 	const navigate = useNavigate();
 	const [userData, setUserData] = useState(user);
 
-	useEffect(() => {
-		console.log(
-			'localStorage userData khi tải trang:',
-			JSON.parse(localStorage.getItem('userData')),
-		);
+	useEffect(() => {		
 		const updateUserData = () => {
 			try {
 				const storedUserData = JSON.parse(localStorage.getItem('userData'));
 				if (storedUserData && storedUserData.avatar) {
 					setUserData(storedUserData);
-					console.log(
-						'Component: Updated userData with avatar from localStorage',
-						storedUserData,
-					);
 				} else if (user && user.avatar) {
 					setUserData(user);
-					console.log('Component: Using user with avatar from context', user);
 				}
 			} catch (error) {
 				console.error('Error parsing userData from localStorage', error);
