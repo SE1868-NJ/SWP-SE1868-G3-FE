@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import supplierService from "../../services/supplierService";
+import { addressService } from "../../services/addressService";
 
 function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = false }) {
   const [provinces, setProvinces] = useState([]);
@@ -8,22 +8,121 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
   const [ward, setWard] = useState("");
+  const [touched, setTouched] = useState({
+    supplier_name: false,
+    delivery_time: false,
+    province: false,
+    district: false,
+    ward: false,
+    contact_name: false,
+    phone_number: false
+  });
+  const [isLoading, setIsLoading] = useState({
+    provinces: false,
+    districts: false,
+    wards: false
+  });
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+
+  // Ngăn chặn form submit khi có lỗi
+  useEffect(() => {
+    // Tìm form chứa component này
+    const form = document.querySelector('form');
+    if (!form) return;
+
+    // Lưu trữ handler submit gốc
+    const originalSubmit = form.onsubmit;
+
+    // Ghi đè handler submit
+    form.onsubmit = (e) => {
+      // Đánh dấu là đã cố gắng submit
+      setAttemptedSubmit(true);
+
+      // Kiểm tra tính hợp lệ của toàn bộ form
+      const isFormValid = validateForm();
+
+      if (!isFormValid) {
+        // Ngăn chặn submit
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Focus vào trường lỗi đầu tiên
+        setTimeout(() => {
+          const firstInvalidField = document.querySelector('.is-invalid');
+          if (firstInvalidField) {
+            firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstInvalidField.focus();
+          }
+        }, 100);
+
+        return false;
+      }
+
+      // Gọi handler submit gốc nếu có
+      if (originalSubmit && typeof originalSubmit === 'function') {
+        return originalSubmit(e);
+      }
+
+      return true;
+    };
+
+    // Thêm phương thức validate vào đối tượng supplier
+    supplier.validateAddressForm = () => {
+      setAttemptedSubmit(true);
+      return validateAddressFields();
+    };
+
+    // Cleanup khi component unmount
+    return () => {
+      form.onsubmit = originalSubmit;
+    };
+  }, [supplier]);
+
+  // Hàm kiểm tra tính hợp lệ của các trường địa chỉ
+  const validateAddressFields = () => {
+    return province !== "" &&
+      (province === "" || district !== "") &&
+      (district === "" || ward !== "");
+  };
+
+  // Hàm kiểm tra tính hợp lệ của toàn bộ form
+  const validateForm = () => {
+    let isValid = true;
+
+    // Kiểm tra các trường bắt buộc
+    if (!supplier.supplier_name) isValid = false;
+    if (!supplier.delivery_time) isValid = false;
+    if (!supplier.contact_name) isValid = false;
+    if (!supplier.phone_number) isValid = false;
+
+    // Kiểm tra các trường địa chỉ
+    if (!validateAddressFields()) isValid = false;
+
+    return isValid;
+  };
 
   useEffect(() => {
-    if (supplier.address) {
-      const [wardPart, districtPart, provincePart] = supplier.address.split(", ");
-      setWard(wardPart || "");
-      setDistrict(districtPart || "");
-      setProvince(provincePart || "");
-    }
+    const addressParts = supplier.address ? supplier.address.split(", ") : [];
+    setWard("");
+    setDistrict("");
+    setProvince("");
+
+    if (addressParts.length >= 3) setWard(addressParts[0]);
+    if (addressParts.length >= 2) setDistrict(addressParts[addressParts.length - 2]);
+    if (addressParts.length >= 1) setProvince(addressParts[addressParts.length - 1]);
   }, [supplier.address]);
 
   useEffect(() => {
     async function loadProvinces() {
+      setIsLoading(prev => ({ ...prev, provinces: true }));
       try {
-        const data = await supplierService.getProvinces();
-        setProvinces(data);
+        const response = await addressService.getAllProvince();
+        if (response.status === 'success') {
+          setProvinces(response.data);
+        }
       } catch (error) {
+      } finally {
+        setIsLoading(prev => ({ ...prev, provinces: false }));
       }
     }
     loadProvinces();
@@ -31,38 +130,57 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
 
   useEffect(() => {
     async function loadDistricts() {
+      if (!province) {
+        setDistricts([]);
+        return;
+      }
+      setIsLoading(prev => ({ ...prev, districts: true }));
       try {
-        if (province) {
-          const provinceObj = provinces.find((p) => p.name === province);
-          if (provinceObj) {
-            const data = await supplierService.getDistricts(provinceObj.code);
-            setDistricts(data);
+        const selectedProvince = provinces.find(p => p.name === province);
+        if (selectedProvince) {
+          const response = await addressService.getDistricByProvince(selectedProvince.id);
+          if (response.status === 'success') {
+            setDistricts(response.data);
           }
-        } else {
-          setDistricts([]);
         }
       } catch (error) {
+      } finally {
+        setIsLoading(prev => ({ ...prev, districts: false }));
       }
     }
-    loadDistricts();
+    if (province) {
+      loadDistricts();
+    } else {
+      setDistricts([]);
+    }
   }, [province, provinces]);
 
   useEffect(() => {
     async function loadWards() {
+      if (!district) {
+        setWards([]);
+        return;
+      }
+      setIsLoading(prev => ({ ...prev, wards: true }));
       try {
-        if (district) {
-          const districtObj = districts.find((d) => d.name === district);
-          if (districtObj) {
-            const data = await supplierService.getWards(districtObj.code);
-            setWards(data);
+        const selectedDistrict = districts.find(d => d.name === district);
+        if (selectedDistrict) {
+          const response = await addressService.getWardsByDistrict(selectedDistrict.id);
+          if (response.status === 'success') {
+            setWards(response.data);
           }
-        } else {
-          setWards([]);
         }
       } catch (error) {
+      } finally {
+        setIsLoading(prev => ({ ...prev, wards: false }));
       }
     }
-    loadWards();
+
+    if (district) {
+      loadWards();
+    } else {
+      setWards([]);
+    }
   }, [district, districts]);
 
   const handleProvinceChange = (e) => {
@@ -72,7 +190,10 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     setWard("");
     setDistricts([]);
     setWards([]);
-    const newAddress = `${ward}, ${district}, ${value}`.replace(/, , /g, ", ").replace(/^, |, $/g, "");
+
+    setTouched(prev => ({ ...prev, province: true }));
+
+    const newAddress = value ? `${value}` : "";
     handleChange({ target: { name: "address", value: newAddress } });
   };
 
@@ -81,16 +202,41 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     setDistrict(value);
     setWard("");
     setWards([]);
-    const newAddress = `${ward}, ${value}, ${province}`.replace(/, , /g, ", ").replace(/^, |, $/g, "");
+
+    setTouched(prev => ({ ...prev, district: true }));
+
+    const newAddress = value ? `${value}, ${province}` : province;
     handleChange({ target: { name: "address", value: newAddress } });
   };
 
   const handleWardChange = (e) => {
     const value = e.target.value;
     setWard(value);
-    const newAddress = `${value}, ${district}, ${province}`.replace(/, , /g, ", ").replace(/^, |, $/g, "");
+
+    setTouched(prev => ({ ...prev, ward: true }));
+
+    const newAddress = value ? `${value}, ${district}, ${province}` : `${district}, ${province}`;
     handleChange({ target: { name: "address", value: newAddress } });
   };
+
+  const handleInputChange = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    handleChange(e);
+  };
+
+  const handleBlur = (field) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+  };
+
+  // Hiển thị lỗi dựa trên trạng thái touched và attemptedSubmit
+  const showFieldError = (fieldName) => {
+    return (touched[fieldName] || attemptedSubmit) && !supplier[fieldName];
+  };
+
+  const showProvinceError = (touched.province || attemptedSubmit || errors.address) && !province;
+  const showDistrictError = ((touched.district || attemptedSubmit) && province && !district);
+  const showWardError = ((touched.ward || attemptedSubmit) && district && !ward);
 
   return (
     <>
@@ -100,24 +246,30 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         <input
           type='text'
           name='supplier_name'
-          className={`form-control ${errors.supplier_name ? 'is-invalid' : ''}`}
-          value={supplier.supplier_name}
-          onChange={handleChange}
+          className={`form-control ${showFieldError('supplier_name') || errors.supplier_name ? 'is-invalid' : ''}`}
+          value={supplier.supplier_name || ''}
+          onChange={handleInputChange}
+          onBlur={() => handleBlur('supplier_name')}
           disabled={readOnly}
         />
-        {errors.supplier_name && <div className="invalid-feedback">{errors.supplier_name}</div>}
+        {(showFieldError('supplier_name') || errors.supplier_name) && (
+          <div className="invalid-feedback">{errors.supplier_name || "Tên nhà cung cấp không được để trống"}</div>
+        )}
       </div>
       <div className='mb-3'>
         <label className='form-label'>Thời Gian Giao Hàng (Ngày) <span className="text-danger">*</span></label>
         <input
           type='number'
           name='delivery_time'
-          className={`form-control ${errors.delivery_time ? 'is-invalid' : ''}`}
-          value={supplier.delivery_time}
-          onChange={handleChange}
+          className={`form-control ${showFieldError('delivery_time') || errors.delivery_time ? 'is-invalid' : ''}`}
+          value={supplier.delivery_time || ''}
+          onChange={handleInputChange}
+          onBlur={() => handleBlur('delivery_time')}
           disabled={readOnly}
         />
-        {errors.delivery_time && <div className="invalid-feedback">{errors.delivery_time}</div>}
+        {(showFieldError('delivery_time') || errors.delivery_time) && (
+          <div className="invalid-feedback">{errors.delivery_time || "Thời gian giao hàng không được để trống"}</div>
+        )}
       </div>
 
       <h5 className="fw-bold text-decoration-underline">Thông Tin Giao Dịch</h5>
@@ -126,7 +278,7 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         <select
           name='bank_name'
           className='form-select'
-          value={supplier.bank_name}
+          value={supplier.bank_name || ''}
           onChange={handleChange}
           disabled={readOnly}
         >
@@ -142,11 +294,25 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
       </div>
       <div className='mb-3'>
         <label className='form-label'>Số Tài Khoản</label>
-        <input type='text' name='account_number' className='form-control' value={supplier.account_number} onChange={handleChange} disabled={readOnly} />
+        <input
+          type='text'
+          name='account_number'
+          className='form-control'
+          value={supplier.account_number || ''}
+          onChange={handleChange}
+          disabled={readOnly}
+        />
       </div>
       <div className='mb-3'>
         <label className='form-label'>Thời Hạn Thanh Toán</label>
-        <input type='text' name='payment_term' className='form-control' value={supplier.payment_term} onChange={handleChange} disabled={readOnly} />
+        <input
+          type='text'
+          name='payment_term'
+          className='form-control'
+          value={supplier.payment_term || ''}
+          onChange={handleChange}
+          disabled={readOnly}
+        />
       </div>
 
       <h5 className="fw-bold text-decoration-underline">Địa Chỉ Nhà Cung Cấp</h5>
@@ -157,20 +323,25 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         <select
           value={province}
           onChange={handleProvinceChange}
-          className={`form-select ${errors.address ? "is-invalid" : ""}`}
-          disabled={readOnly}
+          onBlur={() => handleBlur('province')}
+          className={`form-select ${showProvinceError ? "is-invalid" : ""}`}
+          disabled={readOnly || isLoading.provinces}
+          style={{ cursor: isLoading.provinces ? 'wait' : 'pointer' }}
         >
-          <option value="">-- Chọn Tỉnh/Thành phố --</option>
+          <option value="">
+            {isLoading.provinces ? "Đang tải..." : "-- Chọn Tỉnh/Thành phố --"}
+          </option>
           {provinces.map((prov) => (
-            <option key={prov.code} value={prov.name}>
+            <option key={prov.id} value={prov.name}>
               {prov.name}
             </option>
           ))}
         </select>
-        {errors.address && province === "" && (
+        {showProvinceError && (
           <div className="invalid-feedback">Tỉnh/Thành phố không được để trống</div>
         )}
       </div>
+
       <div className="mb-3">
         <label className="form-label">
           Quận/Huyện <span className="text-danger">*</span>
@@ -178,20 +349,25 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         <select
           value={district}
           onChange={handleDistrictChange}
-          className={`form-select ${errors.address ? "is-invalid" : ""}`}
-          disabled={readOnly || !province}
+          onBlur={() => handleBlur('district')}
+          className={`form-select ${showDistrictError ? "is-invalid" : ""}`}
+          disabled={readOnly || !province || isLoading.districts}
+          style={{ cursor: (!province || isLoading.districts) ? 'not-allowed' : 'pointer' }}
         >
-          <option value="">-- Chọn Quận/Huyện --</option>
+          <option value="">
+            {isLoading.districts ? "Đang tải..." : "-- Chọn Quận/Huyện --"}
+          </option>
           {districts.map((dist) => (
-            <option key={dist.code} value={dist.name}>
+            <option key={dist.id} value={dist.name}>
               {dist.name}
             </option>
           ))}
         </select>
-        {errors.address && district === "" && (
+        {showDistrictError && (
           <div className="invalid-feedback">Quận/Huyện không được để trống</div>
         )}
       </div>
+
       <div className="mb-3">
         <label className="form-label">
           Xã/Phường <span className="text-danger">*</span>
@@ -199,17 +375,21 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         <select
           value={ward}
           onChange={handleWardChange}
-          className={`form-select ${errors.address ? "is-invalid" : ""}`}
-          disabled={readOnly || !district}
+          onBlur={() => handleBlur('ward')}
+          className={`form-select ${showWardError ? "is-invalid" : ""}`}
+          disabled={readOnly || !district || isLoading.wards}
+          style={{ cursor: (!district || isLoading.wards) ? 'not-allowed' : 'pointer' }}
         >
-          <option value="">-- Chọn Xã/Phường --</option>
+          <option value="">
+            {isLoading.wards ? "Đang tải..." : "-- Chọn Xã/Phường --"}
+          </option>
           {wards.map((w) => (
-            <option key={w.code} value={w.name}>
+            <option key={w.id} value={w.name}>
               {w.name}
             </option>
           ))}
         </select>
-        {errors.address && ward === "" && (
+        {showWardError && (
           <div className="invalid-feedback">Xã/Phường không được để trống</div>
         )}
       </div>
@@ -220,36 +400,62 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         <input
           type='text'
           name='contact_name'
-          className={`form-control ${errors.contact_name ? 'is-invalid' : ''}`}
-          value={supplier.contact_name}
-          onChange={handleChange}
+          className={`form-control ${showFieldError('contact_name') || errors.contact_name ? 'is-invalid' : ''}`}
+          value={supplier.contact_name || ''}
+          onChange={handleInputChange}
+          onBlur={() => handleBlur('contact_name')}
           disabled={readOnly}
         />
-        {errors.contact_name && <div className="invalid-feedback">{errors.contact_name}</div>}
+        {(showFieldError('contact_name') || errors.contact_name) && (
+          <div className="invalid-feedback">{errors.contact_name || "Họ và tên không được để trống"}</div>
+        )}
       </div>
       <div className='mb-3'>
         <label className='form-label'>Số Điện Thoại <span className="text-danger">*</span></label>
         <input
           type='text'
           name='phone_number'
-          className={`form-control ${errors.phone_number ? 'is-invalid' : ''}`}
-          value={supplier.phone_number}
-          onChange={handleChange}
+          className={`form-control ${showFieldError('phone_number') || errors.phone_number ? 'is-invalid' : ''}`}
+          value={supplier.phone_number || ''}
+          onChange={handleInputChange}
+          onBlur={() => handleBlur('phone_number')}
           disabled={readOnly}
         />
-        {errors.phone_number && <div className="invalid-feedback">{errors.phone_number}</div>}
+        {(showFieldError('phone_number') || errors.phone_number) && (
+          <div className="invalid-feedback">{errors.phone_number || "Số điện thoại không được để trống"}</div>
+        )}
       </div>
       <div className='mb-3'>
         <label className='form-label'>Facebook</label>
-        <input type='text' name='facebook' className='form-control' value={supplier.facebook} onChange={handleChange} disabled={readOnly} />
+        <input
+          type='text'
+          name='facebook'
+          className='form-control'
+          value={supplier.facebook || ''}
+          onChange={handleChange}
+          disabled={readOnly}
+        />
       </div>
       <div className='mb-3'>
         <label className='form-label'>Ghi chú</label>
-        <input type='text' name='note' className='form-control' value={supplier.note} onChange={handleChange} disabled={readOnly} />
+        <input
+          type='text'
+          name='note'
+          className='form-control'
+          value={supplier.note || ''}
+          onChange={handleChange}
+          disabled={readOnly}
+        />
       </div>
       <h5 className="fw-bold text-decoration-underline">Trạng Thái</h5>
       <div className='mb-3'>
-        <select name='status' className='form-select' value={supplier.status} onChange={handleChange} disabled={readOnly}>
+        <select
+          name='status'
+          className='form-select'
+          value={supplier.status || 'Hoạt động'}
+          onChange={handleChange}
+          disabled={readOnly}
+        >
           <option value='Hoạt động'>Hoạt động</option>
           <option value='Không hoạt động'>Không hoạt động</option>
         </select>
