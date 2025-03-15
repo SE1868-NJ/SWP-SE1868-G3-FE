@@ -20,16 +20,27 @@ function SearchProduct() {
 	const [sortPrice, setSortPrice] = useState('asc');
 	const { handleAddCart, user } = useAuth();
 
+	const searchTerm = query.get('query')?.toLowerCase() || '';
+	const selectedCategory = query.get('category') || '';
+
+	const [filters, setFilters] = useState({
+		categories:selectedCategory ? [selectedCategory] : [],
+		priceRange: { min: 0, max: 10000000 } // Mặc định là full range
+	});
+
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
-				const searchTerm = query.get('query')?.toLowerCase() || '';
+				//const searchTerm = query.get('query')?.toLowerCase() || '';
 
 				const params = {
 					page: currentPage,
 					limit: 8,
 					search: searchTerm,
 					sortPrice: sortPrice,
+					categories: filters.categories.join(','), // Chuyển array thành string
+					minPrice: filters.priceRange.min,
+					maxPrice: filters.priceRange.max
 				};
 
 				const response = await productService.getProducts(params);
@@ -39,21 +50,25 @@ function SearchProduct() {
 				console.error('Lỗi khi tải sản phẩm:', error);
 			}
 		};
+
 		fetchProducts();
-	}, [currentPage, query, sortPrice]);
+	}, [currentPage, query, sortPrice, filters]);  // Thêm filters vào dependency
 
 	const handleSortPrice = (order) => {
 		setSortPrice(order);
 	};
 
-	const searchTerm = query.get('query') || '';
+	//const searchTerm = query.get('query') || '';
 
 	return (
 		<div className='container-fluid mt-4'>
 			<div className='row'>
 				{/* Sidebar - Bộ lọc */}
 				<div className='col-md-2'>
-					<ProductSideBar />
+					<ProductSideBar 
+						filters={filters} 
+						onFilterChange={setFilters} 
+					/>
 				</div>
 
 				{/* Kết quả tìm kiếm */}

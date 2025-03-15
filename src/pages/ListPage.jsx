@@ -110,9 +110,9 @@ function ListPage() {
 		}
 	};
 
-	const handleCategorySelect = (category) => {
-		navigate(`/products?category=${encodeURIComponent(category)}`);
-	};
+	// const handleCategorySelect = (category) => {
+	// 	navigate(`/products?category=${encodeURIComponent(category)}`);
+	// };
 
 	const handleOpenDetail = (product) => {
 		setSelectedProduct(product);
@@ -123,13 +123,16 @@ function ListPage() {
 		setSelectedProduct(null);
 		setShowDetail(false);
 	};
+	const handleCategorySelect = (category) => {
+		navigate(`/search?category=${encodeURIComponent(category)}`);
+  };
 
 	return (
 		<>
 			<Advertisement images={images} />
 			<Categories
 				categories={categories}
-				selectedCategory={selectedCategory}
+				// selectedCategory={selectedCategory}
 				onCategorySelect={handleCategorySelect}
 			/>
 			<FlashSale
