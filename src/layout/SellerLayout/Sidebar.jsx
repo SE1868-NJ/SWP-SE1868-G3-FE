@@ -150,22 +150,22 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/products'} className='nav-link'>
+										<Link to={'/seller/orders/new'} className='nav-link'>
 											Đơn hàng mới
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/suppliers'} className='nav-link'>
+										<Link to={'/seller/orders/processing'} className='nav-link'>
 											Đơn hàng đang xử lý
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders'} className='nav-link'>
+										<Link to={'/seller/orders/completed'} className='nav-link'>
 											Đơn hàng đã hoàn thành
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders'} className='nav-link'>
+										<Link to={'/seller/orders/cancelled'} className='nav-link'>
 											Đơn hàng đã hủy
 										</Link>
 									</li>
@@ -174,7 +174,6 @@ function Sidebar() {
 						</div>
 					</div>
 					{/* Orders */}
-
 					{/* Social */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
