@@ -1,4 +1,7 @@
-import OrderManagement from '../../components/Seller/Order/OrderManagement';
+import NewOrders from '../../pages/SellerPages/Order/NewOrders';
+import ProcessingOrders from '../../pages/SellerPages/Order/ProcessingOrders';
+import CompletedOrders from '../../pages/SellerPages/Order/CompletedOrders';
+import CancelledOrders from '../../pages/SellerPages/Order/CancelledOrders';
 export const sellerRoutes = [
 	{
 		path: '/seller',
@@ -9,23 +12,19 @@ export const sellerRoutes = [
 	// 	// element: <SellerLogin />,
 	// },
 	{
-		path: 'orders',
-		element: <OrderManagement />, // Default (new orders)
-	},
-	{
 		path: 'orders/new',
-		element: <OrderManagement />, // Explicit new orders
+		element: <NewOrders />,
 	},
 	{
 		path: 'orders/processing',
-		element: <OrderManagement />, // Processing orders
+		element: <ProcessingOrders />,
 	},
 	{
 		path: 'orders/completed',
-		element: <OrderManagement />, // Completed orders
+		element: <CompletedOrders />,
 	},
 	{
 		path: 'orders/cancelled',
-		element: <OrderManagement />, // Cancelled orders
+		element: <CancelledOrders />,
 	}
 ];
