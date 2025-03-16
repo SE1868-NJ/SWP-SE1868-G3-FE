@@ -9,7 +9,11 @@ function Sidebar() {
 			className='offcanvas-md offcanvas-start bg-body-tertiary min-vh-100 border-1 border-end d-flex flex-column'
 			style={{
 				width: '17rem',
-				position: 'fixed',
+				position: 'fixed',     // Thêm position fixed
+				top: 0,                // Vị trí từ trên cùng
+				left: 0,               // Vị trí từ bên trái
+				bottom: 0,             // Kéo dài đến cuối trang
+				zIndex: 1030           // z-index cao hơn các phần tử khác
 			}}
 			tabIndex='-1'
 			id='sidebar'
@@ -214,9 +218,10 @@ function Sidebar() {
 							</div>
 						</div>
 					</div>
-					{/* Social */}
 				</div>
 			</div>
+			{/* Social */}
+
 			{/* Shop */}
 			<div className='mt-auto'>
 				<div className='navbar bg-body-tertiary navbar-expand border-1 border-top'>
