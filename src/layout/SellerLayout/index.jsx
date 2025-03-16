@@ -9,12 +9,31 @@ function SellerLayout() {
 			<SellerProvider>
 				<div className='d-flex'>
 					<Sidebar />
-					<div className='vstack' style={{ marginLeft: '17rem', width: '100%' }}>
-						<Header />
-						<div style={{ padding: '12px' }}>
+					<div
+						style={{
+							marginLeft: '17rem',
+							width: 'calc(100% - 17rem)',
+							display: 'flex',
+							flexDirection: 'column',
+							minHeight: '100vh'
+						}}
+					>
+						<div style={{
+							position: 'sticky',
+							top: 0,
+							width: '100%',
+							zIndex: 1020,
+							backgroundColor: 'white'
+						}}>
+							<Header />
+						</div>
+						<div style={{
+							padding: '12px',
+							flex: 1,
+							overflow: 'auto'
+						}}>
 							<Outlet />
 						</div>
-						{/* <Footer /> */}
 					</div>
 				</div>
 			</SellerProvider>

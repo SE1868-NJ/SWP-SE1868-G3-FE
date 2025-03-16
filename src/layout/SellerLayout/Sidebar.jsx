@@ -6,16 +6,18 @@ function Sidebar() {
 
 	return (
 		<div
-			className='offcanvas-md offcanvas-start bg-body-tertiary min-vh-100 border-1 border-end d-flex flex-column'
+			className='bg-body-tertiary min-vh-100 border-1 border-end d-flex flex-column'
 			style={{
 				width: '17rem',
-				position: 'fixed',     // Thêm position fixed
-				top: 0,                // Vị trí từ trên cùng
-				left: 0,               // Vị trí từ bên trái
-				bottom: 0,             // Kéo dài đến cuối trang
-				zIndex: 1030           // z-index cao hơn các phần tử khác
+				position: 'fixed',
+				top: 0,
+				left: 0,
+				bottom: 0,
+				height: '100vh',      // Đảm bảo chiều cao đầy màn hình
+				overflowY: 'auto',    // Cho phép cuộn sidebar nếu nội dung quá dài
+				zIndex: 1030,
+				boxShadow: '0 0 10px rgba(0,0,0,0.1)'  // Đổ bóng nhẹ để tách sidebar
 			}}
-			tabIndex='-1'
 			id='sidebar'
 		>
 			<div className='navbar bg-danger navbar-expand border-bottom border-1'>
@@ -32,16 +34,7 @@ function Sidebar() {
 					</div>
 				</div>
 			</div>
-			<div className='offcanvas-header border-bottom fw-bold text-danger'>
-				<h5 className='offcanvas-title'>Quản lý gian hàng</h5>
-				<button
-					type='button'
-					className='btn-close'
-					data-bs-dismiss='offcanvas'
-					data-bs-target='#sidebar'
-				></button>
-			</div>
-			<div className='offcanvas-body m-0 p-3'>
+			<div className='p-3 flex-grow-1'>
 				<div className='accordion w-100' id='accordionExample'>
 					{/* Profile */}
 					<div className='accordion-item'>
@@ -84,7 +77,6 @@ function Sidebar() {
 							</div>
 						</div>
 					</div>
-					{/* Profile */}
 
 					{/* Manage */}
 					<div className='accordion-item'>
@@ -118,13 +110,8 @@ function Sidebar() {
 											Nhà cung cấp
 										</Link>
 									</li>
-									{/* <li className='list-group-item px-0'>
-										<Link to={'/seller/orders'} className='nav-link'>
-											Đơn hàng
-										</Link>
-									</li> */}
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders'} className='nav-link'>
+										<Link to={'/seller/vouchers'} className='nav-link'>
 											Khuyến mại
 										</Link>
 									</li>
@@ -132,7 +119,6 @@ function Sidebar() {
 							</div>
 						</div>
 					</div>
-					{/* Manage */}
 
 					{/* Orders */}
 					<div className='accordion-item'>
@@ -180,7 +166,6 @@ function Sidebar() {
 							</div>
 						</div>
 					</div>
-					{/* Orders */}
 
 					{/* Social */}
 					<div className='accordion-item'>
@@ -220,7 +205,6 @@ function Sidebar() {
 					</div>
 				</div>
 			</div>
-			{/* Social */}
 
 			{/* Shop */}
 			<div className='mt-auto'>
@@ -252,7 +236,6 @@ function Sidebar() {
 					</div>
 				</div>
 			</div>
-			{/* Shop */}
 		</div>
 	);
 }
