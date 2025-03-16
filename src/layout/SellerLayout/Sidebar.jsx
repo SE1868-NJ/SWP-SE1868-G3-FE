@@ -7,7 +7,10 @@ function Sidebar() {
 	return (
 		<div
 			className='offcanvas-md offcanvas-start bg-body-tertiary min-vh-100 border-1 border-end d-flex flex-column'
-			style={{ width: '22rem' }}
+			style={{
+				width: '17rem',
+				position: 'fixed',
+			}}
 			tabIndex='-1'
 			id='sidebar'
 		>
@@ -174,6 +177,7 @@ function Sidebar() {
 						</div>
 					</div>
 					{/* Orders */}
+
 					{/* Social */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>

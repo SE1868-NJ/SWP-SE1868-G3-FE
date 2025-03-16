@@ -9,7 +9,7 @@ function SellerLayout() {
 			<SellerProvider>
 				<div className='d-flex'>
 					<Sidebar />
-					<div className='vstack'>
+					<div className='vstack' style={{ marginLeft: '17rem', width: '100%' }}>
 						<Header />
 						<div style={{ padding: '12px' }}>
 							<Outlet />
