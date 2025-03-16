@@ -1,6 +1,6 @@
 import { Eye, MessageCircle } from 'lucide-react';
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 const OrderCard = ({ order, activeTab }) => {
 	// Hàm hiển thị trạng thái đơn hàng
 	const getStatusText = (status) => {
@@ -18,7 +18,11 @@ const OrderCard = ({ order, activeTab }) => {
 			case 'cancelled':
 				return <span className='ms-3 text-danger fw-bold'>ĐÃ HỦY</span>;
 			case 'refund':
-				return <span className='ms-3 text-secondary fw-bold'>TRẢ HÀNG/HOÀN TIỀN</span>;
+				return (
+					<span className='ms-3 text-secondary fw-bold'>
+						TRẢ HÀNG/HOÀN TIỀN
+					</span>
+				);
 			default:
 				return <span className='ms-3 text-muted fw-bold'>KHÔNG XÁC ĐỊNH</span>;
 		}
@@ -41,14 +45,26 @@ const OrderCard = ({ order, activeTab }) => {
 				</div>
 
 				<div className='d-flex align-items-center'>
-					<button className='btn btn-sm btn-outline-secondary me-2'>
-					<i className='bi bi-chat-left-dots' /> Chat
-					</button>
-					<button className='btn btn-sm btn-outline-secondary'>
-					<i className='bi bi-eye' /> Xem Shop
-					</button>
-					{getStatusText(order.status || activeTab)}
-				</div>
+	<button className='btn btn-sm btn-outline-secondary me-2'>
+		<MessageCircle size={16} className='me-1' />
+		Chat
+	</button>
+	{order?.OrderDetails?.[0]?.Product?.shop?.shop_id ? (
+		<Link
+			to={`/shop/${order.OrderDetails[0].Product.shop.shop_id}/homepage`}
+			className='btn btn-sm btn-outline-secondary'
+		>
+			<Eye size={16} className='me-1' />
+			Xem Shop
+		</Link>
+	) : (
+		<button className='btn btn-sm btn-outline-secondary' disabled>
+			<Eye size={16} className='me-1' />
+			Xem Shop
+		</button>
+	)}
+	{getStatusText(order.status || activeTab)}
+</div>
 			</div>
 
 			<div className='card-body'>
