@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useOrderContext } from '../hooks/contexts/OrderContext';
 import OrderCard from '../layout/OrderLayout/OrderCard';
 import {orderService} from '../services/orderService';
+import { useAuth } from '../hooks/contexts/AuthContext';
 
 const CompletedOrder = () => {
 	const [orders, setOrders] = useState([]);
 	const { status } = useOrderContext();
-	const userId = '4'; // Có thể lấy từ Auth context
+	const {user} = useAuth();
+	const userId = user?.id;
 	const [loading, setLoading] = useState(true);
 
 	const fetchCompletedOrders = async () => {
@@ -45,7 +47,7 @@ const CompletedOrder = () => {
 	};
 
 	useEffect(() => {
-		if (status === 'completed') {
+		if (status === 'completed' && userId) {
 			fetchCompletedOrders();
 		} else {
 			setOrders([]); // Xóa danh sách khi không ở trạng thái "completed"
