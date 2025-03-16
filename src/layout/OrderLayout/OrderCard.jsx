@@ -65,7 +65,6 @@ const OrderCard = ({ order, activeTab }) => {
 	)}
 	{getStatusText(order.status || activeTab)}
 </div>
-
 			</div>
 
 			<div className='card-body'>
