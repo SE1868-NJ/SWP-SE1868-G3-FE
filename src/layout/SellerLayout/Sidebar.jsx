@@ -13,30 +13,32 @@ function Sidebar() {
 				top: 0,
 				left: 0,
 				bottom: 0,
-				height: '100vh',      // Đảm bảo chiều cao đầy màn hình
-				overflowY: 'auto',    // Cho phép cuộn sidebar nếu nội dung quá dài
+				height: '100vh',
+				overflowY: 'auto',
 				zIndex: 1030,
-				boxShadow: '0 0 10px rgba(0,0,0,0.1)'  // Đổ bóng nhẹ để tách sidebar
+				boxShadow: '0 0 10px rgba(0,0,0,0.1)'
 			}}
 			id='sidebar'
 		>
+			{/* Header với logo ở giữa */}
 			<div className='navbar bg-danger navbar-expand border-bottom border-1'>
 				<div className='container-fluid px-3'>
-					<div className='navbar-brand w-100 me-0'>
+					<div className='navbar-brand w-100 me-0 text-center'>
 						<Link
 							to='/'
-							className='text-white fw-bold text-decoration-none d-inline-flex w-100 justify-content-between'
+							className='text-white fw-bold text-decoration-none'
+							style={{ fontSize: '1.25rem' }}
 						>
-							<i className='bi bi-bag-heart-fill'></i>
-							<span>Chợ Làng</span>
-							<i className='bi bi-bag-heart-fill'></i>
+							Chợ Làng
 						</Link>
 					</div>
 				</div>
 			</div>
+
+			{/* Phần nội dung sidebar */}
 			<div className='p-3 flex-grow-1'>
 				<div className='accordion w-100' id='accordionExample'>
-					{/* Profile */}
+					{/* Gian hàng */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
@@ -48,7 +50,7 @@ function Sidebar() {
 								aria-controls='profile'
 							>
 								<i className='bi bi-shop h6 m-0 p-0 me-3' />
-								<h6 className=' fw-bold m-0 p-0'>Gian hàng</h6>
+								<h6 className='fw-bold m-0 p-0'>Gian hàng</h6>
 							</button>
 						</h2>
 						<div
@@ -78,7 +80,7 @@ function Sidebar() {
 						</div>
 					</div>
 
-					{/* Manage */}
+					{/* Quản lý */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
@@ -90,7 +92,7 @@ function Sidebar() {
 								aria-controls='manage'
 							>
 								<i className='bi bi-kanban h6 m-0 p-0 me-3' />
-								<h6 className=' fw-bold m-0 p-0'>Quản lý</h6>
+								<h6 className='fw-bold m-0 p-0'>Quản lý</h6>
 							</button>
 						</h2>
 						<div
@@ -120,7 +122,7 @@ function Sidebar() {
 						</div>
 					</div>
 
-					{/* Orders */}
+					{/* Đơn hàng */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
@@ -132,7 +134,7 @@ function Sidebar() {
 								aria-controls='orders'
 							>
 								<i className='bi bi-box-seam h6 m-0 p-0 me-3' />
-								<h6 className=' fw-bold m-0 p-0'>Đơn hàng</h6>
+								<h6 className='fw-bold m-0 p-0'>Đơn hàng</h6>
 							</button>
 						</h2>
 						<div
@@ -167,7 +169,7 @@ function Sidebar() {
 						</div>
 					</div>
 
-					{/* Social */}
+					{/* Giao tiếp */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
@@ -179,7 +181,7 @@ function Sidebar() {
 								aria-controls='social'
 							>
 								<i className='bi bi-share h6 m-0 p-0 me-3' />
-								<h6 className=' fw-bold m-0 p-0'>Giao Tiếp</h6>
+								<h6 className='fw-bold m-0 p-0'>Giao Tiếp</h6>
 							</button>
 						</h2>
 						<div
