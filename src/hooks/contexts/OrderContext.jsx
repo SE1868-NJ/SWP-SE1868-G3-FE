@@ -7,7 +7,7 @@ export const useOrderContext = () => useContext(OrderContext);
 
 export const OrderProvider = ({ children }) => {
 	const [orders, setOrders] = useState([]);
-	const [status, setStatus] = useState('completed');
+	const [status, setStatus] = useState('');
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -44,6 +44,9 @@ export const OrderProvider = ({ children }) => {
 			}
 			if (newStatus === 'pending') {
 				navigate('/orders/pending');
+			}
+			if (newStatus === 'completed') {
+				navigate('/orders/completed');
 			}
 		}
 	};
