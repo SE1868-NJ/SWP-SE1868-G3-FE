@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Card from '../../components/Card';
 import SupplierHeader from '../../components/Supplier/SupplierHeader';
 import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
+import SupplierNotificationModal from '../../components/Modals/SupplierNotificationModal';
 import supplierService from '../../services/supplierService';
 import { validateField, validateForm } from '../../utils/validation';
 
@@ -12,7 +13,24 @@ function EditSupplier() {
   const [supplier, setSupplier] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
   const errorRefs = useRef({});
+
+  // Modal states
+  const [modalStates, setModalStates] = useState({
+    showSuccessModal: false,
+    showErrorModal: false,
+    showCancelConfirmModal: false,
+    showNotFoundModal: false
+  });
+
+  // Modal messages
+  const modalMessages = {
+    successMessage: 'Cập nhật nhà cung cấp thành công!',
+    errorMessage: 'Lỗi khi cập nhật nhà cung cấp!',
+    cancelMessage: 'Bạn có chắc chắn muốn hủy? Mọi thay đổi sẽ không được lưu lại.',
+    notFoundMessage: 'Nhà cung cấp không tồn tại!'
+  };
 
   useEffect(() => {
     const fetchSupplier = async () => {
@@ -20,18 +38,40 @@ function EditSupplier() {
         const response = await supplierService.getSupplierById(id);
         if (response) {
           setSupplier(response);
+        } else {
+          toggleModal('showNotFoundModal', true);
         }
       } catch (error) {
-        navigate('/seller/suppliers');
+        toggleModal('showNotFoundModal', true);
       } finally {
         setLoading(false);
       }
     };
     fetchSupplier();
-  }, [id, navigate]);
+  }, [id]);
 
-  if (!supplier) {
-    return <h2 className="text-center mt-5">Nhà cung cấp không tồn tại!</h2>;
+  // Function to handle modal visibility
+  const toggleModal = (modalName, isOpen = true) => {
+    setModalStates(prev => ({ ...prev, [modalName]: isOpen }));
+  };
+
+  useEffect(() => {
+    Object.keys(errors).forEach((field) => {
+      if (errors[field]) {
+        const input = document.querySelector(`[name="${field}"]`);
+        if (input) {
+          errorRefs.current[field] = input;
+        }
+      }
+    });
+  }, [errors]);
+
+  if (loading) {
+    return <div>Đang tải...</div>;
+  }
+
+  if (!supplier && !modalStates.showNotFoundModal) {
+    return <div>Nhà cung cấp không tồn tại!</div>;
   }
 
   const handleChange = (e) => {
@@ -63,33 +103,46 @@ function EditSupplier() {
     }
 
     try {
-      setLoading(true);
+      setSaving(true);
       await supplierService.updateSupplier(id, supplier);
-      alert("Cập nhật thành công!");
-      navigate('/seller/suppliers');
+      toggleModal('showSuccessModal', true);
     } catch (error) {
-      alert("Lỗi khi cập nhật nhà cung cấp!");
+      toggleModal('showErrorModal', true);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
+  const handleCancel = () => {
+    toggleModal('showCancelConfirmModal', true);
+  };
 
   return (
-    <Card>
-      <Card.Body>
-        <SupplierHeader title="Chỉnh sửa Nhà Cung Cấp" subtitle="Vui lòng điền đầy đủ thông tin." showRequiredNote={true} />
-        <form onSubmit={handleSubmit}>
-          <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} readOnly={false} />
-          <div className='d-flex gap-2'>
-            <button type='submit' className='btn btn-success' disabled={loading}>
-              {loading ? 'Đang lưu...' : 'Lưu'}
-            </button>
-            <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
-          </div>
-        </form>
-      </Card.Body>
-    </Card>
+    <div className="col-12">
+      <Card>
+        <Card.Body>
+          <SupplierHeader title="Chỉnh Sửa Nhà Cung Cấp" subtitle="Cập nhật thông tin nhà cung cấp." showRequiredNote={true} />
+          <form onSubmit={handleSubmit}>
+            <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} />
+            <div className="d-flex justify-content-end mt-4">
+              <button type="submit" className="btn btn-primary me-2" disabled={saving} >
+                {saving ? 'Đang lưu...' : 'Lưu'}
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={handleCancel}>Hủy</button>
+            </div>
+          </form>
+        </Card.Body>
+      </Card>
+
+      {/* Supplier Modals */}
+      <SupplierNotificationModal
+        modals={modalStates}
+        messages={modalMessages}
+        onClose={(modalName) => toggleModal(modalName, false)}
+        onNavigate={(path) => navigate(path)}
+        navigatePath="/seller/suppliers"
+      />
+    </div>
   );
 }
 

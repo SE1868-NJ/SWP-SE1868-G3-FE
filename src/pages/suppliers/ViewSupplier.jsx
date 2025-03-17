@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Card from '../../components/Card';
 import SupplierHeader from '../../components/Supplier/SupplierHeader';
 import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
+import SupplierNotificationModal from '../../components/Modals/SupplierNotificationModal';
 import supplierService from '../../services/supplierService';
 
 function ViewSupplier() {
@@ -12,13 +13,33 @@ function ViewSupplier() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
+  // Modal states
+  const [modalStates, setModalStates] = useState({
+    showDeleteConfirmModal: false,
+    showDeleteSuccessModal: false,
+    showDeleteErrorModal: false,
+    showNotFoundModal: false
+  });
+
+  // Modal messages
+  const modalMessages = {
+    deleteConfirmMessage: 'Bạn có chắc chắn muốn xóa nhà cung cấp này không?',
+    deleteSuccessMessage: 'Xóa nhà cung cấp thành công!',
+    deleteErrorMessage: 'Lỗi khi xóa nhà cung cấp!',
+    notFoundMessage: 'Nhà cung cấp không tồn tại!'
+  };
+
   useEffect(() => {
     const fetchSupplier = async () => {
       try {
         const response = await supplierService.getSupplierById(id);
-        setSupplier(response);
+        if (response) {
+          setSupplier(response);
+        } else {
+          toggleModal('showNotFoundModal', true);
+        }
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu nhà cung cấp:", error);
+        toggleModal('showNotFoundModal', true);
       } finally {
         setLoading(false);
       }
@@ -27,43 +48,62 @@ function ViewSupplier() {
     fetchSupplier();
   }, [id]);
 
-  const handleDelete = async () => {
-    const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa nhà cung cấp này không?");
-    if (!isConfirmed) return;
+  // Function to handle modal visibility
+  const toggleModal = (modalName, isOpen = true) => {
+    setModalStates(prev => ({ ...prev, [modalName]: isOpen }));
+  };
 
+  const handleDelete = () => {
+    toggleModal('showDeleteConfirmModal', true);
+  };
+
+  const confirmDelete = async () => {
     try {
       setDeleting(true);
       await supplierService.deleteSupplier(id);
-      alert("Xóa thành công!");
-      navigate('/seller/suppliers');
+      toggleModal('showDeleteConfirmModal', false);
+      toggleModal('showDeleteSuccessModal', true);
     } catch (error) {
-      console.error("Lỗi khi xóa nhà cung cấp:", error);
+      toggleModal('showDeleteConfirmModal', false);
+      toggleModal('showDeleteErrorModal', true);
     } finally {
       setDeleting(false);
     }
   };
 
   if (loading) {
-    return <h2 className="text-center mt-5">Đang tải...</h2>;
+    return <div>Đang tải...</div>;
   }
 
-  if (!supplier) {
-    return <h2 className="text-center mt-5">Nhà cung cấp không tồn tại!</h2>;
+  if (!supplier && !modalStates.showNotFoundModal) {
+    return <div>Nhà cung cấp không tồn tại!</div>;
   }
 
   return (
-    <Card>
-      <Card.Body>
-        <SupplierHeader title="Chi tiết Nhà Cung Cấp" subtitle="Dưới đây là thông tin chi tiết của nhà cung cấp." />
-        <SupplierInfoTable supplier={supplier} readOnly={true} />
-        <div className='d-flex gap-2 mt-3'>
-          <button className='btn btn-danger' onClick={handleDelete} disabled={deleting}>
-            {deleting ? 'Đang xóa...' : 'Xóa'}
-          </button>
-          <button className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Quay lại</button>
-        </div>
-      </Card.Body>
-    </Card>
+    <div className="col-12">
+      <Card>
+        <Card.Body>
+          <SupplierHeader title="Chi tiết Nhà Cung Cấp" subtitle="Dưới đây là thông tin chi tiết của nhà cung cấp." />
+          <SupplierInfoTable supplier={supplier} readOnly={true} />
+          <div className='d-flex gap-2 mt-3'>
+            <button className='btn btn-danger' onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Đang xóa...' : 'Xóa'}
+            </button>
+            <button className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Quay lại</button>
+          </div>
+        </Card.Body>
+      </Card>
+
+      {/* Supplier Modals */}
+      <SupplierNotificationModal
+        modals={modalStates}
+        messages={modalMessages}
+        onClose={(modalName) => toggleModal(modalName, false)}
+        onConfirm={confirmDelete}
+        onNavigate={(path) => navigate(path)}
+        navigatePath="/seller/suppliers"
+      />
+    </div>
   );
 }
 
