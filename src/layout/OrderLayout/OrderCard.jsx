@@ -32,7 +32,32 @@ const OrderCard = ({ order, activeTab }) => {
 	if (!order) {
 		return <p>Không có đơn hàng nào để hiển thị.</p>;
 	}
-
+	const renderActionButtons = () => {
+		switch (order?.status?.toLowerCase()) {
+			case 'completed':
+				return (
+					<>
+						<button className='btn btn-danger me-2'>Mua Lại</button>
+						<button className='btn btn-outline-secondary me-2'>Liên Hệ Người Bán</button>
+						<button className='btn btn-outline-secondary'>Đánh Giá</button>
+					</>
+				);
+			case 'shipping':
+				return (
+					<button className='btn btn-outline-secondary'>Liên Hệ Người Bán</button>
+				);
+			case 'cancelled':
+				return (
+					<>
+						<button className='btn btn-danger me-2'>Mua Lại</button>
+						<button className='btn btn-warning me-2'>Xem Chi Tiết Đơn Hủy</button>
+						<button className='btn btn-outline-secondary'>Liên Hệ Người Bán</button>
+					</>
+				);
+			default:
+				return null;
+		}
+	};
 	return (
 		<div className='card mb-3 order-card'>
 			<div className='card-header bg-white d-flex justify-content-between align-items-center py-2'>
@@ -129,9 +154,7 @@ const OrderCard = ({ order, activeTab }) => {
 			</div>
 
 			<div className='card-footer bg-white border-top-0 text-end py-2'>
-				<button className='btn btn-danger me-2'>Mua Lại</button>
-				<button className='btn btn-outline-secondary me-2'>Đánh Giá</button>
-				<button className='btn btn-outline-secondary'>Liên Hệ Người Bán</button>
+				{renderActionButtons()}
 			</div>
 		</div>
 	);
