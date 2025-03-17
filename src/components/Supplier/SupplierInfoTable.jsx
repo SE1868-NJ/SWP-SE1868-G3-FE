@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { addressService } from "../../services/addressService";
 
 function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = false }) {
@@ -9,6 +9,7 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   const [district, setDistrict] = useState("");
   const [ward, setWard] = useState("");
   const [touched, setTouched] = useState({
+    supplier_code: false,
     supplier_name: false,
     delivery_time: false,
     province: false,
@@ -23,6 +24,21 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     wards: false
   });
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const supplierCodeRef = useRef(null);
+
+  // Đặt giá trị mặc định cho supplier_code khi component được tải lần đầu
+  useEffect(() => {
+    if (!supplier.supplier_code && !window.location.pathname.includes('/edit/')) {
+      handleChange({ target: { name: 'supplier_code', value: 'NCC-' } });
+    }
+  }, []);
+
+  // Xử lý vị trí con trỏ cho input mã nhà cung cấp
+  useEffect(() => {
+    if (supplierCodeRef.current && supplier.supplier_code === 'NCC-') {
+      supplierCodeRef.current.setSelectionRange(4, 4);
+    }
+  }, [supplier.supplier_code]);
 
   useEffect(() => {
     const form = document.querySelector('form');
@@ -69,6 +85,7 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
 
   const validateForm = () => {
     let isValid = true;
+    if (!supplier.supplier_code || supplier.supplier_code === 'NCC-') isValid = false;
     if (!supplier.supplier_name) isValid = false;
     if (!supplier.delivery_time) isValid = false;
     if (!supplier.contact_name) isValid = false;
@@ -196,6 +213,24 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     handleChange({ target: { name: "address", value: newAddress } });
   };
 
+  // Xử lý đặc biệt cho input mã nhà cung cấp
+  const handleSupplierCodeChange = (e) => {
+    const { value } = e.target;
+    const prefix = 'NCC-';
+
+    // Luôn giữ prefix
+    if (!value.startsWith(prefix)) {
+      // Nếu người dùng cố gắng thay đổi hoặc xóa prefix
+      const newValue = prefix + value.replace(/^NCC-?/i, '');
+      handleChange({ target: { name: 'supplier_code', value: newValue } });
+    } else {
+      // Nếu prefix được giữ nguyên, truyền giá trị như bình thường
+      handleChange(e);
+    }
+
+    setTouched(prev => ({ ...prev, supplier_code: true }));
+  };
+
   const handleInputChange = (e) => {
     const { name } = e.target;
     setTouched(prev => ({ ...prev, [name]: true }));
@@ -207,6 +242,9 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   };
 
   const showFieldError = (fieldName) => {
+    if (fieldName === 'supplier_code') {
+      return (touched[fieldName] || attemptedSubmit) && (!supplier[fieldName] || supplier[fieldName] === 'NCC-');
+    }
     return (touched[fieldName] || attemptedSubmit) && !supplier[fieldName];
   };
 
@@ -217,6 +255,27 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   return (
     <>
       <h5 className="fw-bold text-decoration-underline">Thông Tin Cơ Bản</h5>
+      <div className='mb-3'>
+        <label className='form-label'>Mã Nhà Cung Cấp <span className="text-danger">*</span></label>
+        <input
+          type='text'
+          name='supplier_code'
+          className={`form-control ${showFieldError('supplier_code') || errors.supplier_code ? 'is-invalid' : ''}`}
+          value={supplier.supplier_code || 'NCC-'}
+          onChange={handleSupplierCodeChange}
+          onBlur={() => handleBlur('supplier_code')}
+          disabled={readOnly || window.location.pathname.includes('/edit/')}
+          ref={supplierCodeRef}
+          onFocus={(e) => {
+            // Đặt con trỏ ở cuối text khi focus
+            const length = e.target.value.length;
+            e.target.setSelectionRange(length, length);
+          }}
+        />
+        {(showFieldError('supplier_code') || errors.supplier_code) && (
+          <div className="invalid-feedback">{errors.supplier_code || "Mã nhà cung cấp không được để trống hoặc chỉ chứa tiền tố"}</div>
+        )}
+      </div>
       <div className='mb-3'>
         <label className='form-label'>Tên Nhà Cung Cấp <span className="text-danger">*</span></label>
         <input
