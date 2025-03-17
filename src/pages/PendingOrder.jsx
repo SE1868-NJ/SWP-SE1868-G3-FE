@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { orderService } from '../services/orderService';
 import OrderCard from '../layout/OrderLayout/OrderCard';
-
+import { useAuth } from '../hooks/contexts/AuthContext';
 
 function PendingOrder() {
 	const [orders, setOrders] = useState([]);
-	const userId = '15';
-
+	const {user} = useAuth();
+	const userId = user?.id;
 	useEffect(() => {
 		const fetchPendingOrder = async () => {
 			try {
