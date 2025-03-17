@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOrderContext } from '../../hooks/contexts/OrderContext';
+import { useAuth } from '../../hooks/contexts/AuthContext';
 
 const Sidebar = () => {
 	const { status, handleStatusChange } = useOrderContext();
+	const { user } = useAuth();
 	const navigate = useNavigate();
 
 	const handleItemClick = (key) => {
@@ -22,13 +24,13 @@ const Sidebar = () => {
 					style={{ width: 40, height: 40, overflow: 'hidden' }}
 				>
 					<img
-						src='https://via.placeholder.com/40'
+						src={user.avatar || 'https://kpethouse.com/wp-content/uploads/2021/11/chihuahua-1.jpg'}
 						alt='Profile'
 						className='w-100 h-100'
 					/>
 				</div>
 				<div>
-					<div className='fw-bold'>Lê Văn C</div>
+					<div className='fw-bold'>{user?.name || 'Guest'}</div>
 					<small className='text-muted'>Sửa Hồ Sơ</small>
 				</div>
 			</div>
