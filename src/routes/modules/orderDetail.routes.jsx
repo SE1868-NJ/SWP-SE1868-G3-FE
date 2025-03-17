@@ -3,6 +3,7 @@ import OrderLayout from "../../layout/OrderLayout/OrderLayout";
 import CompletedOrder from "../../pages/CompletedOrder";
 import CancelledOrder from "../../pages/OrderCanceled";
 import AllOrders from "../../pages/AllOrders";
+import PendingOrder from "../../pages/PendingOrder";
 
 export const orderDetailRoutes = [
   {
@@ -10,7 +11,7 @@ export const orderDetailRoutes = [
     element: <OrderLayout />,
     children: [
       { path: "all", element: <AllOrders /> },
-      //{ path: "pending", element: <PendingOrder /> },
+      { path: "pending", element: <PendingOrder /> },
       //{ path: "shipping", element: <ShippingOrder /> },
       //{ path: "delivery", element: <DeliveryOrder /> },
       { path: "completed", element: <CompletedOrder /> },

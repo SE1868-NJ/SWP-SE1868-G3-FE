@@ -42,6 +42,9 @@ export const OrderProvider = ({ children }) => {
 			if(newStatus === 'all') {
 				navigate('/orders/all');
 			}
+			if (newStatus === 'pending') {
+				navigate('/orders/pending');
+			}
 		}
 	};
 

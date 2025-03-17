@@ -56,7 +56,6 @@ export const orderService = {
             throw error;
         }
     },
-	
 	getAllOrders: async (userId) => {
 		try {
       const response = await api.get(`order/all_orders/${userId}`);
@@ -70,4 +69,13 @@ export const orderService = {
       throw error;
     }
   },
+	getPendingPaymentOrders: async (userId) => {
+		try {
+			const response = await api.get(`/order/pending/${userId}`);
+			return response.data;
+		} catch (error) {
+			console.error("Lỗi khi lấy danh sách đơn hàng đang chờ thanh toán:", error);
+			throw error;
+		}
+	},
 };
