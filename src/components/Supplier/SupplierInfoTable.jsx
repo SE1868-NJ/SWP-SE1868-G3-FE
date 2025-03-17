@@ -16,7 +16,10 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     district: false,
     ward: false,
     contact_name: false,
-    phone_number: false
+    phone_number: false,
+    bank_name: false,
+    account_number: false,
+    payment_term: false
   });
   const [isLoading, setIsLoading] = useState({
     provinces: false,
@@ -30,6 +33,18 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   useEffect(() => {
     if (!supplier.supplier_code && !window.location.pathname.includes('/edit/')) {
       handleChange({ target: { name: 'supplier_code', value: 'NCC-' } });
+    }
+
+    // Phân tách thời hạn thanh toán thành giá trị và đơn vị
+    if (supplier.payment_term && !supplier.payment_term_value) {
+      const match = supplier.payment_term.match(/^(\d+)\s*(.*)$/);
+      if (match) {
+        const value = match[1];
+        const unit = match[2].trim() || 'ngày';
+
+        supplier.payment_term_value = value;
+        supplier.payment_term_unit = unit;
+      }
     }
   }, []);
 
@@ -83,6 +98,24 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
       (district === "" || ward !== "");
   };
 
+  // Validate thông tin giao dịch
+  const isValidAccountNumber = (bank, number) => {
+    if (!number) return true; // Cho phép để trống
+    if (!/^\d+$/.test(number)) return false; // Chỉ cho phép số
+
+    // Kiểm tra độ dài theo từng ngân hàng
+    switch (bank) {
+      case 'MB Bank': return number.length >= 10 && number.length <= 16;
+      case 'Vietcombank': return number.length >= 10 && number.length <= 13;
+      case 'Techcombank': return number.length >= 10 && number.length <= 14;
+      case 'BIDV': return number.length >= 10 && number.length <= 14;
+      case 'ACB': return number.length >= 8 && number.length <= 13;
+      case 'Sacombank': return number.length >= 9 && number.length <= 15;
+      case 'Agribank': return number.length >= 8 && number.length <= 13;
+      default: return number.length >= 8 && number.length <= 16; // Mặc định
+    }
+  };
+
   const validateForm = () => {
     let isValid = true;
     if (!supplier.supplier_code || supplier.supplier_code === 'NCC-') isValid = false;
@@ -90,6 +123,13 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     if (!supplier.delivery_time) isValid = false;
     if (!supplier.contact_name) isValid = false;
     if (!supplier.phone_number) isValid = false;
+
+    // Validate thông tin giao dịch
+    if (supplier.account_number && !supplier.bank_name) isValid = false;
+    if (supplier.bank_name && !supplier.account_number) isValid = false;
+    if (supplier.account_number && !/^\d+$/.test(supplier.account_number)) isValid = false;
+    if (supplier.account_number && supplier.bank_name &&
+      !isValidAccountNumber(supplier.bank_name, supplier.account_number)) isValid = false;
 
     if (!validateAddressFields()) isValid = false;
     return isValid;
@@ -252,6 +292,30 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   const showDistrictError = ((touched.district || attemptedSubmit) && province && !district);
   const showWardError = ((touched.ward || attemptedSubmit) && district && !ward);
 
+  // Xử lý cho thanh toán
+  const handlePaymentTermChange = (e) => {
+    const { name, value } = e.target;
+    handleInputChange(e);
+
+    if (name === 'payment_term_value') {
+      const unit = supplier.payment_term_unit || 'ngày';
+      handleChange({
+        target: {
+          name: 'payment_term',
+          value: value ? `${value} ${unit}` : ''
+        }
+      });
+    } else if (name === 'payment_term_unit') {
+      const term = supplier.payment_term_value || '';
+      handleChange({
+        target: {
+          name: 'payment_term',
+          value: term ? `${term} ${value}` : ''
+        }
+      });
+    }
+  };
+
   return (
     <>
       <h5 className="fw-bold text-decoration-underline">Thông Tin Cơ Bản</h5>
@@ -312,9 +376,10 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         <label className='form-label'>Tên Ngân Hàng</label>
         <select
           name='bank_name'
-          className='form-select'
+          className={`form-select ${(touched.bank_name || attemptedSubmit) && supplier.account_number && !supplier.bank_name ? 'is-invalid' : ''}`}
           value={supplier.bank_name || ''}
-          onChange={handleChange}
+          onChange={handleInputChange}
+          onBlur={() => handleBlur('bank_name')}
           disabled={readOnly}
         >
           <option value="">-- Chọn Ngân Hàng --</option>
@@ -326,28 +391,60 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
           <option value="Sacombank">Sacombank</option>
           <option value="Agribank">Agribank</option>
         </select>
+        {(touched.bank_name || attemptedSubmit) && supplier.account_number && !supplier.bank_name && (
+          <div className="invalid-feedback">Vui lòng chọn ngân hàng khi đã nhập số tài khoản</div>
+        )}
       </div>
       <div className='mb-3'>
         <label className='form-label'>Số Tài Khoản</label>
         <input
           type='text'
           name='account_number'
-          className='form-control'
+          className={`form-control ${((touched.account_number || attemptedSubmit) && supplier.bank_name && !supplier.account_number) ||
+              ((touched.account_number || attemptedSubmit) && supplier.account_number && !/^\d+$/.test(supplier.account_number)) ||
+              ((touched.account_number || attemptedSubmit) && supplier.account_number && supplier.bank_name && !isValidAccountNumber(supplier.bank_name, supplier.account_number))
+              ? 'is-invalid' : ''
+            }`}
           value={supplier.account_number || ''}
-          onChange={handleChange}
+          onChange={handleInputChange}
+          onBlur={() => handleBlur('account_number')}
           disabled={readOnly}
         />
+        {(touched.account_number || attemptedSubmit) && supplier.bank_name && !supplier.account_number && (
+          <div className="invalid-feedback">Vui lòng nhập số tài khoản khi đã chọn ngân hàng</div>
+        )}
+        {(touched.account_number || attemptedSubmit) && supplier.account_number && !/^\d+$/.test(supplier.account_number) && (
+          <div className="invalid-feedback">Số tài khoản chỉ được chứa các chữ số</div>
+        )}
+        {(touched.account_number || attemptedSubmit) && supplier.account_number && supplier.bank_name && !isValidAccountNumber(supplier.bank_name, supplier.account_number) && (
+          <div className="invalid-feedback">Số tài khoản không hợp lệ cho ngân hàng này</div>
+        )}
       </div>
       <div className='mb-3'>
         <label className='form-label'>Thời Hạn Thanh Toán</label>
-        <input
-          type='text'
-          name='payment_term'
-          className='form-control'
-          value={supplier.payment_term || ''}
-          onChange={handleChange}
-          disabled={readOnly}
-        />
+        <div className="d-flex">
+          <input
+            type='number'
+            name='payment_term_value'
+            className='form-control me-2'
+            value={supplier.payment_term_value || ''}
+            onChange={handlePaymentTermChange}
+            onBlur={() => handleBlur('payment_term_value')}
+            disabled={readOnly}
+            min="0"
+          />
+          <select
+            name='payment_term_unit'
+            className='form-select'
+            style={{ width: '30%' }}
+            value={supplier.payment_term_unit || 'ngày'}
+            onChange={handlePaymentTermChange}
+            disabled={readOnly}
+          >
+            <option value="ngày">Ngày</option>
+            <option value="tháng">Tháng</option>
+          </select>
+        </div>
       </div>
 
       <h5 className="fw-bold text-decoration-underline">Địa Chỉ Nhà Cung Cấp</h5>
