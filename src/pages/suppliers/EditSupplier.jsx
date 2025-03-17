@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import Card from '../../components/Card';
 import SupplierHeader from '../../components/Supplier/SupplierHeader';
@@ -15,6 +15,7 @@ function EditSupplier() {
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const errorRefs = useRef({});
+  const originalSupplierRef = useRef(null);
 
   // Modal states
   const [modalStates, setModalStates] = useState({
@@ -38,6 +39,7 @@ function EditSupplier() {
         const response = await supplierService.getSupplierById(id);
         if (response) {
           setSupplier(response);
+          originalSupplierRef.current = { ...response };
         } else {
           toggleModal('showNotFoundModal', true);
         }
@@ -76,6 +78,12 @@ function EditSupplier() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Không cho phép thay đổi mã nhà cung cấp
+    if (name === 'supplier_code') {
+      return;
+    }
+
     setSupplier({ ...supplier, [name]: value });
 
     const error = validateField(name, value);
@@ -88,7 +96,13 @@ function EditSupplier() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newErrors = validateForm(supplier);
+    // Đảm bảo giữ nguyên mã nhà cung cấp gốc
+    const supplierToSubmit = {
+      ...supplier,
+      supplier_code: originalSupplierRef.current.supplier_code
+    };
+
+    const newErrors = validateForm(supplierToSubmit);
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
@@ -104,8 +118,15 @@ function EditSupplier() {
 
     try {
       setSaving(true);
-      await supplierService.updateSupplier(id, supplier);
-      toggleModal('showSuccessModal', true);
+      const result = await supplierService.updateSupplier(id, supplierToSubmit);
+
+      if (result) {
+        // Lưu ID nhà cung cấp vừa sửa vào sessionStorage
+        sessionStorage.setItem('editedSupplierId', id.toString());
+        toggleModal('showSuccessModal', true);
+      } else {
+        toggleModal('showErrorModal', true);
+      }
     } catch (error) {
       toggleModal('showErrorModal', true);
     } finally {
@@ -138,7 +159,12 @@ function EditSupplier() {
       <SupplierNotificationModal
         modals={modalStates}
         messages={modalMessages}
-        onClose={(modalName) => toggleModal(modalName, false)}
+        onClose={(modalName) => {
+          toggleModal(modalName, false);
+          if (modalName === 'showSuccessModal') {
+            navigate('/seller/suppliers');
+          }
+        }}
         onNavigate={(path) => navigate(path)}
         navigatePath="/seller/suppliers"
       />
