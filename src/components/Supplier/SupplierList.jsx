@@ -8,28 +8,24 @@ function SupplierList({ suppliers }) {
         <table className='table table-striped text-center align-middle'>
           <thead style={{ backgroundColor: '#f0f0f0' }}>
             <tr>
-              <th scope='col' className="fw-bold py-2" style={{ width: '5%' }}>#</th>
+              <th scope='col' className="fw-bold py-2">Mã nhà cung cấp</th>
               <th scope='col' className="fw-bold py-2">Tên nhà cung cấp</th>
-              {/* <th scope='col' className="fw-bold py-2">Mã nhà cung cấp</th> */}
               <th scope='col' className="fw-bold py-2">Thời gian giao hàng (Ngày)</th>
               <th scope='col' className="fw-bold py-2">Địa chỉ nhà cung cấp</th>
               <th scope='col' className="fw-bold py-2">Thông tin liên hệ</th>
-              {/* <th scope='col' className="fw-bold py-2">Ghi chú</th> */}
               <th scope='col' className="fw-bold py-2" style={{ width: '10%' }}>Trạng thái</th>
               <th scope='col' className="fw-bold py-2" style={{ width: '12%' }}>Hành động</th>
             </tr>
           </thead>
           <tbody>
             {suppliers.length > 0 ? (
-              suppliers.map((supplier, index) => (
+              suppliers.map((supplier) => (
                 <tr key={supplier.supplier_id}>
-                  <th scope='row'>{index + 1}</th>
+                  <td>{supplier.supplier_code}</td>
                   <td>{supplier.supplier_name}</td>
-                  {/* <td>{supplier.supplier_id}</td> */}
                   <td>{supplier.delivery_time}</td>
                   <td>{supplier.address}</td>
                   <td>{supplier.phone_number || '-'}</td>
-                  {/* <td>{supplier.note || '-'}</td> */}
                   <td>
                     <span className={`badge ${supplier.status === 'Hoạt động' ? 'bg-success' : 'bg-danger'}`}>
                       {supplier.status}
@@ -47,7 +43,7 @@ function SupplierList({ suppliers }) {
               ))
             ) : (
               <tr>
-                <td colSpan="9" className="text-center">Không có dữ liệu nhà cung cấp.</td>
+                <td colSpan="7" className="text-center">Không có dữ liệu nhà cung cấp.</td>
               </tr>
             )}
           </tbody>

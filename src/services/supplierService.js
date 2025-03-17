@@ -53,7 +53,8 @@ const supplierService = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+
 };
 
 export default supplierService;

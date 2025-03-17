@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import Card from '../../components/Card';
 import SupplierHeader from '../../components/Supplier/SupplierHeader';
 import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
+import SupplierNotificationModal from '../../components/Modals/SupplierNotificationModal';
 import supplierService from '../../services/supplierService';
 import { validateField, validateForm } from '../../utils/validation';
 
@@ -24,6 +25,20 @@ function AddSupplier() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const errorRefs = useRef({});
+
+  // Modal states
+  const [modalStates, setModalStates] = useState({
+    showSuccessModal: false,
+    showErrorModal: false,
+    showCancelConfirmModal: false
+  });
+
+  // Modal messages
+  const modalMessages = {
+    successMessage: 'Thêm nhà cung cấp thành công!',
+    errorMessage: 'Thêm nhà cung cấp thất bại! Vui lòng thử lại.',
+    cancelMessage: 'Bạn có chắc chắn muốn hủy? Mọi thông tin sẽ không được lưu lại.'
+  };
 
   useEffect(() => {
     Object.keys(errors).forEach((field) => {
@@ -70,30 +85,49 @@ function AddSupplier() {
     try {
       setLoading(true);
       await supplierService.createSupplier(supplier);
-      alert('Thêm nhà cung cấp thành công!');
-      navigate('/seller/suppliers');
+      toggleModal('showSuccessModal', true);
     } catch (error) {
-      alert('Thêm nhà cung cấp thất bại! Vui lòng thử lại.');
+      toggleModal('showErrorModal', true);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleCancel = () => {
+    toggleModal('showCancelConfirmModal', true);
+  };
+
+  // Function to handle modal visibility
+  const toggleModal = (modalName, isOpen = true) => {
+    setModalStates(prev => ({ ...prev, [modalName]: isOpen }));
+  };
+
   return (
-    <Card>
-      <Card.Body>
-        <SupplierHeader title="Thêm Nhà Cung Cấp" subtitle="Vui lòng điền đầy đủ thông tin." showRequiredNote={true} />
-        <form onSubmit={handleSubmit}>
-          <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} />
-          <div className='d-flex gap-2'>
-            <button type='submit' className='btn btn-success' disabled={loading}>
-              {loading ? 'Đang lưu...' : 'Lưu'}
-            </button>
-            <button type='button' className='btn btn-secondary' onClick={() => navigate('/seller/suppliers')}>Hủy</button>
-          </div>
-        </form>
-      </Card.Body>
-    </Card>
+    <div className="col-12">
+      <Card>
+        <Card.Body>
+          <SupplierHeader title="Thêm Nhà Cung Cấp" subtitle="Nhập thông tin nhà cung cấp mới" showRequiredNote={true} />
+          <form onSubmit={handleSubmit}>
+            <SupplierInfoTable supplier={supplier} handleChange={handleChange} errors={errors} />
+            <div className="d-flex justify-content-end mt-4">
+              <button type="submit" className="btn btn-primary me-2" disabled={loading} >
+                {loading ? 'Đang lưu...' : 'Lưu'}
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={handleCancel} >Hủy</button>
+            </div>
+          </form>
+        </Card.Body>
+      </Card>
+
+      {/* Supplier Modals */}
+      <SupplierNotificationModal
+        modals={modalStates}
+        messages={modalMessages}
+        onClose={(modalName) => toggleModal(modalName, false)}
+        onNavigate={(path) => navigate(path)}
+        navigatePath="/seller/suppliers"
+      />
+    </div>
   );
 }
 

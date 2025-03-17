@@ -1,17 +1,17 @@
-import { Link } from 'react-router';
-import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import SupplierHeader from '../../components/Supplier/SupplierHeader';
 import SupplierList from '../../components/Supplier/SupplierList';
 import supplierService from '../../services/supplierService';
-import CustomPagination from "../../components/Products/CustomPagination"; // Đoạn tách riêng
+import CustomPagination from "../../components/Products/CustomPagination";
 
 function Suppliers() {
-
   const [suppliers, setSuppliers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSuppliers, setFilteredSuppliers] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-  const [totalPages, setTotalPages] = useState(1); // Tổng số trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -19,6 +19,9 @@ function Suppliers() {
   }, [currentPage]);
 
   const fetchSuppliers = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     try {
       const params = {
         page: currentPage,
@@ -27,8 +30,36 @@ function Suppliers() {
 
       const response = await supplierService.getSuppliers(params);
       if (response && response.items) {
-        setSuppliers(response.items);
-        setFilteredSuppliers(response.items);
+        // Kiểm tra xem có nhà cung cấp vừa sửa không
+        const editedId = sessionStorage.getItem('editedSupplierId');
+
+        if (editedId) {
+          // Chuyển editedId từ string thành số
+          const editedIdNum = parseInt(editedId, 10);
+
+          // Lọc nhà cung cấp vừa sửa
+          const editedSupplier = response.items.find(s => s.supplier_id === editedIdNum);
+
+          // Lọc các nhà cung cấp còn lại
+          const otherSuppliers = response.items.filter(s => s.supplier_id !== editedIdNum);
+
+          // Nếu tìm thấy nhà cung cấp vừa sửa, đưa lên đầu danh sách
+          if (editedSupplier) {
+            const newSuppliers = [editedSupplier, ...otherSuppliers];
+            setSuppliers(newSuppliers);
+            setFilteredSuppliers(newSuppliers);
+          } else {
+            setSuppliers(response.items);
+            setFilteredSuppliers(response.items);
+          }
+
+          // Xóa editedId khỏi sessionStorage sau khi đã sử dụng
+          sessionStorage.removeItem('editedSupplierId');
+        } else {
+          setSuppliers(response.items);
+          setFilteredSuppliers(response.items);
+        }
+
         setTotalPages(response.metadata?.totalPages || 1);
       } else {
         setSuppliers([]);
@@ -40,6 +71,8 @@ function Suppliers() {
       setSuppliers([]);
       setFilteredSuppliers([]);
       setTotalPages(1);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,8 +85,14 @@ function Suppliers() {
   };
 
   const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      setFilteredSuppliers(suppliers);
+      return;
+    }
+
     const result = suppliers.filter(supplier =>
-      supplier.supplier_name.toLowerCase().includes(searchQuery.toLowerCase())
+      supplier.supplier_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (supplier.supplier_code && supplier.supplier_code.toLowerCase().includes(searchQuery.toLowerCase()))
     );
     setFilteredSuppliers(result);
   };
@@ -70,7 +109,7 @@ function Suppliers() {
             type='search'
             name='search'
             className='form-control'
-            placeholder='Nhập tên nhà cung cấp'
+            placeholder='Nhập tên hoặc mã ...'
             value={searchQuery}
             onChange={handleSearchChange}
             style={{ width: '250px' }}
@@ -81,7 +120,10 @@ function Suppliers() {
           + Thêm nhà cung cấp
         </Link>
       </div>
-      <SupplierList suppliers={filteredSuppliers} />
+      <SupplierList
+        suppliers={filteredSuppliers}
+        editedId={parseInt(sessionStorage.getItem('editedSupplierId') || '0', 10)}
+      />
       <CustomPagination
         currentPage={currentPage}
         totalPages={totalPages}
