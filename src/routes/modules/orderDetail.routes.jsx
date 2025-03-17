@@ -2,13 +2,14 @@ import { Navigate } from "react-router-dom";
 import OrderLayout from "../../layout/OrderLayout/OrderLayout";
 import CompletedOrder from "../../pages/CompletedOrder";
 import CancelledOrder from "../../pages/OrderCanceled";
+import AllOrders from "../../pages/AllOrders";
 
 export const orderDetailRoutes = [
   {
     path: "/orders",
     element: <OrderLayout />,
     children: [
-      //{ path: "all", element: <AllOrders /> },
+      { path: "all", element: <AllOrders /> },
       //{ path: "pending", element: <PendingOrder /> },
       //{ path: "shipping", element: <ShippingOrder /> },
       //{ path: "delivery", element: <DeliveryOrder /> },

@@ -55,5 +55,19 @@ export const orderService = {
             console.error("Lỗi khi hủy đơn hàng", error);
             throw error;
         }
+    },
+	
+	getAllOrders: async (userId) => {
+		try {
+      const response = await api.get(`order/all_orders/${userId}`);
+      console.log('API response for all orders:', typeof response.data);
+      return response.data;
+    } catch (error) {
+      console.error(
+        'Loi khi lấy tất cả các đơn hàng!',
+        error.response?.data || error.message,
+      );
+      throw error;
     }
+  },
 };

@@ -39,6 +39,9 @@ export const OrderProvider = ({ children }) => {
 			if (newStatus === 'cancelled') {
 				navigate('/orders/cancelled');
 			}
+			if(newStatus === 'all') {
+				navigate('/orders/all');
+			}
 		}
 	};
 
