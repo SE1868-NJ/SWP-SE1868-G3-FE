@@ -39,6 +39,10 @@ export const OrderProvider = ({ children }) => {
 			if (newStatus === 'cancelled') {
 				navigate('/orders/cancelled');
 			}
+			if (newStatus === 'pending') {
+				navigate('/orders/pending');
+			}
+
 		}
 	};
 

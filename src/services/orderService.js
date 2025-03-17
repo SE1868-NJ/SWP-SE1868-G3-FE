@@ -55,5 +55,16 @@ export const orderService = {
             console.error("Lỗi khi hủy đơn hàng", error);
             throw error;
         }
-    }
+    },
+
+	getPendingPaymentOrders: async (userId) => {
+		try {
+			const response = await api.get(`/order/pending/${userId}`);
+			return response.data;
+		} catch (error) {
+			console.error("Lỗi khi lấy danh sách đơn hàng đang chờ thanh toán:", error);
+			throw error;
+		}
+	},
+	
 };
