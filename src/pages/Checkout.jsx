@@ -8,6 +8,7 @@ import { orderService } from "../services/orderService";
 import NotificationToast from "../components/Toast/NotificationToast";
 import { useAuth } from "../hooks/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Socket } from '../services/socket';
 
 const Checkout = () => {
   const location = useLocation();
@@ -35,6 +36,7 @@ const Checkout = () => {
   const formatCurrency = (amount) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
 
   const totalProductPrice = selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  console.log(selectedProducts, 'selectedProducts');
   const totalAmount = totalProductPrice + shippingFee - voucherDiscount;
 
   const handlePlaceOrder = async () => {
@@ -48,7 +50,8 @@ const Checkout = () => {
         items: selectedProducts.map(item => ({
           product_id: item.productId,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
+          shop_id: item.shopId,
         })),
         total: totalAmount,
         note: note,
@@ -56,10 +59,10 @@ const Checkout = () => {
         voucher_id: voucherId || null,
       }
 
-      const response = await orderService.createOrder(dataOrder);
-      if (response.status === 'success') {
-        //navigate('/list_page');
-      }
+      // const response = await orderService.createOrder(dataOrder);
+
+      Socket.emit('order_placed', dataOrder);
+      
       if (paymentMethodId === "cod") {
         //navigate(`/order-confirmation/${response.data.data.id}`);
       } else if (paymentMethodId === "bank") {
