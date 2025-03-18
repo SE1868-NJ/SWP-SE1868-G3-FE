@@ -25,7 +25,7 @@ const ProductList = ({ products, onAddCart, onZoom, user_id }) => {
           </Dropdown.Menu>
         </Dropdown> */}
 			</h4>
-			<div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4'>
+			<div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3'>
 				{products.map((product, index) => (
 					<div className='col' key={index}>
 						<ProductCard

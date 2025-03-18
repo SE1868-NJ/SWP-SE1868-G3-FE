@@ -9,17 +9,20 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showQuantityConfirm, setShowQuantityConfirm] = useState(false);
   const [localQuantity, setLocalQuantity] = useState(item.quantity.toString());
+  const [localStock, setLocalStock] = useState(item.stock - item.quantity);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     setLocalQuantity(item.quantity.toString());
-  }, [item.quantity]);
+    setLocalStock(item.stock - item.quantity);
+  }, [item]);
 
   const originalPrice = Number(item.price) * item.quantity;
 
   const validateQuantity = (newQuantity) => {
-    if (newQuantity > item.stock) {
-      setErrorMessage(`Số lượng vượt quá kho (${item.stock} sản phẩm). Vui lòng chọn số lượng nhỏ hơn hoặc bằng ${item.stock}.`);
+    const difference = newQuantity - item.quantity;
+    if (difference > 0 && difference > localStock) {
+      setErrorMessage(`Số lượng vượt quá kho (${localStock} sản phẩm còn lại).`);
       setShowQuantityConfirm(true);
       return false;
     }
@@ -31,23 +34,33 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
     if (!validateQuantity(newQuantity)) {
       return;
     }
+    let newStock = localStock + delta;
+    newStock = Math.max(0, newStock);
+    setLocalStock(newStock);
     setLocalQuantity(newQuantity.toString());
-    updateQuantity(item.id, newQuantity);
+    updateQuantity(item.id, newQuantity, newStock);
   };
 
   const handleQuantityChange = (e) => {
-    const numericValue = e.target.value.replace(/[^\d]/g, '');
+    const numericValue = e.target.value.replace(/[^0-9]/g, '');
     setLocalQuantity(numericValue);
   };
 
   const handleQuantityBlur = () => {
     const newQuantity = parseInt(localQuantity, 10) || 1;
+    setLocalQuantity(newQuantity.toString());
     if (!validateQuantity(newQuantity)) {
       setLocalQuantity(item.quantity.toString());
       return;
     }
     if (newQuantity !== item.quantity) {
-      updateQuantity(item.id, newQuantity);
+      const difference = newQuantity - item.quantity;
+      let newStock = localStock - difference;
+      newStock = Math.max(0, newStock);
+
+      if (newStock >= 0 && newStock <= item.stock)
+        setLocalStock(newStock);
+      updateQuantity(item.id, newQuantity, newStock);
     }
   };
 
@@ -68,7 +81,7 @@ const CartItem = ({ item, selectedItems, updateQuantity, toggleSelectItem, remov
               {item.name}
             </Link>
           </div>
-          <div className="text-muted">Kho: {item.stock}</div>
+          <div className="text-muted">Kho: {localStock}</div>
         </div>
       </div>
 

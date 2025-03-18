@@ -33,9 +33,18 @@ const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
 			/>
 
 			<Card.Body>
-				<Card.Title onClick={handleNavigate} style={{ cursor: 'pointer' }}>
+				<Card.Title
+					onClick={handleNavigate}
+					style={{
+						cursor: 'pointer',
+						whiteSpace: 'nowrap',
+						overflow: 'hidden',
+						textOverflow: 'ellipsis',
+					}}
+				>
 					{product.product_name || product.name}
 				</Card.Title>
+
 
 				<Card.Text>
 					{product.sale_price?.toLocaleString() ||

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/contexts/AuthContext';
+import MiniCartModal from '../components/Modals/MiniCartModal';
 
 function Header() {
 	const { cartCount, user } = useAuth();
@@ -136,45 +137,34 @@ function Header() {
 						/>
 						<span className='fs-4 fw-bold'>Chợ Làng</span>
 					</Link>
+          <form
+            className='col-12 col-lg-auto mb-3 mb-lg-0'
+            role='search'
+            onSubmit={handleSearch}
+          >
+            <div className='hstack gap-2'>
+              <div className='input-group'>
+                <input
+                  type='search'
+                  className='form-control border-0'
+                  style={{ boxShadow: 'none' }}
+                  placeholder='Tìm kiếm...'
+                  aria-label='Search'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type='button' className='btn bg-white border-0'>
+                  <i className='bi bi-search' />
+                </button>
+              </div>
 
-					<form
-						className='col-12 col-lg-auto mb-3 mb-lg-0'
-						role='search'
-						onSubmit={handleSearch}
-					>
-						<div className='hstack gap-2'>
-							<div className='input-group'>
-								<input
-									type='search'
-									className='form-control border-0'
-									style={{ boxShadow: 'none' }}
-									placeholder='Tìm kiếm...'
-									aria-label='Search'
-									value={searchQuery}
-									onChange={(e) => setSearchQuery(e.target.value)}
-								/>
-								<button type='button' className='btn bg-white border-0'>
-									<i className='bi bi-search' />
-								</button>
-							</div>
-							<Link
-								to='/order/cart'
-								className='btn btn-outline-light border-2 position-relative'
-							>
-								<i className='bi bi-basket-fill' />
-								{cartCount > 0 && (
-									<span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'>
-										{cartCount}
-										<span className='visually-hidden'>items in cart</span>
-									</span>
-								)}
-							</Link>
-						</div>
-					</form>
-				</div>
-			</header>
-		</div>
-	);
+              <MiniCartModal />
+            </div>
+          </form>
+        </div>
+      </header>
+    </div>
+  );
 }
 
 export default Header;
