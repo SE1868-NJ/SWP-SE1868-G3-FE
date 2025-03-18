@@ -18,9 +18,11 @@ const Profile = () => {
 	const [errors, setErrors] = useState({});
 	const [isEditing, setIsEditing] = useState(false);
 	const errorRefs = useRef({});
-	const [showModal, setShowModal] = useState(false);
-	const [errorMessage, setErrorMessage] = useState('');
+
+	const [showSuccessModal, setShowSuccessModal] = useState(false);
 	const [showErrorModal, setShowErrorModal] = useState(false);
+	const [showAvatarErrorModal, setShowAvatarErrorModal] = useState(false);
+	const [modalMessage, setModalMessage] = useState('');
 
 	useEffect(() => {
 		const fetchUser = async () => {
@@ -73,7 +75,7 @@ const Profile = () => {
 			}
 
 			if (Object.values(errors).some((error) => error)) {
-				setErrorMessage('Vui lòng sửa các lỗi trước khi lưu!');
+				setModalMessage('Vui lòng sửa các lỗi trước khi lưu!');
 				setShowErrorModal(true);
 				return;
 			}
@@ -86,7 +88,8 @@ const Profile = () => {
 				);
 
 				if (updateResponse) {
-					setShowModal(true);
+					setModalMessage('Cập nhật thành công!');
+					setShowSuccessModal(true);
 					const fetchResponse = await userService.getUserById(id);
 					const updatedUserData = {
 						...fetchResponse,
@@ -109,7 +112,7 @@ const Profile = () => {
 					'Lỗi khi cập nhật thông tin:',
 					error.response?.data || error.message,
 				);
-				setErrorMessage('Cập nhật thất bại!');
+				setModalMessage('Cập nhật thất bại!');
 				setShowErrorModal(true);
 			}
 		} else {
@@ -120,6 +123,17 @@ const Profile = () => {
 	const handleFileUpload = async (e) => {
 		const file = e.target.files[0];
 		if (!file || !user) {
+			return;
+		}
+
+		const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+		const fileExtension = file.name.split('.').pop().toLowerCase();
+
+		if (!validExtensions.includes(fileExtension)) {
+			setModalMessage(
+				'Chỉ chấp nhận các tệp ảnh có định dạng: .jpg, .jpeg, .png, .gif',
+			);
+			setShowAvatarErrorModal(true);
 			return;
 		}
 
@@ -212,36 +226,6 @@ const Profile = () => {
 						<button className='btn btn-danger mt-3' onClick={handleEditSave}>
 							{isEditing ? 'Lưu' : 'Cập nhật'}
 						</button>
-						<Modal show={showModal} onHide={() => setShowModal(false)} centered>
-							<Modal.Header closeButton>
-								<Modal.Title>Thông báo</Modal.Title>
-							</Modal.Header>
-							<Modal.Body>Cập nhật thành công!</Modal.Body>
-							<Modal.Footer>
-								<Button variant='secondary' onClick={() => setShowModal(false)}>
-									Đóng
-								</Button>
-							</Modal.Footer>
-						</Modal>
-
-						<Modal
-							show={showErrorModal}
-							onHide={() => setShowErrorModal(false)}
-							centered
-						>
-							<Modal.Header closeButton>
-								<Modal.Title>Lỗi</Modal.Title>
-							</Modal.Header>
-							<Modal.Body>{errorMessage}</Modal.Body>
-							<Modal.Footer>
-								<Button
-									variant='secondary'
-									onClick={() => setShowErrorModal(false)}
-								>
-									Đóng
-								</Button>
-							</Modal.Footer>
-						</Modal>
 					</div>
 
 					{/* Avatar Upload */}
@@ -274,6 +258,59 @@ const Profile = () => {
 					</div>
 				</div>
 			</div>
+
+			<Modal
+				show={showSuccessModal}
+				onHide={() => setShowSuccessModal(false)}
+				centered
+			>
+				<Modal.Body className='text-center fs-3 fw-bold text-dark'>
+					{modalMessage}
+				</Modal.Body>
+				<Modal.Footer className='border-0 justify-content-center'>
+					<Button
+						variant='secondary'
+						onClick={() => setShowSuccessModal(false)}
+					>
+						Đóng
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			{/* Error Modal */}
+			<Modal
+				show={showErrorModal}
+				onHide={() => setShowErrorModal(false)}
+				centered
+			>
+				<Modal.Body className='text-center fs-5 fw-bold text-danger'>
+					{modalMessage}
+				</Modal.Body>
+				<Modal.Footer className='border-0 justify-content-center'>
+					<Button variant='secondary' onClick={() => setShowErrorModal(false)}>
+						Đóng
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			{/* Avatar Error Modal */}
+			<Modal
+				show={showAvatarErrorModal}
+				onHide={() => setShowAvatarErrorModal(false)}
+				centered
+			>
+				<Modal.Body className='text-center fs-5 fw-bold text-danger'>
+					{modalMessage}
+				</Modal.Body>
+				<Modal.Footer>
+					<Button
+						variant='danger'
+						onClick={() => setShowAvatarErrorModal(false)}
+					>
+						Đóng
+					</Button>
+				</Modal.Footer>
+			</Modal>
 		</div>
 	);
 };
