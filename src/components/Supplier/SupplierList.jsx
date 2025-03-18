@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import Card from '../Card';
 
-function SupplierList({ suppliers }) {
+function SupplierList({ suppliers, editedId }) {
   return (
     <Card>
       <Card.Body>
         <table className='table table-striped text-center align-middle'>
           <thead style={{ backgroundColor: '#f0f0f0' }}>
             <tr>
+              <th scope='col' className="fw-bold py-2" style={{ width: '5%' }}>#</th>
               <th scope='col' className="fw-bold py-2">Mã nhà cung cấp</th>
               <th scope='col' className="fw-bold py-2">Tên nhà cung cấp</th>
               <th scope='col' className="fw-bold py-2">Thời gian giao hàng (Ngày)</th>
@@ -19,8 +20,9 @@ function SupplierList({ suppliers }) {
           </thead>
           <tbody>
             {suppliers.length > 0 ? (
-              suppliers.map((supplier) => (
-                <tr key={supplier.supplier_id}>
+              suppliers.map((supplier, index) => (
+                <tr key={supplier.supplier_id} className={supplier.supplier_id === editedId ? 'table-primary' : ''}>
+                  <th scope='row'>{index + 1}</th>
                   <td>{supplier.supplier_code}</td>
                   <td>{supplier.supplier_name}</td>
                   <td>{supplier.delivery_time}</td>
@@ -43,7 +45,7 @@ function SupplierList({ suppliers }) {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center">Không có dữ liệu nhà cung cấp.</td>
+                <td colSpan="8" className="text-center">Không có dữ liệu nhà cung cấp.</td>
               </tr>
             )}
           </tbody>
