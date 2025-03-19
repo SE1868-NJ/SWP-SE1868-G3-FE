@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import cartService from '../../services/cartService';
@@ -8,17 +9,13 @@ const MiniCartModal = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [animating, setAnimating] = useState(false);
-  const { user } = useAuth();
+  const { user, cartCount } = useAuth();
   const navigate = useNavigate();
   const modalRef = useRef(null);
 
-  // Style cho modal trượt vào từ bên phải
   const overlayStyle = {
     position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    inset: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 1050,
     opacity: show ? 1 : 0,
@@ -31,14 +28,14 @@ const MiniCartModal = () => {
     position: 'fixed',
     top: 0,
     right: 0,
-    width: '400px',
-    maxWidth: '90%',
+    width: '90%',
+    maxWidth: '400px',
     height: '100%',
     backgroundColor: 'white',
-    boxShadow: '-4px 0 10px rgba(0, 0, 0, 0.1)',
+    boxShadow: '-2px 0 8px rgba(0, 0, 0, 0.1)',
     zIndex: 1051,
     transform: show ? 'translateX(0)' : 'translateX(100%)',
-    transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+    transition: 'transform 0.3s ease',
     display: 'flex',
     flexDirection: 'column',
     visibility: show || animating ? 'visible' : 'hidden'
@@ -74,9 +71,9 @@ const MiniCartModal = () => {
   };
 
   useEffect(() => {
-    fetchCartData();
-
-    const handleCartUpdated = () => fetchCartData();
+    const handleCartUpdated = () => {
+      fetchCartData();
+    };
     window.addEventListener('cart-updated', handleCartUpdated);
 
     const handleTransitionEnd = () => {
@@ -100,7 +97,6 @@ const MiniCartModal = () => {
 
   const fetchCartData = async () => {
     if (show) setLoading(true);
-
     try {
       const cartData = await cartService.getCartsByUserId(user.id);
 
@@ -133,11 +129,9 @@ const MiniCartModal = () => {
       const event = new CustomEvent('cart-updated');
       window.dispatchEvent(event);
     } catch (error) {
-      console.error('Error removing item:', error);
     }
   };
 
-  // Tính tổng giá và số lượng
   const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -150,28 +144,25 @@ const MiniCartModal = () => {
 
   return (
     <>
-      {/* Nút giỏ hàng */}
       <button
         onClick={handleShow}
         className="btn btn-outline-light border-2 position-relative"
         aria-label="Shopping Cart"
       >
         <i className="bi bi-basket-fill" />
-        {items.length > 0 && (
+        {cartCount > 0 && (
           <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {items.length}
+            {cartCount}
             <span className="visually-hidden">items in cart</span>
           </span>
         )}
       </button>
 
-      {/* Overlay khi modal mở */}
       <div style={overlayStyle} onClick={handleClose}></div>
 
-      {/* Modal Giỏ hàng */}
       <div ref={modalRef} style={modalStyle}>
         <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
-          <h5 className="m-0">Giỏ hàng ({items.length})</h5>
+          <h5 className="m-0">Giỏ hàng ({cartCount})</h5>
           <button
             type="button"
             className="btn-close"
