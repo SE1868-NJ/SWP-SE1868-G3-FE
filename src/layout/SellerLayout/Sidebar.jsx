@@ -168,7 +168,7 @@ function Sidebar() {
 						</div>
 					</div>
 
-					{/* Giao tiếp */}
+					{/* Chăm sóc khách hàng */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
@@ -180,7 +180,7 @@ function Sidebar() {
 								aria-controls='social'
 							>
 								<i className='bi bi-share h6 m-0 p-0 me-3' />
-								<h6 className='fw-bold m-0 p-0'>Giao Tiếp</h6>
+								<h6 className='fw-bold m-0 p-0'>Chăm sóc khách hàng</h6>
 							</button>
 						</h2>
 						<div
@@ -197,7 +197,7 @@ function Sidebar() {
 									</li>
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/ratting'} className='nav-link'>
-											Đánh giá
+											Quản lý đánh giá
 										</Link>
 									</li>
 								</ul>
