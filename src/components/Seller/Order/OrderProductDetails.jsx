@@ -1,6 +1,6 @@
 import React from 'react';
 
-const OrderDetails = ({ orderDetails, orderId }) => {
+const OrderProductDetails = ({ orderDetails, orderId }) => {
   return (
     <table className="table table-sm mb-0">
       <thead>
@@ -48,4 +48,4 @@ const OrderDetails = ({ orderDetails, orderId }) => {
   );
 };
 
-export default OrderDetails;
+export default OrderProductDetails;

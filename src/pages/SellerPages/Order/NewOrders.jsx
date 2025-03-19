@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import OrderTable from '../../../components/Seller/Order/OrderTable';
-// Không cần import OrderDetails nữa
 
 const NewOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -13,7 +12,6 @@ const NewOrders = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Dữ liệu mẫu cho quá trình phát triển
   const mockOrders = [
     {
       order_id: "1",
@@ -43,7 +41,6 @@ const NewOrders = () => {
     }
   ];
 
-  // Chi tiết đơn hàng mẫu
   const mockOrderDetails = [
     {
       id: 1,
@@ -57,17 +54,14 @@ const NewOrders = () => {
     }
   ];
 
-  // Tải dữ liệu mẫu khi component mount
   useEffect(() => {
     setOrders(mockOrders);
     setLoading(false);
   }, []);
 
-  // Hiển thị/ẩn chi tiết đơn hàng
   const toggleOrderDetails = (orderId) => {
     setSelectedOrderId(selectedOrderId === orderId ? null : orderId);
 
-    // Tải chi tiết đơn hàng nếu chưa được tải
     if (orderId && !orderDetails[orderId]) {
       setOrderDetails(prevDetails => ({
         ...prevDetails,
@@ -76,26 +70,20 @@ const NewOrders = () => {
     }
   };
 
-  // Xử lý thay đổi trạng thái
   const handleStatusChange = (orderId, newStatus) => {
-    console.log(`Đơn hàng ${orderId} đã thay đổi trạng thái thành ${newStatus}`);
 
-    // Xóa đơn hàng khỏi danh sách hiện tại
     const updatedOrders = orders.filter(order => order.order_id !== orderId);
     setOrders(updatedOrders);
 
-    // Đóng chi tiết nếu đang mở
     if (selectedOrderId === orderId) {
       setSelectedOrderId(null);
     }
   };
 
-  // Xử lý tìm kiếm
   const handleSearch = (e) => {
     if (e) e.preventDefault();
-    setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm mới
+    setCurrentPage(1);
 
-    // Lọc đơn giản cho demo
     if (searchTerm.trim() === '') {
       setOrders(mockOrders);
     } else {
@@ -110,7 +98,6 @@ const NewOrders = () => {
 
   return (
     <div className="container-fluid p-4">
-      {/* Header với tiêu đề và tìm kiếm */}
       <OrderHeader
         title="Đơn hàng mới"
         subtitle="Quản lý thông tin liên quan đến đơn hàng. Chỉ có quyền Quản lý mới có thể truy cập tính năng này."
@@ -119,7 +106,6 @@ const NewOrders = () => {
         handleSearch={handleSearch}
       />
 
-      {/* Bảng đơn hàng với chi tiết tích hợp */}
       <div className="card">
         <div className="card-body">
           <OrderTable
@@ -134,7 +120,7 @@ const NewOrders = () => {
           />
 
           {/* Phân trang đơn giản */}
-          {!loading && !error && orders.length > 0 && (
+          {/* {!loading && !error && orders.length > 0 && (
             <nav className="mt-4">
               <ul className="pagination justify-content-center">
                 <li className="page-item disabled">
@@ -152,7 +138,7 @@ const NewOrders = () => {
                 </li>
               </ul>
             </nav>
-          )}
+          )} */}
         </div>
       </div>
     </div>

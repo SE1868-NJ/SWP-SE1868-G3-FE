@@ -5,9 +5,7 @@ import { SellerProvider } from '../../hooks/contexts/SellerContext';
 import { useEffect } from 'react';
 
 function SellerLayout() {
-	// Thêm CSS cho transition khi ẩn/hiện sidebar
 	useEffect(() => {
-		// Thêm style transition để có animation mượt mà khi ẩn/hiện sidebar
 		const style = document.createElement('style');
 		style.innerHTML = `
 			#sidebar {

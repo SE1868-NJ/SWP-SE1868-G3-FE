@@ -20,7 +20,6 @@ function Sidebar() {
 			}}
 			id='sidebar'
 		>
-			{/* Header với logo ở giữa */}
 			<div className='navbar bg-danger navbar-expand border-bottom border-1'>
 				<div className='container-fluid px-3'>
 					<div className='navbar-brand w-100 me-0 text-center'>

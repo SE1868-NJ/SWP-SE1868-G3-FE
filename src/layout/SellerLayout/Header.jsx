@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 function Header() {
 	const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
-	// Kiểm tra trạng thái sidebar khi component được tải
 	useEffect(() => {
 		const sidebar = document.getElementById('sidebar');
 		if (sidebar) {
@@ -19,22 +18,18 @@ function Header() {
 
 		if (sidebar && mainContent) {
 			if (isSidebarVisible) {
-				// Ẩn sidebar
 				sidebar.style.left = '-17rem';
 				mainContent.style.marginLeft = '0';
 				mainContent.style.width = '100%';
 
-				// Hiển thị logo trong header
 				if (brandLogo) {
 					brandLogo.style.display = 'block';
 				}
 			} else {
-				// Hiện sidebar
 				sidebar.style.left = '0px';
 				mainContent.style.marginLeft = '17rem';
 				mainContent.style.width = 'calc(100% - 17rem)';
 
-				// Ẩn logo trong header
 				if (brandLogo) {
 					brandLogo.style.display = 'none';
 				}
@@ -55,20 +50,18 @@ function Header() {
 			}}>
 			<div className='container-fluid'>
 				<div className='d-flex align-items-center'>
-					{/* Logo hiển thị khi sidebar ẩn */}
 					<Link
 						to='/'
 						id='brand-logo-header'
 						className='text-danger fw-bold text-decoration-none me-3'
 						style={{
-							display: 'none', // Ban đầu ẩn, sẽ hiện khi sidebar ẩn
+							display: 'none',
 							fontSize: '1.25rem'
 						}}
 					>
 						Chợ Làng
 					</Link>
 
-					{/* Nút toggle sidebar */}
 					<button
 						type='button'
 						className='btn btn-outline-secondary me-3 d-flex align-items-center justify-content-center'
@@ -83,7 +76,6 @@ function Header() {
 						<i className='bi bi-list fs-4'></i>
 					</button>
 
-					{/* Kênh Người Bán luôn hiển thị */}
 					<div className='navbar-brand mb-0'>Kênh Người Bán</div>
 				</div>
 

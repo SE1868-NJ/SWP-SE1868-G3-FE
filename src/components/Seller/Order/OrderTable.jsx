@@ -1,5 +1,5 @@
 import React from 'react';
-import OrderDetails from './OrderDetails'; // Import component OrderDetails
+import OrderProductDetails from './OrderProductDetails';
 
 const OrderTable = ({
   orders,
@@ -71,7 +71,7 @@ const OrderTable = ({
                 <td>{order.payment_method === "CASH ON DELIVERY" ? "THANH TOÁN KHI NHẬN HÀNG" :
                   order.payment_method === "CREDIT CARD" ? "THẺ TÍN DỤNG" :
                     order.payment_method === "PAYPAL" ? "PAYPAL" : order.payment_method}</td>
-                <td>{order.name}</td>
+                <td>{order.full_name}</td>
                 <td>{order.phone}</td>
                 <td className="text-truncate" style={{ maxWidth: '150px' }}>{order.address}</td>
                 <td>{order.total.toLocaleString()}₫</td>
@@ -130,13 +130,11 @@ const OrderTable = ({
                 </td>
               </tr>
 
-              {/* Chi tiết đơn hàng - hiển thị trực tiếp dưới đơn hàng tương ứng */}
               {selectedOrderId === order.order_id && (
                 <tr>
                   <td colSpan="11" className="border-0 p-0">
                     <div className="px-4 py-3 bg-light">
-                      {/* Sử dụng component OrderDetails */}
-                      <OrderDetails
+                      <OrderProductDetails
                         orderDetails={orderDetails}
                         orderId={order.order_id}
                       />
