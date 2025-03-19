@@ -59,18 +59,18 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/message'} className='nav-link'>
+										<Link to={'/seller/shop-info'} className='nav-link'>
 											Thông tin gian hàng
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/ratting'} className='nav-link'>
-											Cập nhật gian hàng
+											Trang trí gian hàng
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/ratting'} className='nav-link'>
-											Xoá gian hàng
+											Thiết lập gian hàng
 										</Link>
 									</li>
 								</ul>
