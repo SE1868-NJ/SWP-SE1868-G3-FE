@@ -28,4 +28,12 @@ export const shopService = {
         }
     },
 
+    getFeedbacksByShop: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/feedbacks/${shopId}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 };
