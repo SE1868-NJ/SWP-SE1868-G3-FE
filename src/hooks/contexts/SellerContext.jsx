@@ -7,7 +7,11 @@ const SellerContext = createContext();
 export const SellerProvider = ({ children }) => {
     const [shops, setShops] = useState([]);
     const [shop, setShop] = useState(null);
-    const { user } = useAuth();
+    const [user, setUser] = useState(
+        {
+            id: 2,
+        }
+    );
 
     useEffect(() => {
         const fetchShopsBySeller = async (seller_id) => {

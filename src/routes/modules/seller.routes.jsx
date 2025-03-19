@@ -1,4 +1,5 @@
 // import { Navigate } from 'react-router-dom';
+import ShopInfoPage from '../../pages/SellerPages/Shop/ShopInfoPage';
 
 export const sellerRoutes = [
 	{
@@ -10,4 +11,8 @@ export const sellerRoutes = [
 	// 	path: '/login',
 	// 	// element: <SellerLogin />,
 	// },
+	{
+		path: '/seller/shop-info',
+		element: <ShopInfoPage />,
+	},
 ];
