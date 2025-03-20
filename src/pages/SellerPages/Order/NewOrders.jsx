@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import OrderTable from '../../../components/Seller/Order/OrderTable';
+import { Socket } from '../../../services/socket';
 
 const NewOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -11,6 +12,20 @@ const NewOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  useEffect(() => {
+    Socket.emit('join-checkout', 1);
+
+    Socket.on('new_order', (newOrder) => {
+      console.log('Received new order:', newOrder);
+      alert('Có đơn hàng mới!', newOrder); 
+      setOrders(prevOrders => [...prevOrders, newOrder]);
+    });
+
+    return () => {
+      Socket.off('new_order');
+    };
+  }, []);
 
   const mockOrders = [
     {
