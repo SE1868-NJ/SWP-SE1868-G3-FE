@@ -1,4 +1,3 @@
-// import { Navigate } from 'react-router-dom';
 import ShopInfoPage from '../../pages/SellerPages/Shop/ShopInfoPage';
 import NewOrders from '../../pages/SellerPages/Order/NewOrders';
 import ProcessingOrders from '../../pages/SellerPages/Order/ProcessingOrders';
@@ -15,7 +14,7 @@ export const sellerRoutes = [
 	// 	// element: <SellerLogin />,
 	// },
 	{
-		path: '/seller/shop-info',
+		path: 'shop-info',
 		element: <ShopInfoPage />,
 	},
 	{
