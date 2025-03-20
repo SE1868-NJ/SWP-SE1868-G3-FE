@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
             gender: "male",
             phone: "0987654321",
             address: "Hà Nội",
+            shop_id: 1
         }
     );
     const [loading, setLoading] = useState(true);
