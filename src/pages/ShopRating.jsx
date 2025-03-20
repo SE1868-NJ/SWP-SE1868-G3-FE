@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 function ShopRating() {
 	const [dateRange] = useState('Từ 16-02-2025 đến 17-03-2025');
 	const { shopId } = useParams();
-	const [feedbacks, setFeedbacks] = useState([]); 
+	const [feedbacks, setFeedbacks] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [searchTerm, setSearchTerm] = useState('');
 	const [selectedStars, setSelectedStars] = useState([]);
@@ -104,7 +104,7 @@ function ShopRating() {
 	const negativeCount = getNegativeRatingsCount();
 
 	return (
-		<div className='container py-4'>
+		<div className='container p-0 m-0'>
 			<div className='card mb-4 bg-white rounded-3 shadow-sm p-3'>
 				<div className='card-body'>
 					<div className='d-flex justify-content-between align-items-center mb-3'>
@@ -123,9 +123,7 @@ function ShopRating() {
 							>
 								<div className='d-flex justify-content-between align-items-center'>
 									<div>
-										<div className='text-muted'>
-											Tổng lượt đánh giá <HelpCircle size={16} />
-										</div>
+										<h6>Tổng lượt đánh giá</h6>
 										<h3 className='mb-0'>{stats.totalCount}</h3>
 									</div>
 								</div>
@@ -139,9 +137,7 @@ function ShopRating() {
 							>
 								<div className='d-flex justify-content-between align-items-center'>
 									<div>
-										<div className='text-muted'>
-											Tỷ lệ đánh giá tốt <HelpCircle size={16} />
-										</div>
+										<h6>Tỷ lệ đánh giá tốt</h6>
 										<h3 className='mb-0'>{stats.goodRatioPercent}%</h3>
 									</div>
 									<div className='text-danger'>
@@ -156,12 +152,10 @@ function ShopRating() {
 						<div className='col-md-6'>
 							<div className='card bg-white rounded-3 shadow-sm p-3'>
 								<div className='card-body'>
-									<h6>
-										Đánh giá tiêu cực cần phản hồi <HelpCircle size={16} />
-									</h6>
+									<h6>Đánh giá tiêu cực cần phản hồi</h6>
 									<div className='d-flex align-items-center'>
 										<h3 className='mb-0 me-2'>{negativeCount}</h3>
-										<button className='btn btn-outline-primary btn-sm'>
+										<button className='btn text-primary btn-sm fw-bold'>
 											Xem
 										</button>
 									</div>
@@ -175,12 +169,10 @@ function ShopRating() {
 						<div className='col-md-6'>
 							<div className='card bg-white rounded-3 shadow-sm p-3'>
 								<div className='card-body'>
-									<h6>
-										Đánh giá gần đây <HelpCircle size={16} />
-									</h6>
+									<h6>Đánh giá gần đây</h6>
 									<div className='d-flex align-items-center'>
 										<h3 className='mb-0 me-2'>{stats.totalCount}</h3>
-										<button className='btn btn-outline-primary btn-sm'>
+										<button className='btn text-primary btn-sm fw-bold '>
 											Xem
 										</button>
 									</div>
@@ -208,17 +200,19 @@ function ShopRating() {
 						Số sao đánh giá:
 						<div className='form-check'>
 							<input
-								className='form-check-input'
+								className={`form-check-input ${selectedStars.includes(0) ? 'border-danger bg-danger' : ''}`}
 								type='checkbox'
 								id='checkAll'
+								checked={selectedStars.includes(0)}
+								onChange={() => handleStarFilterChange(0)}
 							/>
 							<label className='form-check-label' htmlFor='checkAll'>
-								Tất cả ({stats.totalCount})
+								Tất cả
 							</label>
 						</div>
 						<div className='form-check'>
 							<input
-								className='form-check-input'
+								className={`form-check-input ${selectedStars.includes(5) ? 'border-danger bg-danger' : ''}`}
 								type='checkbox'
 								id='check5'
 								checked={selectedStars.includes(5)}
@@ -230,7 +224,7 @@ function ShopRating() {
 						</div>
 						<div className='form-check'>
 							<input
-								className='form-check-input'
+								className={`form-check-input ${selectedStars.includes(4) ? 'border-danger bg-danger' : ''}`}
 								type='checkbox'
 								id='check4'
 								checked={selectedStars.includes(4)}
@@ -242,7 +236,7 @@ function ShopRating() {
 						</div>
 						<div className='form-check'>
 							<input
-								className='form-check-input'
+								className={`form-check-input ${selectedStars.includes(3) ? 'border-danger bg-danger' : ''}`}
 								type='checkbox'
 								id='check3'
 								checked={selectedStars.includes(3)}
@@ -254,7 +248,7 @@ function ShopRating() {
 						</div>
 						<div className='form-check'>
 							<input
-								className='form-check-input'
+								className={`form-check-input ${selectedStars.includes(2) ? 'border-danger bg-danger' : ''}`}
 								type='checkbox'
 								id='check2'
 								checked={selectedStars.includes(2)}
@@ -266,7 +260,7 @@ function ShopRating() {
 						</div>
 						<div className='form-check'>
 							<input
-								className='form-check-input'
+								className={`form-check-input ${selectedStars.includes(1) ? 'border-danger bg-danger' : ''}`}
 								type='checkbox'
 								id='check1'
 								checked={selectedStars.includes(1)}
@@ -296,18 +290,23 @@ function ShopRating() {
 							/>
 						</div>
 						<div className='col-md-2 d-flex gap-2'>
-							<button className='btn btn-primary h-100' onClick={handleSearch}>
-								<Search size={12} /> Tìm kiếm
+							<button
+								className='btn btn-danger '
+								style={{ height: '37px', width: '100px' }}
+								onClick={handleSearch}
+							>
+								Tìm
 							</button>
 							<button
-								className='btn btn-outline-secondary h-100'
+								className='btn btn-outline-secondary'
+								style={{ height: '37px', width: '100px' }}
 								onClick={() => {
 									setInputSearchTerm('');
 									setSearchTerm('');
 									setSelectedStars([]);
 								}}
 							>
-								<RefreshCw size={12} /> Đặt lại
+								Đặt lại
 							</button>
 						</div>
 					</div>
