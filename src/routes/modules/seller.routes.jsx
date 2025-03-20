@@ -14,7 +14,7 @@ export const sellerRoutes = [
 	// 	// element: <SellerLogin />,
 	// },
 	{
-		path: '/shop-info',
+		path: 'shop-info',
 		element: <ShopInfoPage />,
 	},
 	{
