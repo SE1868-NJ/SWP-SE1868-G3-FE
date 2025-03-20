@@ -6,8 +6,6 @@ import { SellerProvider } from '../../hooks/contexts/SellerContext';
 import { Socket } from '../../services/socket';
 import { useAuth } from '../../hooks/contexts/AuthContext';
 
-import { useEffect } from 'react';
-
 function SellerLayout() {
 
 	const { user } = useAuth();
