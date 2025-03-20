@@ -53,17 +53,28 @@ export const AuthProvider = ({ children }) => {
     //     setIsAuthenticated(false);
     //     setUser(null);
     // };
+    const getCountCart = async (userId) => {
+        try {
+            const response = await productService.getCountCart(userId);
+            setCartCount(response);
+        } catch (error) {
+            console.error('Error getting cart count:', error);
+        }
+    };
+
     useEffect(() => {
-        const getCountCart = async (user_id) => {
-            try {
-                const response = await productService.getCountCart(user_id);
-                setCartCount(response);
-            } catch (error) {
-                console.error('Error getting cart count:', error);
-            }
+        const handleCartUpdated = () => {
+            getCountCart(user.id);
         };
+        window.addEventListener('cart-updated', handleCartUpdated);
+        return () => {
+            window.removeEventListener('cart-updated', handleCartUpdated);
+        };
+    }, [user.id]);
+
+    useEffect(() => {
         getCountCart(user.id);
-    }, [showToast]);
+    }, [user.id, showToast]);
 
     const handleAddCart = async (productId, mockUserId) => {
         try {
@@ -72,12 +83,14 @@ export const AuthProvider = ({ children }) => {
                 setToastMessage('Thêm vào giỏ hàng thành công!');
                 setToastVariant('success');
                 setShowToast(true);
+
+                const event = new CustomEvent('cart-updated');
+                window.dispatchEvent(event);
             }
         } catch (error) {
             setToastMessage('Có lỗi xảy ra khi thêm vào giỏ hàng');
             setToastVariant('danger');
             setShowToast(true);
-
         }
     };
 

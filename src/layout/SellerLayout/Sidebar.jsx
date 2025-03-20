@@ -6,37 +6,38 @@ function Sidebar() {
 
 	return (
 		<div
-			className='offcanvas-md offcanvas-start bg-body-tertiary min-vh-100 border-1 border-end d-flex flex-column'
-			style={{ width: '22rem' }}
-			tabIndex='-1'
+			className='bg-body-tertiary min-vh-100 border-1 border-end d-flex flex-column'
+			style={{
+				width: '17rem',
+				position: 'fixed',
+				top: 0,
+				left: 0,
+				bottom: 0,
+				height: '100vh',
+				overflowY: 'auto',
+				zIndex: 1030,
+				boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+			}}
 			id='sidebar'
 		>
 			<div className='navbar bg-danger navbar-expand border-bottom border-1'>
 				<div className='container-fluid px-3'>
-					<div className='navbar-brand w-100 me-0'>
+					<div className='navbar-brand w-100 me-0 text-center'>
 						<Link
 							to='/'
-							className='text-white fw-bold text-decoration-none d-inline-flex w-100 justify-content-between'
+							className='text-white fw-bold text-decoration-none'
+							style={{ fontSize: '1.25rem' }}
 						>
-							<i className='bi bi-bag-heart-fill'></i>
-							<span>Chợ Làng</span>
-							<i className='bi bi-bag-heart-fill'></i>
+							Chợ Làng
 						</Link>
 					</div>
 				</div>
 			</div>
-			<div className='offcanvas-header border-bottom fw-bold text-danger'>
-				<h5 className='offcanvas-title'>Quản lý gian hàng</h5>
-				<button
-					type='button'
-					className='btn-close'
-					data-bs-dismiss='offcanvas'
-					data-bs-target='#sidebar'
-				></button>
-			</div>
-			<div className='offcanvas-body m-0 p-3'>
+
+			{/* Phần nội dung sidebar */}
+			<div className='p-3 flex-grow-1'>
 				<div className='accordion w-100' id='accordionExample'>
-					{/* Profile */}
+					{/* Gian hàng */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
@@ -48,7 +49,7 @@ function Sidebar() {
 								aria-controls='profile'
 							>
 								<i className='bi bi-shop h6 m-0 p-0 me-3' />
-								<h6 className=' fw-bold m-0 p-0'>Gian hàng</h6>
+								<h6 className='fw-bold m-0 p-0'>Gian hàng</h6>
 							</button>
 						</h2>
 						<div
@@ -77,9 +78,8 @@ function Sidebar() {
 							</div>
 						</div>
 					</div>
-					{/* Profile */}
 
-					{/* Manage */}
+					{/* Quản lý */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
@@ -91,7 +91,7 @@ function Sidebar() {
 								aria-controls='manage'
 							>
 								<i className='bi bi-kanban h6 m-0 p-0 me-3' />
-								<h6 className=' fw-bold m-0 p-0'>Quản lý</h6>
+								<h6 className='fw-bold m-0 p-0'>Quản lý</h6>
 							</button>
 						</h2>
 						<div
@@ -112,12 +112,7 @@ function Sidebar() {
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders'} className='nav-link'>
-											Đơn hàng
-										</Link>
-									</li>
-									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders'} className='nav-link'>
+										<Link to={'/seller/vouchers'} className='nav-link'>
 											Khuyến mại
 										</Link>
 									</li>
@@ -125,9 +120,55 @@ function Sidebar() {
 							</div>
 						</div>
 					</div>
-					{/* Manage */}
 
-					{/* Social */}
+					{/* Đơn hàng */}
+					<div className='accordion-item'>
+						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
+							<button
+								className='accordion-button'
+								type='button'
+								data-bs-toggle='collapse'
+								data-bs-target='#orders'
+								aria-expanded='true'
+								aria-controls='orders'
+							>
+								<i className='bi bi-box-seam h6 m-0 p-0 me-3' />
+								<h6 className='fw-bold m-0 p-0'>Đơn hàng</h6>
+							</button>
+						</h2>
+						<div
+							id='orders'
+							className='accordion-collapse collapse'
+							data-bs-parent='#accordionExample'
+						>
+							<div className='accordion-body'>
+								<ul className='list-group list-group-flush'>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/new'} className='nav-link'>
+											Đơn hàng mới
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/processing'} className='nav-link'>
+											Đơn hàng đang xử lý
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/completed'} className='nav-link'>
+											Đơn hàng đã hoàn thành
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/cancelled'} className='nav-link'>
+											Đơn hàng đã hủy
+										</Link>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					{/* Chăm sóc khách hàng */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
@@ -139,7 +180,7 @@ function Sidebar() {
 								aria-controls='social'
 							>
 								<i className='bi bi-share h6 m-0 p-0 me-3' />
-								<h6 className=' fw-bold m-0 p-0'>Giao Tiếp</h6>
+								<h6 className='fw-bold m-0 p-0'>Chăm sóc khách hàng</h6>
 							</button>
 						</h2>
 						<div
@@ -156,16 +197,16 @@ function Sidebar() {
 									</li>
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/ratting'} className='nav-link'>
-											Đánh giá
+											Quản lý đánh giá
 										</Link>
 									</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-					{/* Social */}
 				</div>
 			</div>
+
 			{/* Shop */}
 			<div className='mt-auto'>
 				<div className='navbar bg-body-tertiary navbar-expand border-1 border-top'>
@@ -196,7 +237,6 @@ function Sidebar() {
 					</div>
 				</div>
 			</div>
-			{/* Shop */}
 		</div>
 	);
 }
