@@ -125,6 +125,8 @@ const Profile = () => {
 		if (!file || !user) {
 			return;
 		}
+		const maxSizeInBytes = 4 * 1024 * 1024; // 5MB
+		const fileSize = file.size;
 
 		const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 		const fileExtension = file.name.split('.').pop().toLowerCase();
@@ -132,6 +134,14 @@ const Profile = () => {
 		if (!validExtensions.includes(fileExtension)) {
 			setModalMessage(
 				'Chỉ chấp nhận các tệp ảnh có định dạng: .jpg, .jpeg, .png, .gif',
+			);
+			setShowAvatarErrorModal(true);
+			return;
+		}
+
+		if (fileSize > maxSizeInBytes) {
+			setModalMessage(
+				'Kích thước file ảnh quá lớn. Vui lòng chọn file nhỏ hơn.',
 			);
 			setShowAvatarErrorModal(true);
 			return;
