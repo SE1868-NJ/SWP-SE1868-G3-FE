@@ -1,20 +1,5 @@
 import React from 'react';
 
-const getStatusClass = (status) => {
-  switch (status) {
-    case 'completed':
-      return 'bg-success';
-    case 'processing':
-      return 'bg-warning text-dark';
-    case 'new':
-      return 'bg-info';
-    case 'cancelled':
-      return 'bg-danger';
-    default:
-      return 'bg-secondary';
-  }
-};
-
 const getStatusText = (status) => {
   switch (status) {
     case 'completed':
@@ -22,11 +7,22 @@ const getStatusText = (status) => {
     case 'processing':
       return 'Đang Xử Lý';
     case 'new':
-      return 'Mới';
+      return 'Chờ xử lý';
     case 'cancelled':
       return 'Đã Hủy';
-    default:
-      return 'Không Xác Định';
+  }
+};
+
+const getStatusStyle = (status) => {
+  switch (status) {
+    case 'completed':
+      return { backgroundColor: '#198754', color: 'white' };
+    case 'processing':
+      return { backgroundColor: '#0d6efd', color: 'white' };
+    case 'new':
+      return { backgroundColor: '#ffc107', color: 'white' };
+    case 'cancelled':
+      return { backgroundColor: '#dc3545', color: 'white' };
   }
 };
 
@@ -34,14 +30,17 @@ const OrderTable = ({ orders }) => {
   return (
     <div className="card h-100 shadow-sm">
       <div className="card-header d-flex justify-content-between align-items-center bg-white">
-        <h5 className="mb-0">Đơn Hàng Gần Đây</h5>
-        <a href="#" className="btn btn-sm btn-outline-primary">Xem Tất Cả</a>
+        <h4 className="mb-0 fw-bold" style={{ color: '#2c3e50' }}>Đơn Hàng Gần Đây</h4>
+        <a href="/seller/orders/new" className="btn btn-sm fw-medium" style={{ backgroundColor: '#34495e', color: 'white' }}>
+          <i className="bi bi-arrow-right-circle me-1"></i>
+          Xem Đơn Mới
+        </a>
       </div>
       <div className="card-body">
         <div className="table-responsive">
           <table className="table table-hover">
             <thead>
-              <tr>
+              <tr style={{ backgroundColor: '#ecf0f1' }}>
                 <th>Mã Đơn</th>
                 <th>Khách Hàng</th>
                 <th>Tổng Tiền</th>
@@ -51,11 +50,11 @@ const OrderTable = ({ orders }) => {
             <tbody>
               {orders.map((order, index) => (
                 <tr key={index}>
-                  <td>{order.id}</td>
+                  <td className="fw-medium">{order.id}</td>
                   <td>{order.customer}</td>
-                  <td>{order.amount}</td>
+                  <td className="fw-medium">{order.amount}</td>
                   <td>
-                    <span className={`badge ${getStatusClass(order.status)}`}>
+                    <span className="badge" style={getStatusStyle(order.status)}>
                       {getStatusText(order.status)}
                     </span>
                   </td>
@@ -64,6 +63,20 @@ const OrderTable = ({ orders }) => {
             </tbody>
           </table>
         </div>
+
+        {orders.length === 0 && (
+          <div className="text-center py-5">
+            <img
+              src="/placeholder-empty.png"
+              alt="Không có dữ liệu"
+              style={{ width: '100px', opacity: 0.5 }}
+              onError={(e) => {
+                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0yNSAyNUg3NVY3NUgyNVoiIHN0cm9rZT0iI2RkZCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBzdHJva2UtZGFzaGFycmF5PSI1LDUiLz48cGF0aCBkPSJNNDAgNDBMNjAgNjBNNjAgNDBMNDAgNjAiIHN0cm9rZT0iI2RkZCIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+';
+              }}
+            />
+            <p className="text-muted mt-3">Không có dữ liệu</p>
+          </div>
+        )}
       </div>
     </div>
   );
