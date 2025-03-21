@@ -21,10 +21,8 @@ function ShopInformation() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [saveMessage, setSaveMessage] = useState({ type: '', text: '' });
 
-  // Cập nhật dữ liệu shop khi có thay đổi
   const updateShopData = (shop) => {
     if (!shop) return;
-
     setSelectedShopId(shop.shop_id);
     setShopDetails(shop);
     setShopData({
@@ -37,7 +35,6 @@ function ShopInformation() {
     });
   };
 
-  // Reset trạng thái chỉnh sửa
   const resetEditState = () => {
     setIsEditing(false);
     setPreviewImage(null);
@@ -45,26 +42,21 @@ function ShopInformation() {
     setSaveMessage({ type: '', text: '' });
   };
 
-  // Nạp dữ liệu shop ban đầu
   useEffect(() => {
     if (shops && shops.length > 0) {
       updateShopData(shops[0]);
     }
   }, [shops]);
 
-  // Xử lý khi chọn shop khác
   const handleShopChange = (e) => {
     const shopId = e.target.value;
     const selectedShop = shops.find(shop => shop.shop_id.toString() === shopId.toString());
-
     if (selectedShop) {
       updateShopData(selectedShop);
     }
-
     resetEditState();
   };
 
-  // Xử lý thay đổi input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setShopData(prev => ({
@@ -73,12 +65,9 @@ function ShopInformation() {
     }));
   };
 
-  // Xử lý thay đổi ảnh
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    // Kiểm tra kích thước file
     if (file.size > 2 * 1024 * 1024) {
       setSaveMessage({
         type: 'danger',
@@ -86,8 +75,6 @@ function ShopInformation() {
       });
       return;
     }
-
-    // Kiểm tra định dạng file
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     if (!validTypes.includes(file.type)) {
       setSaveMessage({
@@ -96,53 +83,36 @@ function ShopInformation() {
       });
       return;
     }
-
     setSelectedFile(file);
-
-    // Hiển thị preview ảnh
     const reader = new FileReader();
     reader.onload = (e) => {
       setPreviewImage(e.target.result);
     };
     reader.readAsDataURL(file);
-
     setSaveMessage({ type: '', text: '' });
   };
 
-  // Xử lý lưu thông tin
   const handleSave = async () => {
-    // Validate dữ liệu
     if (!shopData.shop_name.trim()) {
       setSaveMessage({ type: 'danger', text: 'Tên shop không được để trống' });
       return;
     }
-
     try {
       setIsLoading(true);
-
-      // Chuẩn bị dữ liệu để gửi
       const formData = new FormData();
       Object.entries(shopData).forEach(([key, value]) => {
         if (key !== 'shop_logo') {
           formData.append(key, value || '');
         }
       });
-
-      // Thêm file nếu có
       if (selectedFile) {
         formData.append('shop_logo', selectedFile);
       }
-
-      // Gọi API cập nhật
       const updatedShop = await shopService.updateShop(selectedShopId, formData);
-
-      // Cập nhật UI
       setIsLoading(false);
       setIsEditing(false);
       setPreviewImage(null);
       setSelectedFile(null);
-
-      // Cập nhật dữ liệu shop
       setShopDetails(updatedShop);
       setShopData({
         shop_name: updatedShop.shop_name || '',
@@ -152,17 +122,13 @@ function ShopInformation() {
         shop_email: updatedShop.shop_email || '',
         shop_phone: updatedShop.shop_phone || ''
       });
-
-      // Hiển thị thông báo thành công (quan trọng: đặt ở đây để đảm bảo hiển thị sau khi cập nhật)
       setSaveMessage({ type: 'success', text: 'Cập nhật thông tin thành công!' });
     } catch (error) {
       setIsLoading(false);
       setSaveMessage({ type: 'danger', text: 'Đã xảy ra lỗi, vui lòng thử lại sau' });
-      console.error("Save error:", error);
     }
   };
 
-  // Hủy chỉnh sửa
   const handleCancel = () => {
     resetEditState();
     if (shopDetails) {
@@ -170,7 +136,6 @@ function ShopInformation() {
     }
   };
 
-  // Hiển thị màn hình loading
   if (isLoading && !shopDetails) {
     return (
       <div className="container mt-4 text-center">
@@ -182,23 +147,21 @@ function ShopInformation() {
     );
   }
 
-  // Hiển thị thông báo khi không có shop
-  if (!shopDetails && shops.length === 0) {
-    return (
-      <div className="container mt-4">
-        <div className="alert alert-warning">
-          <i className="bi bi-exclamation-triangle me-2"></i>
-          Không tìm thấy gian hàng nào. Vui lòng tạo gian hàng mới.
-        </div>
-        <Link to="/seller/shop/create" className="btn btn-danger">
-          <i className="bi bi-plus-circle me-2"></i>
-          Tạo gian hàng mới
-        </Link>
-      </div>
-    );
-  }
+  // if (!shopDetails && shops.length === 0) {
+  //   return (
+  //     <div className="container mt-4">
+  //       <div className="alert alert-warning">
+  //         <i className="bi bi-exclamation-triangle me-2"></i>
+  //         Không tìm thấy gian hàng nào. Vui lòng tạo gian hàng mới.
+  //       </div>
+  //       <Link to="/seller/shop/create" className="btn btn-danger">
+  //         <i className="bi bi-plus-circle me-2"></i>
+  //         Tạo gian hàng mới
+  //       </Link>
+  //     </div>
+  //   );
+  // }
 
-  // Render phần form thông tin
   const renderFormField = (label, name, placeholder, type = "text", rows = null) => {
     return (
       <div className="row mb-3">
@@ -234,7 +197,6 @@ function ShopInformation() {
     );
   };
 
-  // Render nút lưu/hủy hoặc chỉnh sửa
   const renderActionButtons = () => {
     if (isEditing) {
       return (
@@ -265,7 +227,6 @@ function ShopInformation() {
         </div>
       );
     }
-
     return (
       <button
         className="btn btn-danger btn-sm"
@@ -276,10 +237,8 @@ function ShopInformation() {
     );
   };
 
-  // Render UI chính
   return (
     <div className="container-fluid py-4 px-0">
-      {/* Thông báo */}
       {saveMessage.text && (
         <div className={`alert alert-${saveMessage.type} alert-dismissible fade show mx-4 border-0 shadow-sm`} role="alert">
           <i className={`bi ${saveMessage.type === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle'} me-2`}></i>
@@ -288,12 +247,10 @@ function ShopInformation() {
         </div>
       )}
 
-      {/* Card thông tin */}
       <div className="card border-0 shadow-sm mx-4 rounded-3">
         <div className="card-header bg-white py-3 border-bottom">
           <div className="d-flex justify-content-between align-items-center">
             <h5 className="m-0 fw-bold">
-              <i className="bi bi-info-circle me-2 text-danger"></i>
               Thông tin cơ bản
             </h5>
             <div className="d-flex">
@@ -307,7 +264,6 @@ function ShopInformation() {
 
         <div className="card-body p-4">
           <div className="row g-4">
-            {/* Thông tin cơ bản bên trái */}
             <div className="col-md-8">
               {renderFormField("Tên Shop", "shop_name", "Nhập tên gian hàng")}
               {renderFormField("Mô tả Shop", "shop_description", "Mô tả về gian hàng của bạn", "text", 5)}
@@ -316,7 +272,6 @@ function ShopInformation() {
               {renderFormField("Số điện thoại", "shop_phone", "Nhập số điện thoại liên hệ", "tel")}
             </div>
 
-            {/* Logo shop bên phải */}
             <div className="col-md-4">
               <div className="text-center">
                 <p className="fw-bold mb-2">Logo của Shop</p>

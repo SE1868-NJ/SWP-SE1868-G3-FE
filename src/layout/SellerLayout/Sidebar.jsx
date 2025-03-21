@@ -25,9 +25,13 @@ function Sidebar() {
 					<div className='navbar-brand w-100 me-0 text-center'>
 						<Link
 							to='/'
-							className='text-white fw-bold text-decoration-none'
+							className='link-body-emphasis text-white fw-bold text-decoration-none'
 							style={{ fontSize: '1.25rem' }}
 						>
+							<i
+								className='bi bi-bag-heart-fill me-2'
+								style={{ fontSize: '1.25rem' }}
+							/>
 							Chợ Làng
 						</Link>
 					</div>
@@ -67,11 +71,6 @@ function Sidebar() {
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/ratting'} className='nav-link'>
 											Trang trí gian hàng
-										</Link>
-									</li>
-									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
-											Thiết lập gian hàng
 										</Link>
 									</li>
 								</ul>
