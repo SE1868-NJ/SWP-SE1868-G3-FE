@@ -1,8 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useSeller } from '../../hooks/contexts/SellerContext';
 
 function Sidebar() {
 	const { shops } = useSeller();
+	const location = useLocation();
+
+	// Check current path to highlight active items
+	const isActive = (path) => {
+		return location.pathname.includes(path);
+	};
+
+	// Kiểm tra chính xác đường dẫn cho Dashboard
+	const isDashboardActive = location.pathname === '/seller' || location.pathname === '/seller/';
 
 	return (
 		<div
@@ -37,13 +46,18 @@ function Sidebar() {
 			{/* Phần nội dung sidebar */}
 			<div className='p-3 flex-grow-1'>
 				<div className='accordion w-100' id='accordionExample'>
-					{/* Dashboard - New Section */}
+					{/* Dashboard */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<Link
-								to='/seller/'
-								className='accordion-button collapsed text-decoration-none text-dark'
-								style={{ cursor: 'pointer' }}
+								to='/seller'
+								className={`d-flex align-items-center text-decoration-none p-3 text-dark ${isDashboardActive ? 'fw-bold' : ''
+									}`}
+								style={{
+									cursor: 'pointer',
+									borderRadius: '5px',
+									backgroundColor: isDashboardActive ? '#e6f2ff' : ''
+								}}
 							>
 								<i className='bi bi-speedometer2 h6 m-0 p-0 me-3' />
 								<h6 className='fw-bold m-0 p-0'>Dashboard</h6>
@@ -55,12 +69,15 @@ function Sidebar() {
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
-								className='accordion-button'
+								className={`accordion-button collapsed ${isActive('/seller/shop') ? 'fw-bold' : ''}`}
 								type='button'
 								data-bs-toggle='collapse'
 								data-bs-target='#profile'
-								aria-expanded='true'
+								aria-expanded='false'
 								aria-controls='profile'
+								style={{
+									backgroundColor: isActive('/seller/shop') ? '#e6f2ff' : ''
+								}}
 							>
 								<i className='bi bi-shop h6 m-0 p-0 me-3' />
 								<h6 className='fw-bold m-0 p-0'>Gian hàng</h6>
@@ -74,17 +91,17 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/shop-info'} className='nav-link'>
+										<Link to={'/seller/shop-info'} className={`nav-link ${isActive('/seller/shop-info') ? 'fw-bold' : ''}`}>
 											Thông tin gian hàng
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
+										<Link to={'/seller/ratting'} className={`nav-link ${isActive('/seller/ratting') ? 'fw-bold' : ''}`}>
 											Trang trí gian hàng
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
+										<Link to={'/seller/shop-settings'} className={`nav-link ${isActive('/seller/shop-settings') ? 'fw-bold' : ''}`}>
 											Thiết lập gian hàng
 										</Link>
 									</li>
@@ -97,12 +114,15 @@ function Sidebar() {
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
-								className='accordion-button'
+								className={`accordion-button collapsed ${isActive('/seller/products') || isActive('/seller/suppliers') || isActive('/seller/vouchers') ? 'fw-bold' : ''}`}
 								type='button'
 								data-bs-toggle='collapse'
 								data-bs-target='#manage'
-								aria-expanded='true'
+								aria-expanded='false'
 								aria-controls='manage'
+								style={{
+									backgroundColor: isActive('/seller/products') || isActive('/seller/suppliers') || isActive('/seller/vouchers') ? '#e6f2ff' : ''
+								}}
 							>
 								<i className='bi bi-kanban h6 m-0 p-0 me-3' />
 								<h6 className='fw-bold m-0 p-0'>Quản lý</h6>
@@ -110,23 +130,23 @@ function Sidebar() {
 						</h2>
 						<div
 							id='manage'
-							className='accordion-collapse collapse show'
+							className='accordion-collapse collapse'
 							data-bs-parent='#accordionExample'
 						>
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/products'} className='nav-link'>
+										<Link to={'/seller/products'} className={`nav-link ${isActive('/seller/products') ? 'fw-bold' : ''}`}>
 											Sản phẩm
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/suppliers'} className='nav-link'>
+										<Link to={'/seller/suppliers'} className={`nav-link ${isActive('/seller/suppliers') ? 'fw-bold' : ''}`}>
 											Nhà cung cấp
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/vouchers'} className='nav-link'>
+										<Link to={'/seller/vouchers'} className={`nav-link ${isActive('/seller/vouchers') ? 'fw-bold' : ''}`}>
 											Khuyến mại
 										</Link>
 									</li>
@@ -139,12 +159,15 @@ function Sidebar() {
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
-								className='accordion-button'
+								className={`accordion-button collapsed ${isActive('/seller/orders') ? 'fw-bold' : ''}`}
 								type='button'
 								data-bs-toggle='collapse'
 								data-bs-target='#orders'
-								aria-expanded='true'
+								aria-expanded='false'
 								aria-controls='orders'
+								style={{
+									backgroundColor: isActive('/seller/orders') ? '#e6f2ff' : ''
+								}}
 							>
 								<i className='bi bi-box-seam h6 m-0 p-0 me-3' />
 								<h6 className='fw-bold m-0 p-0'>Đơn hàng</h6>
@@ -158,22 +181,22 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders/new'} className='nav-link'>
+										<Link to={'/seller/orders/new'} className={`nav-link ${isActive('/seller/orders/new') ? 'fw-bold' : ''}`}>
 											Đơn hàng mới
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders/processing'} className='nav-link'>
+										<Link to={'/seller/orders/processing'} className={`nav-link ${isActive('/seller/orders/processing') ? 'fw-bold' : ''}`}>
 											Đơn hàng đang xử lý
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders/completed'} className='nav-link'>
+										<Link to={'/seller/orders/completed'} className={`nav-link ${isActive('/seller/orders/completed') ? 'fw-bold' : ''}`}>
 											Đơn hàng đã hoàn thành
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders/cancelled'} className='nav-link'>
+										<Link to={'/seller/orders/cancelled'} className={`nav-link ${isActive('/seller/orders/cancelled') ? 'fw-bold' : ''}`}>
 											Đơn hàng đã hủy
 										</Link>
 									</li>
@@ -186,12 +209,15 @@ function Sidebar() {
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
-								className='accordion-button'
+								className={`accordion-button collapsed ${isActive('/seller/chat') || isActive('/seller/ratings') ? 'fw-bold' : ''}`}
 								type='button'
 								data-bs-toggle='collapse'
 								data-bs-target='#social'
-								aria-expanded='true'
+								aria-expanded='false'
 								aria-controls='social'
+								style={{
+									backgroundColor: isActive('/seller/chat') || isActive('/seller/ratings') ? '#e6f2ff' : ''
+								}}
 							>
 								<i className='bi bi-share h6 m-0 p-0 me-3' />
 								<h6 className='fw-bold m-0 p-0'>Chăm sóc khách hàng</h6>
@@ -205,12 +231,12 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/chat'} className='nav-link'>
+										<Link to={'/seller/chat'} className={`nav-link ${isActive('/seller/chat') ? 'fw-bold' : ''}`}>
 											Tin nhắn
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
+										<Link to={'/seller/ratings'} className={`nav-link ${isActive('/seller/ratings') ? 'fw-bold' : ''}`}>
 											Quản lý đánh giá
 										</Link>
 									</li>
