@@ -4,6 +4,7 @@ import WelcomeSection from '../../components/Seller/Dashboard/WelcomeSection';
 import StatCards from '../../components/Seller/Dashboard/StatCards';
 import ChartSection from '../../components/Seller/Dashboard/ChartSection';
 import DataSection from '../../components/Seller/Dashboard/DataSection';
+import AiAssistant from '../../components/Seller/Dashboard/AiAssistant';
 
 function DashboardPage() {
   const { shops } = useSeller();
@@ -78,6 +79,13 @@ function DashboardPage() {
         timeRange={timeRange}
         onTimeRangeChange={handleTimeRangeChange}
         loading={loading}
+      />
+
+      {/* AI Assistant */}
+      <AiAssistant
+        chartData={chartData}
+        rankingProducts={rankingProducts}
+        orders={recentOrders}
       />
 
       {/* Data tables section */}
