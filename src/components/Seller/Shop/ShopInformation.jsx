@@ -23,9 +23,7 @@ function ShopInformation() {
 
   useEffect(() => {
     if (shops && shops.length > 0) {
-      const savedShopId = localStorage.getItem('currentShopId');
-      const shopToUse = savedShopId ?
-        shops.find(shop => shop.shop_id.toString() === savedShopId) : shops[0];
+      const shopToUse = shops[0];
 
       if (shopToUse) {
         setSelectedShopId(shopToUse.shop_id);
@@ -57,7 +55,6 @@ function ShopInformation() {
         shop_email: selectedShop.shop_email || '',
         shop_phone: selectedShop.shop_phone || ''
       });
-      localStorage.setItem('currentShopId', shopId);
     }
 
     setIsEditing(false);
@@ -248,7 +245,7 @@ function ShopInformation() {
           <div className="row g-4">
             <div className="col-md-8">
               <div className="row mb-3">
-                <label className="col-sm-3 col-form-label fw-bold">Tên Shop</label>
+                <label className="col-sm-3 col-form-label fw-bold">Tên Shop:</label>
                 <div className="col-sm-9">
                   {isEditing ? (
                     <input
@@ -266,7 +263,7 @@ function ShopInformation() {
               </div>
 
               <div className="row mb-4">
-                <label className="col-sm-3 col-form-label fw-bold">Mô tả Shop</label>
+                <label className="col-sm-3 col-form-label fw-bold">Mô tả Shop:</label>
                 <div className="col-sm-9">
                   {isEditing ? (
                     <textarea
@@ -286,7 +283,7 @@ function ShopInformation() {
               </div>
 
               <div className="row mb-3">
-                <label className="col-sm-3 col-form-label fw-bold">Địa chỉ Shop</label>
+                <label className="col-sm-3 col-form-label fw-bold">Địa chỉ Shop:</label>
                 <div className="col-sm-9">
                   {isEditing ? (
                     <input
@@ -304,7 +301,7 @@ function ShopInformation() {
               </div>
 
               <div className="row mb-3">
-                <label className="col-sm-3 col-form-label fw-bold">Email</label>
+                <label className="col-sm-3 col-form-label fw-bold">Email:</label>
                 <div className="col-sm-9">
                   {isEditing ? (
                     <input
@@ -322,7 +319,7 @@ function ShopInformation() {
               </div>
 
               <div className="row mb-3">
-                <label className="col-sm-3 col-form-label fw-bold">Số điện thoại</label>
+                <label className="col-sm-3 col-form-label fw-bold">Số điện thoại:</label>
                 <div className="col-sm-9">
                   {isEditing ? (
                     <input
@@ -364,28 +361,6 @@ function ShopInformation() {
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-
-          <hr className="my-4" />
-
-          <div className="row">
-            <div className="col-12">
-              <div className="mb-3">
-                <label className="form-label fw-bold">Chọn Shop</label>
-                <select
-                  className="form-select"
-                  value={selectedShopId || ''}
-                  onChange={handleShopChange}
-                  disabled={isEditing}
-                >
-                  {shops.map((shop) => (
-                    <option key={shop.shop_id} value={shop.shop_id}>
-                      {shop.shop_name}
-                    </option>
-                  ))}
-                </select>
               </div>
             </div>
           </div>

@@ -9,7 +9,7 @@ export const SellerProvider = ({ children }) => {
     const [shop, setShop] = useState(null);
     const [user, setUser] = useState(
         {
-            id: 2,
+            id: 1,
         }
     );
 
@@ -23,7 +23,8 @@ export const SellerProvider = ({ children }) => {
             }
         };
         fetchShopsBySeller(user.id);
-    }, []);
+    }, [user.id]);
+
 
     return (
         <SellerContext.Provider value={{
