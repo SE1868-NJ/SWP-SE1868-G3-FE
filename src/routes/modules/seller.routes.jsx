@@ -4,7 +4,6 @@ import ProcessingOrders from '../../pages/SellerPages/Order/ProcessingOrders';
 import CompletedOrders from '../../pages/SellerPages/Order/CompletedOrders';
 import CancelledOrders from '../../pages/SellerPages/Order/CancelledOrders';
 import DashboardPage from '../../pages/SellerPages/DashboardPage';
-
 export const sellerRoutes = [
 	{
 		path: '/seller',

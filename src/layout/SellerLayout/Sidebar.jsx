@@ -95,27 +95,22 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/message'} className='nav-link'>
+										<Link to={'/seller/shop-info'} className={`nav-link ${isActive('/seller/shop-info') ? 'fw-bold' : ''}`}>
 											Thông tin gian hàng
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
-											Cập nhật gian hàng
+										<Link to={'/seller/ratting'} className={`nav-link ${isActive('/seller/ratting') ? 'fw-bold' : ''}`}>
+											Trang trí gian hàng
 										</Link>
 									</li>
-									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
-											Xoá gian hàng
-										</Link>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
+								</ul >
+							</div >
+						</div >
+					</div >
 
 					{/* Quản lý */}
-					<div className='accordion-item'>
+					<div div className='accordion-item' >
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
 								className={`accordion-button collapsed ${isActive('/seller/products') || isActive('/seller/suppliers') || isActive('/seller/vouchers') ? 'fw-bold' : ''}`}
@@ -157,10 +152,10 @@ function Sidebar() {
 								</ul>
 							</div>
 						</div>
-					</div>
+					</div >
 
 					{/* Đơn hàng */}
-					<div className='accordion-item'>
+					<div div className='accordion-item' >
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
 								className={`accordion-button collapsed ${isActive('/seller/orders') ? 'fw-bold' : ''}`}
@@ -207,10 +202,10 @@ function Sidebar() {
 								</ul>
 							</div>
 						</div>
-					</div>
+					</div >
 
 					{/* Chăm sóc khách hàng */}
-					<div className='accordion-item'>
+					<div div className='accordion-item' >
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
 							<button
 								className={`accordion-button collapsed ${isActive('/seller/chat') || isActive('/seller/ratings') ? 'fw-bold' : ''}`}
@@ -247,12 +242,12 @@ function Sidebar() {
 								</ul>
 							</div>
 						</div>
-					</div>
-				</div>
-			</div>
+					</div >
+				</div >
+			</div >
 
 			{/* Shop */}
-			<div className='mt-auto'>
+			<div div className='mt-auto' >
 				<div className='navbar bg-body-tertiary navbar-expand border-1 border-top'>
 					<div className='container-fluid'>
 						<div className='input-group'>
@@ -280,8 +275,8 @@ function Sidebar() {
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div >
+		</div >
 	);
 }
 
