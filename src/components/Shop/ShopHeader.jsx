@@ -47,12 +47,16 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 					}}>
 						{shopInfo.shop_logo ? (
 							<img
-								src={shopInfo.shop_logo}
+								src={`http://localhost:4000${shopInfo.shop_logo}`}
 								alt={`${shopInfo.shop_name} logo`}
 								style={{
 									width: '100%',
 									height: '100%',
 									objectFit: 'cover'
+								}}
+								onError={(e) => {
+									e.target.onerror = null;
+									e.target.src = "https://via.placeholder.com/80";
 								}}
 							/>
 						) : (
