@@ -1,12 +1,12 @@
 import React from 'react';
-import ProductTable from './ProductTable';
+import ProductRankingTable from './ProductRankingTable';
 import OrderTable from './OrderTable';
 
-const DataSection = ({ products, orders }) => {
+const DataSection = ({ rankingProducts, orders }) => {
   return (
     <div className="row">
       <div className="col-md-6 mb-4">
-        <ProductTable products={products} />
+        <ProductRankingTable initialProducts={rankingProducts} />
       </div>
       <div className="col-md-6 mb-4">
         <OrderTable orders={orders} />

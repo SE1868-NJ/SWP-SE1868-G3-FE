@@ -8,10 +8,8 @@ import DataSection from '../../components/Seller/Dashboard/DataSection';
 function DashboardPage() {
   const { shops } = useSeller();
   const [stats, setStats] = useState({
-    totalUsers: 211,
     totalOrders: 56,
-    totalProducts: 50,
-    totalCategories: 8
+    totalProducts: 50
   });
 
   const [timeRange, setTimeRange] = useState('today');
@@ -30,10 +28,12 @@ function DashboardPage() {
   ]);
 
   // Sample data for products
-  const [recentProducts, setRecentProducts] = useState([
-    { name: 'Protinex Powder', price: '₫549.000', stock: '8.478' },
-    { name: 'VitaGreen Capsules', price: '₫150.000', stock: '4.785' },
-    { name: 'Fresh Fruits Basket', price: '₫299.000', stock: '120' }
+  const [rankingProducts, setRankingProducts] = useState([
+    { name: "Protinex Powder", price: 549000, stock: 8478, soldQuantity: 325, totalRevenue: 178425000 },
+    { name: "VitaGreen Capsules", price: 150000, stock: 4785, soldQuantity: 412, totalRevenue: 61800000 },
+    { name: "Fresh Fruits Basket", price: 299000, stock: 120, soldQuantity: 189, totalRevenue: 56511000 },
+    { name: "Organic Coffee Beans", price: 180000, stock: 350, soldQuantity: 278, totalRevenue: 50040000 },
+    { name: "Natural Honey Jar", price: 125000, stock: 520, soldQuantity: 367, totalRevenue: 45875000 }
   ]);
 
   // Sample data for orders
@@ -81,7 +81,7 @@ function DashboardPage() {
       />
 
       {/* Data tables section */}
-      <DataSection products={recentProducts} orders={recentOrders} />
+      <DataSection rankingProducts={rankingProducts} orders={recentOrders} />
     </div>
   );
 }
