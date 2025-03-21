@@ -14,9 +14,19 @@ const ShopInfo = ({ shop }) => {
             <div className="d-flex align-items-center justify-content-between mb-3">
                 <div className="d-flex align-items-center gap-3">
                     <img
-                        src={shop.shop_logo}
-                        alt="Shop Logo"
-                        style={{ width: "70px", height: "70px", borderRadius: "50%" }}
+                        src={`http://localhost:4000${shop.shop_logo}`}
+                        alt={`${shop.shop_name} Logo`}
+                        style={{
+                            width: "70px",
+                            height: "70px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            border: "1px solid #eee"
+                        }}
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://via.placeholder.com/70";
+                        }}
                     />
                     <div>
                         <h5 className="fw-bold mb-1">{shop.shop_name}</h5>

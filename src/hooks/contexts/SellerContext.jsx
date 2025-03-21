@@ -7,7 +7,11 @@ const SellerContext = createContext();
 export const SellerProvider = ({ children }) => {
     const [shops, setShops] = useState([]);
     const [shop, setShop] = useState(null);
-    const { user } = useAuth();
+    const [user, setUser] = useState(
+        {
+            id: 1,
+        }
+    );
 
     useEffect(() => {
         const fetchShopsBySeller = async (seller_id) => {
@@ -19,7 +23,8 @@ export const SellerProvider = ({ children }) => {
             }
         };
         fetchShopsBySeller(user.id);
-    }, []);
+    }, [user.id]);
+
 
     return (
         <SellerContext.Provider value={{

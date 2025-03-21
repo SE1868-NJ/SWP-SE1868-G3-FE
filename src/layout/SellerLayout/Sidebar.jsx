@@ -34,9 +34,13 @@ function Sidebar() {
 					<div className='navbar-brand w-100 me-0 text-center'>
 						<Link
 							to='/'
-							className='text-white fw-bold text-decoration-none'
+							className='link-body-emphasis text-white fw-bold text-decoration-none'
 							style={{ fontSize: '1.25rem' }}
 						>
+							<i
+								className='bi bi-bag-heart-fill me-2'
+								style={{ fontSize: '1.25rem' }}
+							/>
 							Chợ Làng
 						</Link>
 					</div>
@@ -100,16 +104,11 @@ function Sidebar() {
 											Trang trí gian hàng
 										</Link>
 									</li>
-									<li className='list-group-item px-0'>
-										<Link to={'/seller/shop-settings'} className={`nav-link ${isActive('/seller/shop-settings') ? 'fw-bold' : ''}`}>
-											Thiết lập gian hàng
-										</Link>
-									</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-
+          
 					{/* Quản lý */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
