@@ -2,15 +2,12 @@ import NewOrders from '../../pages/SellerPages/Order/NewOrders';
 import ProcessingOrders from '../../pages/SellerPages/Order/ProcessingOrders';
 import CompletedOrders from '../../pages/SellerPages/Order/CompletedOrders';
 import CancelledOrders from '../../pages/SellerPages/Order/CancelledOrders';
+import DashboardPage from '../../pages/SellerPages/DashboardPage';
 export const sellerRoutes = [
 	{
 		path: '/seller',
-		element: <span>Seller</span>,
+		element: <DashboardPage />,
 	},
-	// {
-	// 	path: '/login',
-	// 	// element: <SellerLogin />,
-	// },
 	{
 		path: 'orders/new',
 		element: <NewOrders />,

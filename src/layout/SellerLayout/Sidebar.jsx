@@ -37,6 +37,20 @@ function Sidebar() {
 			{/* Phần nội dung sidebar */}
 			<div className='p-3 flex-grow-1'>
 				<div className='accordion w-100' id='accordionExample'>
+					{/* Dashboard - New Section */}
+					<div className='accordion-item'>
+						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
+							<Link
+								to='/seller/'
+								className='accordion-button collapsed text-decoration-none text-dark'
+								style={{ cursor: 'pointer' }}
+							>
+								<i className='bi bi-speedometer2 h6 m-0 p-0 me-3' />
+								<h6 className='fw-bold m-0 p-0'>Dashboard</h6>
+							</Link>
+						</h2>
+					</div>
+
 					{/* Gian hàng */}
 					<div className='accordion-item'>
 						<h2 className='accordion-header' style={{ boxShadow: 'none' }}>
@@ -60,18 +74,18 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/message'} className='nav-link'>
+										<Link to={'/seller/shop-info'} className='nav-link'>
 											Thông tin gian hàng
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/ratting'} className='nav-link'>
-											Cập nhật gian hàng
+											Trang trí gian hàng
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/ratting'} className='nav-link'>
-											Xoá gian hàng
+											Thiết lập gian hàng
 										</Link>
 									</li>
 								</ul>
