@@ -125,7 +125,7 @@ const Profile = () => {
 		if (!file || !user) {
 			return;
 		}
-		const maxSizeInBytes = 4 * 1024 * 1024; // 5MB
+		const maxSizeInBytes = 4 * 1024 * 1024; 
 		const fileSize = file.size;
 
 		const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
