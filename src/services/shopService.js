@@ -13,6 +13,18 @@ export const shopService = {
 		}
 	},
 
+	updateShop: async (shopId, formData) => {
+		try {
+			const response = await api.post(`/shop/${shopId}/update`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'  // Changed to multipart/form-data for file upload
+				}
+			});
+			return response.data;
+		} catch (error) {
+			throw error;
+		}
+	},
 
 	//Customer
 	getShopHomepage: async (shopId) => {

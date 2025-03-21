@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSeller } from '../../../hooks/contexts/SellerContext';
 import { Link } from 'react-router-dom';
-// import { shopService } from '../../services/shopService';
+import { shopService } from '../../../services/shopService';
 
 function ShopInformation() {
   const { shops } = useSeller();
@@ -111,6 +111,8 @@ function ShopInformation() {
 
     try {
       setIsLoading(true);
+
+      // Use FormData for file uploads
       const formData = new FormData();
       formData.append('shop_name', shopData.shop_name);
       formData.append('shop_description', shopData.shop_description || '');
@@ -118,6 +120,7 @@ function ShopInformation() {
       formData.append('shop_email', shopData.shop_email || '');
       formData.append('shop_phone', shopData.shop_phone || '');
 
+      // Append the file only if a new file has been selected
       if (selectedFile) {
         formData.append('shop_logo', selectedFile);
       }
@@ -130,6 +133,7 @@ function ShopInformation() {
       setPreviewImage(null);
       setSelectedFile(null);
 
+      // Update display data
       setShopDetails(updatedShop);
       setShopData({
         shop_name: updatedShop.shop_name || '',
@@ -145,6 +149,7 @@ function ShopInformation() {
       console.error("Save error:", error);
     }
   };
+
 
   if (isLoading && !shopDetails) {
     return (
@@ -342,10 +347,15 @@ function ShopInformation() {
                 <p className="fw-bold mb-2">Logo của Shop</p>
                 <div className="d-flex justify-content-center align-items-center mb-3">
                   <img
-                    src={previewImage || shopData.shop_logo || "https://via.placeholder.com/300"}
+                    src={previewImage ||
+                      (shopData.shop_logo ? `http://localhost:4000${shopData.shop_logo}` : "https://via.placeholder.com/300")}
                     alt="Shop logo"
                     className="img-fluid rounded-circle border"
                     style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                    onError={(e) => {
+                      console.error("Lỗi tải ảnh:", e);
+                      e.target.src = "https://via.placeholder.com/300";
+                    }}
                   />
                 </div>
                 {isEditing && (
