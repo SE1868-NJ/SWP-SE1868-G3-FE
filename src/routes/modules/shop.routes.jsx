@@ -1,6 +1,6 @@
 import React from "react";
 import ShopChat from "../../pages/ShopChat";
-import ShopRating from "../../pages/ShopRating";
+import ShopRating from "../../pages/SellerPages/ShopRating/ShopRating";
 export const shopRoutes = [
   {
     path: "/seller/chat",

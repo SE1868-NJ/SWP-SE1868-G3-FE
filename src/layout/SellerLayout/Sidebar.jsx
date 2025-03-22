@@ -196,7 +196,7 @@ function Sidebar() {
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
+										<Link to={'/seller/ratting/shopID'} className='nav-link'>
 											Quản lý đánh giá
 										</Link>
 									</li>
