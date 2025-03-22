@@ -70,26 +70,26 @@ const OrderCard = ({ order, activeTab }) => {
 				</div>
 
 				<div className='d-flex align-items-center'>
-	<button className='btn btn-sm btn-outline-secondary me-2'>
-		<MessageCircle size={16} className='me-1' />
-		Chat
-	</button>
-	{order?.OrderDetails?.[0]?.Product?.shop?.shop_id ? (
-		<Link
-			to={`/shop/${order.OrderDetails[0].Product.shop.shop_id}/homepage`}
-			className='btn btn-sm btn-outline-secondary'
-		>
-			<Eye size={16} className='me-1' />
-			Xem Shop
-		</Link>
-	) : (
-		<button className='btn btn-sm btn-outline-secondary' disabled>
-			<Eye size={16} className='me-1' />
-			Xem Shop
-		</button>
-	)}
-	{getStatusText(order.status || activeTab)}
-</div>
+					<button className='btn btn-sm btn-outline-secondary me-2'>
+						<MessageCircle size={16} className='me-1' />
+						Chat
+					</button>
+					{order?.OrderDetails?.[0]?.Product?.shop?.shop_id ? (
+						<Link
+							to={`/shop/${order.OrderDetails[0].Product.shop.shop_id}/homepage`}
+							className='btn btn-sm btn-outline-secondary'
+						>
+							<Eye size={16} className='me-1' />
+							Xem Shop
+						</Link>
+					) : (
+						<button className='btn btn-sm btn-outline-secondary' disabled>
+							<Eye size={16} className='me-1' />
+							Xem Shop
+						</button>
+					)}
+					{getStatusText(order.status || activeTab)}
+				</div>
 			</div>
 
 			<div className='card-body'>
@@ -127,7 +127,7 @@ const OrderCard = ({ order, activeTab }) => {
 							</div>
 							<div className='col-md-4 text-end'>
 								<p className='price-original mb-0'>
-									₫{detail?.Product?.import_price || '0'}
+									₫{detail?.Product?.import_price + '.00' || '0'}
 								</p>
 								<p className='price-discounted mb-0'>
 									₫{detail?.subtotal || order?.total || '0'}
