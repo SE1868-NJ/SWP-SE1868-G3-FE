@@ -28,12 +28,19 @@ export const shopService = {
         }
     },
 
-    getFeedbacksByShop: async (shopId) => {
+    getFeedbacksByShop: async (shopId, startDate, endDate) => {
         try {
-            const response = await api.get(`/shop/feedbacks/${shopId}`);
+            const params = {};
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+    
+            const response = await api.get(`/shop/feedbacks/${shopId}`, { params });
+            console.log('Feedbacks fetched:', response.data);
+
             return response.data;
         } catch (error) {
             throw error;
         }
     },
+    
 };

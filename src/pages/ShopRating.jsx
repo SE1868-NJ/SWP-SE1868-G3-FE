@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { HelpCircle, Search, RefreshCw } from 'lucide-react';
 import { shopService } from '../services/shopService';
 import { useParams } from 'react-router-dom';
 
 function ShopRating() {
-	const [dateRange] = useState('Từ 16-02-2025 đến 17-03-2025');
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
+	const [showDatePicker, setShowDatePicker] = useState(false);
+	const [dateRange, setDateRange] = useState('Chọn thời gian');
+
 	const { shopId } = useParams();
 	const [feedbacks, setFeedbacks] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -12,10 +15,36 @@ function ShopRating() {
 	const [selectedStars, setSelectedStars] = useState([]);
 	const [inputSearchTerm, setInputSearchTerm] = useState('');
 
+	const formatDate = (dateString) => {
+		const date = new Date(dateString);
+		return `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
+	};
 	useEffect(() => {
 		const fetchFeedbacks = async () => {
 			try {
-				const response = await shopService.getFeedbacksByShop(shopId);
+				setLoading(true);
+
+				// Kiểm tra dateRange có đúng định dạng không
+				const dates = dateRange.match(
+					/Từ (\d{2}-\d{2}-\d{4}) đến (\d{2}-\d{2}-\d{4})/,
+				);
+				let startDate = null;
+				let endDate = null;
+
+				if (dates) {
+					// Chuyển định dạng dd-MM-yyyy sang yyyy-MM-dd để gửi lên API
+					startDate = dates[1].split('-').reverse().join('-');
+					endDate = dates[2].split('-').reverse().join('-');
+				}
+				console.log('Fetching feedbacks with:', shopId, startDate, endDate);
+
+				// Gọi API với tham số ngày tháng
+				const response = await shopService.getFeedbacksByShop(
+					shopId,
+					startDate,
+					endDate,
+				);
+
 				if (
 					response &&
 					response.status === 'success' &&
@@ -32,7 +61,7 @@ function ShopRating() {
 			}
 		};
 		fetchFeedbacks();
-	}, [shopId]);
+	}, [shopId, dateRange]); // Chạy lại khi shopId hoặc dateRange thay đổi
 
 	// Calculate rating statistics
 	const calculateRatingStats = () => {
@@ -112,7 +141,6 @@ function ShopRating() {
 							Đánh Giá Shop{' '}
 							<span className='text-danger'>{stats.averageRating}</span>/5
 						</h5>
-						<span className='text-muted'>{dateRange}</span>
 					</div>
 
 					<div className='row g-3'>
@@ -191,25 +219,13 @@ function ShopRating() {
 					<h5>Danh sách đánh giá shop</h5>
 
 					<div className='d-flex gap-2 mb-3'>
-						<button className='btn btn-outline-secondary active'>
+						<button className='btn btn-outline-danger active'>
 							Tất cả ({stats.totalCount})
 						</button>
 					</div>
 
 					<div className='d-flex gap-2 mb-3'>
 						Số sao đánh giá:
-						<div className='form-check'>
-							<input
-								className={`form-check-input ${selectedStars.includes(0) ? 'border-danger bg-danger' : ''}`}
-								type='checkbox'
-								id='checkAll'
-								checked={selectedStars.includes(0)}
-								onChange={() => handleStarFilterChange(0)}
-							/>
-							<label className='form-check-label' htmlFor='checkAll'>
-								Tất cả
-							</label>
-						</div>
 						<div className='form-check'>
 							<input
 								className={`form-check-input ${selectedStars.includes(5) ? 'border-danger bg-danger' : ''}`}
@@ -283,11 +299,73 @@ function ShopRating() {
 							/>
 						</div>
 						<div className='col-md-4'>
-							<input
-								type='text'
-								className='form-control'
-								placeholder='Chọn thời gian'
-							/>
+							<div className='input-group'>
+								<input
+									type='text'
+									className='form-control'
+									placeholder='Chọn thời gian'
+									value={dateRange}
+									onClick={() => setShowDatePicker(!showDatePicker)}
+									readOnly
+								/>
+								<button
+									className='input-group-text'
+									onClick={() => setShowDatePicker(!showDatePicker)}
+								>
+									<i className='bi bi-calendar'></i>
+								</button>
+							</div>
+							{showDatePicker && (
+								<div className='position-absolute bg-white p-3 shadow rounded border mt-1 z-index-1000'>
+									<div className='d-flex gap-2 mb-3'>
+										<div>
+											<label className='form-label'>Từ ngày</label>
+											<input
+												type='date'
+												className='form-control'
+												value={startDate}
+												onChange={(e) => setStartDate(e.target.value)}
+											/>
+										</div>
+										<div>
+											<label className='form-label'>Đến ngày</label>
+											<input
+												type='date'
+												className='form-control'
+												value={endDate}
+												onChange={(e) => setEndDate(e.target.value)}
+											/>
+										</div>
+									</div>
+									<div className='d-flex justify-content-end gap-2'>
+										<button
+											className='btn btn-outline-secondary'
+											onClick={() => {
+												setShowDatePicker(false);
+												setStartDate('');
+												setEndDate('');
+											}}
+										>
+											Đặt lại
+										</button>
+										<button
+											className='btn btn-danger'
+											onClick={() => {
+												if (startDate && endDate) {
+													const formattedStart = formatDate(startDate);
+													const formattedEnd = formatDate(endDate);
+													setDateRange(
+														`Từ ${formattedStart} đến ${formattedEnd}`,
+													);
+													setShowDatePicker(false);
+												}
+											}}
+										>
+											Áp dụng
+										</button>
+									</div>
+								</div>
+							)}
 						</div>
 						<div className='col-md-2 d-flex gap-2'>
 							<button
@@ -319,9 +397,9 @@ function ShopRating() {
 							<div className='col-md-6'>
 								<div className='text-muted'>Đánh giá của Người mua</div>
 							</div>
-							<div className='col-md-2'>
+							{/* <div className='col-md-2'>
 								<div className='text-muted'>Hành động</div>
-							</div>
+							</div> */}
 						</div>
 						{loading ? (
 							<div className='text-center py-5'>
@@ -345,11 +423,11 @@ function ShopRating() {
 										<p>⭐ {feedback.rating} / 5</p>
 										<p>{feedback.comment}</p>
 									</div>
-									<div className='col-md-2 text-center'>
+									{/* <div className='col-md-2 text-center'>
 										<button className='btn btn-sm btn-outline-primary'>
 											Trả lời
 										</button>
-									</div>
+									</div> */}
 								</div>
 							))
 						) : (
