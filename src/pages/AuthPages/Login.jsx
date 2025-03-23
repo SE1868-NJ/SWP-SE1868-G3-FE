@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
-
-import Container from '../components/Container';
-import Stack from '../components/Stack';
-import { Row, Col } from '../components/Grid';
-import Card from '../components/Card';
-import { authService } from '../services/authService';
-
-import loginImg from '../assets/images/login.png';
+import Container from '../../components/Container';
+import Stack from '../../components/Stack';
+import { Row, Col } from '../../components/Grid';
+import Card from '../../components/Card';
+import { authService } from '../../services/authService';
+import loginImg from '../../assets/images/login.png';
 
 function Login() {
 	const navigate = useNavigate();

@@ -13,10 +13,6 @@ export const sellerRoutes = [
 		path: '/seller',
 		element: <span>Seller</span>,
 	},
-	// {
-	// 	path: '/login',
-	// 	// element: <SellerLogin />,
-	// },
 	{
 		path: 'shop-info',
 		element: <ShopInfoPage />,

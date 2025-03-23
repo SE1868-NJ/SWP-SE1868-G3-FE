@@ -48,7 +48,7 @@ function Header() {
 					<ul className='nav me-auto'>
 						<li className='nav-item'>
 							<Link
-								to='/home'
+								to='/seller'
 								className='nav-link link-body-emphasis px-2 ps-0 active text-light'
 								aria-current='page'
 							>
@@ -137,34 +137,34 @@ function Header() {
 						/>
 						<span className='fs-4 fw-bold'>Chợ Làng</span>
 					</Link>
-          <form
-            className='col-12 col-lg-auto mb-3 mb-lg-0'
-            role='search'
-            onSubmit={handleSearch}
-          >
-            <div className='hstack gap-2'>
-              <div className='input-group'>
-                <input
-                  type='search'
-                  className='form-control border-0'
-                  style={{ boxShadow: 'none' }}
-                  placeholder='Tìm kiếm...'
-                  aria-label='Search'
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button type='button' className='btn bg-white border-0'>
-                  <i className='bi bi-search' />
-                </button>
-              </div>
+					<form
+						className='col-12 col-lg-auto mb-3 mb-lg-0'
+						role='search'
+						onSubmit={handleSearch}
+					>
+						<div className='hstack gap-2'>
+							<div className='input-group'>
+								<input
+									type='search'
+									className='form-control border-0'
+									style={{ boxShadow: 'none' }}
+									placeholder='Tìm kiếm...'
+									aria-label='Search'
+									value={searchQuery}
+									onChange={(e) => setSearchQuery(e.target.value)}
+								/>
+								<button type='button' className='btn bg-white border-0'>
+									<i className='bi bi-search' />
+								</button>
+							</div>
 
-              <MiniCartModal />
-            </div>
-          </form>
-        </div>
-      </header>
-    </div>
-  );
+							<MiniCartModal />
+						</div>
+					</form>
+				</div>
+			</header>
+		</div>
+	);
 }
 
 export default Header;

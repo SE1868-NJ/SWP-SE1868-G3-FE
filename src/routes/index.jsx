@@ -23,7 +23,7 @@ const routes = [
 				<Layout />
 			</OrderProvider>
 		),
-		children: [...homeRoute, ...authRoutes, ...orderDetailRoutes],
+		children: [...homeRoute, ...authRoutes, ...orderDetailRoutes], //auth dung layout khac
 	},
 	{
 		path: '/',
