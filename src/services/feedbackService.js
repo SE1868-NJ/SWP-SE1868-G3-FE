@@ -9,5 +9,18 @@ export const feedbackService = {
             throw error;
         }
     },
-
+    createFeedback: async (formData) => {
+        try {
+          const response = await api.post('/feedback/create', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          return response.data;
+        } catch (error) {
+          console.error('Error creating feedback:', error);
+          throw error;
+        }
+      },
+    
 };
