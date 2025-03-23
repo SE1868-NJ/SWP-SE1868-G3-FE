@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ProductPreview from '../components/Modals/ProductPreview';
 import Advertisement from '../components/Products/Advertisement';
 import Categories from '../components/Products/Categories';
-import CustomPagination from '../components/Products/CustomPagination';
+import CustomPagination from '../components/Pagination/CustomPagination';
 import FlashSale from '../components/Products/FlashSale';
 import ProductList from '../components/Products/ProductList';
 import TopSearch from '../components/Products/TopSearch';
@@ -125,7 +125,7 @@ function ListPage() {
 	};
 	const handleCategorySelect = (category) => {
 		navigate(`/search?category=${encodeURIComponent(category)}`);
-  };
+	};
 
 	return (
 		<>

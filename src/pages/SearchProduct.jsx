@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import CustomPagination from '../components/Products/CustomPagination';
+import CustomPagination from '../components/Pagination/CustomPagination';
 import ProductSearch from '../components/Products/ProductSearch';
 import { useAuth } from '../hooks/contexts/AuthContext';
 import { productService } from '../services/productService';
@@ -24,7 +24,7 @@ function SearchProduct() {
 	const selectedCategory = query.get('category') || '';
 
 	const [filters, setFilters] = useState({
-		categories:selectedCategory ? [selectedCategory] : [],
+		categories: selectedCategory ? [selectedCategory] : [],
 		priceRange: { min: 0, max: 10000000 } // Mặc định là full range
 	});
 
@@ -65,9 +65,9 @@ function SearchProduct() {
 			<div className='row'>
 				{/* Sidebar - Bộ lọc */}
 				<div className='col-md-2'>
-					<ProductSideBar 
-						filters={filters} 
-						onFilterChange={setFilters} 
+					<ProductSideBar
+						filters={filters}
+						onFilterChange={setFilters}
 					/>
 				</div>
 

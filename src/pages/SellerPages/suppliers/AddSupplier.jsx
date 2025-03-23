@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import Card from '../../components/Card';
-import SupplierHeader from '../../components/Supplier/SupplierHeader';
-import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
-import SupplierNotificationModal from '../../components/Modals/SupplierNotificationModal';
-import supplierService from '../../services/supplierService';
-import { validateField, validateForm } from '../../utils/validation';
+import Card from '../../../components/Card';
+import SupplierHeader from '../../../components/Seller/Supplier/SupplierHeader';
+import SupplierInfoTable from '../../../components/Seller/Supplier/SupplierInfoTable';
+import SupplierNotificationModal from '../../../components/Modals/Seller/SupplierNotificationModal';
+import supplierService from '../../../services/SellerServices/supplierService';
+import { validateField, validateForm } from '../../../utils/validation';
 
 function AddSupplier() {
   const [supplier, setSupplier] = useState({
@@ -26,14 +26,12 @@ function AddSupplier() {
   const [loading, setLoading] = useState(false);
   const errorRefs = useRef({});
 
-  // Modal states
   const [modalStates, setModalStates] = useState({
     showSuccessModal: false,
     showErrorModal: false,
     showCancelConfirmModal: false
   });
 
-  // Modal messages
   const modalMessages = {
     successMessage: 'Thêm nhà cung cấp thành công!',
     errorMessage: 'Thêm nhà cung cấp thất bại! Vui lòng thử lại.',
@@ -54,10 +52,8 @@ function AddSupplier() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSupplier((prev) => ({ ...prev, [name]: value }));
-
     const error = validateField(name, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
-
     if (error) {
       errorRefs.current[name] = e.target;
     } else {
@@ -67,10 +63,8 @@ function AddSupplier() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const newErrors = validateForm(supplier);
     setErrors(newErrors);
-
     if (Object.keys(newErrors).length > 0) {
       const firstErrorField = Object.keys(newErrors)[0];
       if (firstErrorField) {
@@ -81,7 +75,6 @@ function AddSupplier() {
       }
       return;
     }
-
     try {
       setLoading(true);
       await supplierService.createSupplier(supplier);
@@ -97,7 +90,6 @@ function AddSupplier() {
     toggleModal('showCancelConfirmModal', true);
   };
 
-  // Function to handle modal visibility
   const toggleModal = (modalName, isOpen = true) => {
     setModalStates(prev => ({ ...prev, [modalName]: isOpen }));
   };
@@ -119,7 +111,6 @@ function AddSupplier() {
         </Card.Body>
       </Card>
 
-      {/* Supplier Modals */}
       <SupplierNotificationModal
         modals={modalStates}
         messages={modalMessages}
