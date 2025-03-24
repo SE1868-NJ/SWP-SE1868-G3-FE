@@ -16,7 +16,7 @@ function Sidebar() {
 				height: '100vh',
 				overflowY: 'auto',
 				zIndex: 1030,
-				boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+				boxShadow: '0 0 10px rgba(0,0,0,0.1)',
 			}}
 			id='sidebar'
 		>
@@ -101,7 +101,7 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/products'} className='nav-link'>
+										<Link to={'/seller/products/:shopId'} className='nav-link'>
 											Sản phẩm
 										</Link>
 									</li>
