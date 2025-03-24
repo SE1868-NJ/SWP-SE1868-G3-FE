@@ -56,9 +56,6 @@ function ShopRating() {
       try {
         setLoading(true);
         
-        console.log('Fetching feedbacks with:', shopId, startDate, endDate);
-
-        // Gọi API với tham số ngày tháng
         const response = await shopService.getFeedbacksByShop(
           shopId,
           startDate,
