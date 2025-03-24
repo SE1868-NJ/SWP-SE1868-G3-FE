@@ -11,7 +11,6 @@ function SellerAllProducts() {
 	const [products, setProducts] = useState([]);
 	const [search, setSearch] = useState('');
 	const [totalProducts, setTotalProducts] = useState(0);
-	const tabs = [{ id: 'all', label: 'Tất cả', count: null }];
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -24,7 +23,7 @@ function SellerAllProducts() {
 				setLoading(true);
 				const params = {
 					page: 1,
-					limit: 20,
+					limit: 10,
 					search,
 					sort: 'product_name',
 					order: 'asc',
@@ -56,56 +55,35 @@ function SellerAllProducts() {
 	return (
 		<div className='container-fluid p-4'>
 			<div className='d-flex justify-content-between align-items-center mb-4'>
-				<h5 className='m-0'>Sản phẩm</h5>
-				<div className='d-flex gap-2'>
-					<button className='btn btn-danger'>
-						<Plus size={18} className='me-1' />
-						Thêm 1 sản phẩm mới
-					</button>
-				</div>
+				<h2 className='m-0 fw-bold'>Sản phẩm</h2>
 			</div>
 
-			<ul className='nav nav-tabs mb-4'>
-				{tabs.map((tab) => (
-					<li className='nav-item' key={tab.id}>
-						<button
-							className={`nav-link ${activeTab === tab.id ? 'active text-danger' : ''}`}
-							onClick={() => setActiveTab(tab.id)}
-						>
-							{tab.label} {tab.count !== null && `(${tab.count})`}
-						</button>
-					</li>
-				))}
-			</ul>
-
 			<div className='row mb-4'>
-				<div className='col-12'>
-					<div className='input-group'>
-						<span className='input-group-text'>Tìm kiếm Sản phẩm</span>
+				<div className='col-12 d-flex justify-content-start gap-2'>
+					<div className='input-group' style={{ width: '300px' }}>
 						<input
 							type='text'
 							className='form-control'
-							placeholder='Tìm Tên sản phẩm, SKU sản phẩm, SKU phân loại, Mã sản phẩm'
+							placeholder='Tìm Tên sản phẩm, SKU sản phẩm, SKU phân loại'
 							value={search}
 							onChange={handleSearchChange}
 						/>
 					</div>
+					<button className='btn btn-danger'>Áp dụng</button>
+					<button
+						className='btn btn-outline-secondary'
+						onClick={handleResetSearch}
+					>
+						Nhập Lại
+					</button>
 				</div>
-			</div>
-
-			<div className='d-flex gap-2 mb-4'>
-				<button className='btn btn-danger'>Áp dụng</button>
-				<button
-					className='btn btn-outline-secondary'
-					onClick={handleResetSearch}
-				>
-					Nhập Lại
-				</button>
 			</div>
 
 			<div className='d-flex justify-content-between align-items-center mb-4'>
 				<div className='d-flex align-items-center'>
-					<span className='me-3'>{totalProducts} Sản Phẩm</span>
+					<span className='me-3 px-2 py-1 bg-danger text-white rounded'>
+						{totalProducts} Sản Phẩm
+					</span>
 				</div>
 			</div>
 
@@ -119,22 +97,20 @@ function SellerAllProducts() {
 				<table className='table'>
 					<thead>
 						<tr>
-							<th>
-								<input type='checkbox' className='form-check-input' />
-							</th>
+							<th>#</th>
 							<th>Tên sản phẩm</th>
-							<th>Doanh số</th>
-							<th>Giá</th>
+							<th>Phân loại</th>
+							<th>Mô tả</th>
+							<th>Giá nhập</th>
+							<th>Giá bán</th>
 							<th>Kho hàng</th>
 						</tr>
 					</thead>
 					<tbody>
 						{products.length > 0 ? (
-							products.map((product) => (
+							products.map((product, index) => (
 								<tr key={product.id}>
-									<td>
-										<input type='checkbox' className='form-check-input' />
-									</td>
+									<td>{index + 1}</td>
 									<td>
 										<img
 											src={
@@ -153,8 +129,9 @@ function SellerAllProducts() {
 										/>
 										{product.product_name}
 									</td>
-
-									<td>{Number(product.revenue).toFixed(2)}</td>
+									<td>{product.category?.name}</td>
+									<td>{product.product_description}</td>
+									<td>{product.import_price} đ</td>
 									<td>{product.sale_price} đ</td>
 									<td>{product.stock_quantity}</td>
 								</tr>
