@@ -8,7 +8,6 @@ import { homeRoute } from './modules/home.routes';
 import { orderRoutes } from './modules/order.routes';
 import { sellerRoutes } from './modules/seller.routes';
 import SellerLayout from '../layout/SellerLayout';
-import { supplierRoutes } from './modules/supplier.routes';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
 import { orderDetailRoutes } from './modules/orderDetail.routes';
 import { OrderProvider } from '../hooks/contexts/OrderContext';
@@ -32,14 +31,14 @@ const routes = [
 			<OrderProvider>
 				<ProfileLayout />
 			</OrderProvider>
-		), 	
+		),
 		children: userRoutes,
 	},
 
 	{
 		path: '/seller',
 		element: <SellerLayout />,
-		children: [...sellerRoutes, ...supplierRoutes, ...shopRoutes],
+		children: [...sellerRoutes, ...shopRoutes],
 	},
 	{
 		path: '/order',

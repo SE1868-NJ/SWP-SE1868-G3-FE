@@ -100,7 +100,6 @@ const OrderCard = ({ order, activeTab }) => {
 								'Không xác định'}
 						</span>
 					</div>
-
 					<div className='d-flex align-items-center'>
 						<button className='btn btn-sm btn-outline-secondary me-2'>
 							<MessageCircle size={16} className='me-1' />
@@ -123,7 +122,28 @@ const OrderCard = ({ order, activeTab }) => {
 						{getStatusText(order.status || activeTab)}
 					</div>
 				</div>
-
+				<div className='d-flex align-items-center'>
+					<button className='btn btn-sm btn-outline-secondary me-2'>
+						<MessageCircle size={16} className='me-1' />
+						Chat
+					</button>
+					{order?.OrderDetails?.[0]?.Product?.shop?.shop_id ? (
+						<Link
+							to={`/shop/${order.OrderDetails[0].Product.shop.shop_id}/homepage`}
+							className='btn btn-sm btn-outline-secondary'
+						>
+							<Eye size={16} className='me-1' />
+							Xem Shop
+						</Link>
+					) : (
+						<button className='btn btn-sm btn-outline-secondary' disabled>
+							<Eye size={16} className='me-1' />
+							Xem Shop
+						</button>
+					)}
+					{getStatusText(order.status || activeTab)}
+				</div>
+			</div>
 				<div className='card-body'>
 					{/* Kiểm tra OrderDetails có phải là mảng không trước khi map */}
 					{Array.isArray(order?.OrderDetails) &&
@@ -171,6 +191,27 @@ const OrderCard = ({ order, activeTab }) => {
 					) : (
 						<p>Không có chi tiết đơn hàng.</p>
 					)}
+							<div className='col-md-4 text-end'>
+								<p className='price-original mb-0'>
+									₫{detail?.Product?.import_price + '.00' || '0'}
+								</p>
+								<p className='price-discounted mb-0'>
+									₫{detail?.subtotal || order?.total || '0'}
+								</p>
+							</div>
+						</div>
+					))
+				) : (
+					<p>Không có chi tiết đơn hàng.</p>
+				)}
+			</div>
+
+			<div className='card-footer bg-white d-flex justify-content-between align-items-center py-3'>
+				<div>
+					<small className='text-muted'>
+						{order?.note || 'Đơn hàng đã được giao thành công'}
+					</small>
+					<i className='ms-2 text-muted bi bi-info-circle'></i>
 				</div>
 
 				<div className='card-footer bg-white d-flex justify-content-between align-items-center py-3'>

@@ -1,10 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import Card from '../../components/Card';
-import SupplierHeader from '../../components/Supplier/SupplierHeader';
-import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
-import SupplierNotificationModal from '../../components/Modals/SupplierNotificationModal';
-import supplierService from '../../services/supplierService';
+import Card from '../../../components/Card';
+import SupplierHeader from '../../../components/Seller/Supplier/SupplierHeader';
+import SupplierInfoTable from '../../../components/Seller/Supplier/SupplierInfoTable';
+import SupplierNotificationModal from '../../../components/Modals/Seller/SupplierNotificationModal';
+import supplierService from '../../../services/SellerServices/supplierService';
 
 function ViewSupplier() {
   const { id } = useParams();
@@ -13,7 +13,6 @@ function ViewSupplier() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
-  // Modal states
   const [modalStates, setModalStates] = useState({
     showDeleteConfirmModal: false,
     showDeleteSuccessModal: false,
@@ -21,7 +20,6 @@ function ViewSupplier() {
     showNotFoundModal: false
   });
 
-  // Modal messages
   const modalMessages = {
     deleteConfirmMessage: 'Bạn có chắc chắn muốn xóa nhà cung cấp này không?',
     deleteSuccessMessage: 'Xóa nhà cung cấp thành công!',
@@ -44,11 +42,9 @@ function ViewSupplier() {
         setLoading(false);
       }
     };
-
     fetchSupplier();
   }, [id]);
 
-  // Function to handle modal visibility
   const toggleModal = (modalName, isOpen = true) => {
     setModalStates(prev => ({ ...prev, [modalName]: isOpen }));
   };
@@ -94,7 +90,6 @@ function ViewSupplier() {
         </Card.Body>
       </Card>
 
-      {/* Supplier Modals */}
       <SupplierNotificationModal
         modals={modalStates}
         messages={modalMessages}

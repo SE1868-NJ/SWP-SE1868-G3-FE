@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { addressService } from "../../services/addressService";
+import { addressService } from "../../../services/addressService";
 
 function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = false }) {
   const [provinces, setProvinces] = useState([]);
@@ -29,32 +29,26 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const supplierCodeRef = useRef(null);
 
-  // Đặt giá trị mặc định cho supplier_code khi component được tải lần đầu
   useEffect(() => {
     if (!supplier.supplier_code && !window.location.pathname.includes('/edit/')) {
       handleChange({ target: { name: 'supplier_code', value: 'NCC-' } });
     }
-
-    // Phân tách thời hạn thanh toán thành giá trị và đơn vị
     if (supplier.payment_term && !supplier.payment_term_value) {
       const match = supplier.payment_term.match(/^(\d+)\s*(.*)$/);
       if (match) {
         const value = match[1];
         const unit = match[2].trim() || 'ngày';
-
         supplier.payment_term_value = value;
         supplier.payment_term_unit = unit;
       }
     }
   }, []);
 
-  // Xử lý vị trí con trỏ cho input mã nhà cung cấp
   useEffect(() => {
     if (supplierCodeRef.current && supplier.supplier_code === 'NCC-') {
       supplierCodeRef.current.setSelectionRange(4, 4);
     }
   }, [supplier.supplier_code]);
-
   useEffect(() => {
     const form = document.querySelector('form');
     if (!form) return;
@@ -74,19 +68,15 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         }, 100);
         return false;
       }
-
       if (originalSubmit && typeof originalSubmit === 'function') {
         return originalSubmit(e);
       }
-
       return true;
     };
-
     supplier.validateAddressForm = () => {
       setAttemptedSubmit(true);
       return validateAddressFields();
     };
-
     return () => {
       form.onsubmit = originalSubmit;
     };
@@ -98,12 +88,9 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
       (district === "" || ward !== "");
   };
 
-  // Validate thông tin giao dịch
   const isValidAccountNumber = (bank, number) => {
-    if (!number) return true; // Cho phép để trống
-    if (!/^\d+$/.test(number)) return false; // Chỉ cho phép số
-
-    // Kiểm tra độ dài theo từng ngân hàng
+    if (!number) return true;
+    if (!/^\d+$/.test(number)) return false;
     switch (bank) {
       case 'MB Bank': return number.length >= 10 && number.length <= 16;
       case 'Vietcombank': return number.length >= 10 && number.length <= 13;
@@ -112,7 +99,7 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
       case 'ACB': return number.length >= 8 && number.length <= 13;
       case 'Sacombank': return number.length >= 9 && number.length <= 15;
       case 'Agribank': return number.length >= 8 && number.length <= 13;
-      default: return number.length >= 8 && number.length <= 16; // Mặc định
+      default: return number.length >= 8 && number.length <= 16;
     }
   };
 
@@ -123,14 +110,11 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     if (!supplier.delivery_time) isValid = false;
     if (!supplier.contact_name) isValid = false;
     if (!supplier.phone_number) isValid = false;
-
-    // Validate thông tin giao dịch
     if (supplier.account_number && !supplier.bank_name) isValid = false;
     if (supplier.bank_name && !supplier.account_number) isValid = false;
     if (supplier.account_number && !/^\d+$/.test(supplier.account_number)) isValid = false;
     if (supplier.account_number && supplier.bank_name &&
       !isValidAccountNumber(supplier.bank_name, supplier.account_number)) isValid = false;
-
     if (!validateAddressFields()) isValid = false;
     return isValid;
   };
@@ -140,7 +124,6 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     setWard("");
     setDistrict("");
     setProvince("");
-
     if (addressParts.length >= 3) setWard(addressParts[0]);
     if (addressParts.length >= 2) setDistrict(addressParts[addressParts.length - 2]);
     if (addressParts.length >= 1) setProvince(addressParts[addressParts.length - 1]);
@@ -209,7 +192,6 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
         setIsLoading(prev => ({ ...prev, wards: false }));
       }
     }
-
     if (district) {
       loadWards();
     } else {
@@ -224,9 +206,7 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     setWard("");
     setDistricts([]);
     setWards([]);
-
     setTouched(prev => ({ ...prev, province: true }));
-
     const newAddress = value ? `${value}` : "";
     handleChange({ target: { name: "address", value: newAddress } });
   };
@@ -236,9 +216,7 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
     setDistrict(value);
     setWard("");
     setWards([]);
-
     setTouched(prev => ({ ...prev, district: true }));
-
     const newAddress = value ? `${value}, ${province}` : province;
     handleChange({ target: { name: "address", value: newAddress } });
   };
@@ -246,28 +224,20 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
   const handleWardChange = (e) => {
     const value = e.target.value;
     setWard(value);
-
     setTouched(prev => ({ ...prev, ward: true }));
-
     const newAddress = value ? `${value}, ${district}, ${province}` : `${district}, ${province}`;
     handleChange({ target: { name: "address", value: newAddress } });
   };
 
-  // Xử lý đặc biệt cho input mã nhà cung cấp
   const handleSupplierCodeChange = (e) => {
     const { value } = e.target;
     const prefix = 'NCC-';
-
-    // Luôn giữ prefix
     if (!value.startsWith(prefix)) {
-      // Nếu người dùng cố gắng thay đổi hoặc xóa prefix
       const newValue = prefix + value.replace(/^NCC-?/i, '');
       handleChange({ target: { name: 'supplier_code', value: newValue } });
     } else {
-      // Nếu prefix được giữ nguyên, truyền giá trị như bình thường
       handleChange(e);
     }
-
     setTouched(prev => ({ ...prev, supplier_code: true }));
   };
 
@@ -331,7 +301,6 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
           disabled={readOnly || window.location.pathname.includes('/edit/')}
           ref={supplierCodeRef}
           onFocus={(e) => {
-            // Đặt con trỏ ở cuối text khi focus
             const length = e.target.value.length;
             e.target.setSelectionRange(length, length);
           }}
@@ -401,9 +370,9 @@ function SupplierInfoTable({ supplier, handleChange, errors = {}, readOnly = fal
           type='text'
           name='account_number'
           className={`form-control ${((touched.account_number || attemptedSubmit) && supplier.bank_name && !supplier.account_number) ||
-              ((touched.account_number || attemptedSubmit) && supplier.account_number && !/^\d+$/.test(supplier.account_number)) ||
-              ((touched.account_number || attemptedSubmit) && supplier.account_number && supplier.bank_name && !isValidAccountNumber(supplier.bank_name, supplier.account_number))
-              ? 'is-invalid' : ''
+            ((touched.account_number || attemptedSubmit) && supplier.account_number && !/^\d+$/.test(supplier.account_number)) ||
+            ((touched.account_number || attemptedSubmit) && supplier.account_number && supplier.bank_name && !isValidAccountNumber(supplier.bank_name, supplier.account_number))
+            ? 'is-invalid' : ''
             }`}
           value={supplier.account_number || ''}
           onChange={handleInputChange}
