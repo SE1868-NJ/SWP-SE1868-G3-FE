@@ -7,7 +7,7 @@ import NewOrders from '../../pages/SellerPages/Order/NewOrders';
 import ProcessingOrders from '../../pages/SellerPages/Order/ProcessingOrders';
 import CompletedOrders from '../../pages/SellerPages/Order/CompletedOrders';
 import CancelledOrders from '../../pages/SellerPages/Order/CancelledOrders';
-
+import SellerAllProducts from '../../pages/SellerAllProducts';
 export const sellerRoutes = [
 	{
 		path: '/seller',
@@ -52,6 +52,10 @@ export const sellerRoutes = [
 	{
 		path: 'orders/cancelled',
 		element: <CancelledOrders />,
-	}
+	},
+	{
+		path: '/seller/products/:shopId',
+		element: <SellerAllProducts />,
+	},
 
 ];

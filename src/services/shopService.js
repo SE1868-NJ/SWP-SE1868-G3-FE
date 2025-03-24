@@ -45,4 +45,26 @@ export const shopService = {
 		}
 	},
 
+	//seller
+
+	getSellerProducts: async (shopId, params) => {
+		try {
+			if (!shopId) {
+				return { products: [] };
+			}
+	
+			const response = await api.get(`/shop/all_products/${shopId}`, { params });
+	
+			const result = {
+				products: response.data.products || [],
+				total: response.data.total || 0
+			};
+	
+			return result;
+		} catch (error) {
+			console.error('API error:', error.response || error);
+			throw new Error(`Error getting seller products: ${error.message}`);
+		}
+	}
+
 };
