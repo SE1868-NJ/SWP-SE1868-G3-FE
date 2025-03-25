@@ -45,7 +45,6 @@ const ProductCard = ({ product, onZoom, onAddToCart, user_id }) => {
 					{product.product_name || product.name}
 				</Card.Title>
 
-
 				<Card.Text>
 					{product.sale_price?.toLocaleString() ||
 						product.price?.toLocaleString()}{' '}
