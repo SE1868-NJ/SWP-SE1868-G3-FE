@@ -1,7 +1,7 @@
 import { Eye, MessageCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ReviewModal from './ReviewModal';
+import ReviewModal from '../../components/Modals/ReviewModal';
 const OrderCard = ({ order, activeTab }) => {
 	const [showReviewModal, setShowReviewModal] = useState(false);
 
