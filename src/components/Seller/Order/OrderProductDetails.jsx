@@ -1,6 +1,7 @@
 import React from 'react';
 
 const OrderProductDetails = ({ orderDetails, orderId }) => {
+
   return (
     <table className="table table-sm mb-0">
       <thead>
@@ -14,14 +15,14 @@ const OrderProductDetails = ({ orderDetails, orderId }) => {
         </tr>
       </thead>
       <tbody>
-        {orderDetails && orderDetails[orderId] ? (
-          orderDetails[orderId].map(detail => (
+        {orderDetails && orderDetails ? (
+          orderDetails.map(detail => (
             <tr key={detail.id}>
               <td>{detail.product_id}</td>
-              <td>{detail.product_name}</td>
+              <td>{detail.Product.product_name}</td>
               <td>
                 <img
-                  src={detail.image || "https://via.placeholder.com/80x80"}
+                  src={detail.Product.image_url || "https://via.placeholder.com/80x80"}
                   alt="Sản phẩm"
                   width="80"
                   height="80"

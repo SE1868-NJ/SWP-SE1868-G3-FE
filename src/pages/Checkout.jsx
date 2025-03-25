@@ -9,6 +9,7 @@ import NotificationToast from "../components/Toast/NotificationToast";
 import { useAuth } from "../hooks/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Socket } from '../services/socket';
+import { toast } from 'react-toastify';
 
 const Checkout = () => {
   const location = useLocation();
@@ -64,7 +65,7 @@ const Checkout = () => {
       Socket.emit('order_placed', dataOrder);
       
       if (paymentMethodId === "cod") {
-        //navigate(`/order-confirmation/${response.data.data.id}`);
+        navigate(`/orders/pending`);
       } else if (paymentMethodId === "bank") {
         //navigate(`/payment/${response.data.data.id}`);
       }

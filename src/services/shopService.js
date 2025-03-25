@@ -28,4 +28,13 @@ export const shopService = {
         }
     },
 
+    getNewOrderByShop: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/order/get_new_order_by_shop/${shopId}`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 };
