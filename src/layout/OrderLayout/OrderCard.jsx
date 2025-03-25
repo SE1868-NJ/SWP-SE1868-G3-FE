@@ -144,56 +144,37 @@ const OrderCard = ({ order, activeTab }) => {
 					{getStatusText(order.status || activeTab)}
 				</div>
 			</div>
-				<div className='card-body'>
-					{/* Kiểm tra OrderDetails có phải là mảng không trước khi map */}
-					{Array.isArray(order?.OrderDetails) &&
-					order.OrderDetails.length > 0 ? (
-						order.OrderDetails.map((detail, index) => (
-							<div key={detail.id || index} className='row mb-3'>
-								<div className='col-md-8'>
-									<div className='d-flex'>
-										<img
-											src={
-												detail?.Product?.image_url ||
-												'https://via.placeholder.com/80'
-											}
-											alt='Product'
-											className='product-image me-3'
-											style={{
-												width: '80px',
-												height: '80px',
-												objectFit: 'cover',
-											}}
-										/>
-										<div>
-											<h6 className='mb-1'>
-												{detail?.Product?.product_name ||
-													'Sản phẩm không xác định'}
-											</h6>
-											<p className='text-muted mb-1'>
-												Phân loại hàng:{' '}
-												{detail?.Product?.category?.name || 'Không xác định'}
-											</p>
-											<p className='mb-0'>x{detail?.quantity || 1}</p>
-										</div>
+			<div className='card-body'>
+				{/* Kiểm tra OrderDetails có phải là mảng không trước khi map */}
+				{Array.isArray(order?.OrderDetails) && order.OrderDetails.length > 0 ? (
+					order.OrderDetails.map((detail, index) => (
+						<div key={detail.id || index} className='row mb-3'>
+							<div className='col-md-8'>
+								<div className='d-flex'>
+									<img
+										src={detail?.Product?.image_url || 'https://via.placeholder.com/80'}
+										alt='Product'
+										className='product-image me-3'
+										style={{
+											width: '80px',
+											height: '80px',
+											objectFit: 'cover',
+										}}
+									/>
+									<div>
+										<h6 className='mb-1'>
+											{detail?.Product?.product_name || 'Sản phẩm không xác định'}
+										</h6>
+										<p className='text-muted mb-1'>
+											Phân loại hàng: {detail?.Product?.category?.name || 'Không xác định'}
+										</p>
+										<p className='mb-0'>x{detail?.quantity || 1}</p>
 									</div>
 								</div>
-								<div className='col-md-4 text-end'>
-									<p className='price-original mb-0'>
-										₫{detail?.Product?.import_price +'.00'|| '0'}
-									</p>
-									<p className='price-discounted mb-0'>
-										₫{detail?.subtotal || order?.total || '0'}
-									</p>
-								</div>
 							</div>
-						))
-					) : (
-						<p>Không có chi tiết đơn hàng.</p>
-					)}
 							<div className='col-md-4 text-end'>
 								<p className='price-original mb-0'>
-									₫{detail?.Product?.import_price + '.00' || '0'}
+									₫{detail?.Product?.import_price ? detail.Product.import_price + '.00' : '0'}
 								</p>
 								<p className='price-discounted mb-0'>
 									₫{detail?.subtotal || order?.total || '0'}
@@ -204,8 +185,7 @@ const OrderCard = ({ order, activeTab }) => {
 				) : (
 					<p>Không có chi tiết đơn hàng.</p>
 				)}
-			</div>
-
+			</div >
 			<div className='card-footer bg-white d-flex justify-content-between align-items-center py-3'>
 				<div>
 					<small className='text-muted'>
@@ -236,7 +216,7 @@ const OrderCard = ({ order, activeTab }) => {
 				handleClose={handleCloseReviewModal}
 				onHide={() => setShowReviewModal(false)}
 				onSubmitReview={handleSubmitReview}
-				product={{...productForReview, id: productIdForReview}}
+				product={{ ...productForReview, id: productIdForReview }}
 			/>
 		</>
 	);
