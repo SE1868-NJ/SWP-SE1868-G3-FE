@@ -1,17 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import cartService from '../../services/cartService';
 import { useAuth } from '../../hooks/contexts/AuthContext';
 
 const MiniCartModal = () => {
+  // States
   const [show, setShow] = useState(false);
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
   const [animating, setAnimating] = useState(false);
+
+  // Hooks
   const { user, cartCount } = useAuth();
   const navigate = useNavigate();
   const modalRef = useRef(null);
 
+  // Styles
   const overlayStyle = {
     position: 'fixed',
     inset: 0,
@@ -40,7 +45,33 @@ const MiniCartModal = () => {
     visibility: show || animating ? 'visible' : 'hidden'
   };
 
-  const handleClose = () => {
+  // Memoized handlers
+  const fetchCartData = useCallback(async () => {
+    if (!user?.id) return;
+    setIsFetching(true);
+    try {
+      const cartData = await cartService.getCartsByUserId(user.id);
+      const formattedItems = Array.isArray(cartData)
+        ? cartData.flatMap(shop =>
+          shop.items.map(item => ({
+            id: item.cart_id,
+            name: item.product.product_name,
+            price: Number(item.product.sale_price),
+            quantity: item.quantity,
+            image: item.product.image_url,
+            productId: item.product_id
+          }))
+        )
+        : [];
+      setItems(formattedItems);
+    } catch (error) {
+      setItems([]);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [user]);
+
+  const handleClose = useCallback(() => {
     setAnimating(true);
     if (modalRef.current) {
       modalRef.current.style.transform = 'translateX(100%)';
@@ -50,9 +81,9 @@ const MiniCartModal = () => {
       setShow(false);
       setAnimating(false);
     }, 300);
-  };
+  }, []);
 
-  const handleShow = () => {
+  const handleShow = useCallback(() => {
     setShow(true);
     setAnimating(true);
     fetchCartData();
@@ -67,13 +98,38 @@ const MiniCartModal = () => {
         }, 300);
       });
     });
-  };
+  }, [fetchCartData]);
 
+  const removeItem = useCallback(async (id) => {
+    if (isRemoving) return; // Prevent multiple clicks
+    setIsRemoving(true);
+    try {
+      await cartService.removeCartItem(id);
+      await fetchCartData();
+
+      // Notify other components about cart update
+      window.dispatchEvent(new CustomEvent('cart-updated'));
+    } catch (error) {
+      console.error('Error removing item:', error);
+    } finally {
+      setIsRemoving(false);
+    }
+  }, [fetchCartData, isRemoving]);
+
+  const navigateTo = useCallback((path, state = null) => {
+    handleClose();
+    setTimeout(() => {
+      navigate(path, state ? { state } : undefined);
+    }, 300);
+  }, [handleClose, navigate]);
+
+  // Effects
   useEffect(() => {
     const handleCartUpdated = () => {
-      fetchCartData();
+      if (show) {
+        fetchCartData();
+      }
     };
-    window.addEventListener('cart-updated', handleCartUpdated);
 
     const handleTransitionEnd = () => {
       if (!show) {
@@ -81,68 +137,30 @@ const MiniCartModal = () => {
       }
     };
 
+    // Add event listeners
+    window.addEventListener('cart-updated', handleCartUpdated);
     const modalElement = modalRef.current;
     if (modalElement) {
       modalElement.addEventListener('transitionend', handleTransitionEnd);
     }
 
+    // Cleanup
     return () => {
       window.removeEventListener('cart-updated', handleCartUpdated);
       if (modalElement) {
         modalElement.removeEventListener('transitionend', handleTransitionEnd);
       }
     };
-  }, []);
+  }, [show, fetchCartData]);
 
-  const fetchCartData = async () => {
-    if (show) setLoading(true);
-    try {
-      const cartData = await cartService.getCartsByUserId(user.id);
-
-      const formattedItems = Array.isArray(cartData)
-        ? cartData.flatMap(shop =>
-          shop.items.map(item => ({
-            id: item.cart_id,
-            name: item.product.product_name,
-            price: Number(item.product.sale_price),
-            quantity: item.quantity,
-            image: item.product.image_url,
-            productId: item.product_id
-          }))
-        )
-        : [];
-
-      setItems(formattedItems);
-    } catch (error) {
-      setItems([]);
-    } finally {
-      if (show) setLoading(false);
-    }
-  };
-
-  const removeItem = async (id) => {
-    try {
-      await cartService.removeCartItem(id);
-      setItems(items.filter(item => item.id !== id));
-
-      const event = new CustomEvent('cart-updated');
-      window.dispatchEvent(event);
-    } catch (error) {
-    }
-  };
-
+  // Derived values
   const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-
-  const navigateTo = (path, state = null) => {
-    handleClose();
-    setTimeout(() => {
-      navigate(path, state ? { state } : undefined);
-    }, 300);
-  };
+  const isLoading = isFetching || isRemoving;
 
   return (
     <>
+      {/* Cart button */}
       <button
         onClick={handleShow}
         className="btn btn-outline-light border-2 position-relative"
@@ -157,9 +175,12 @@ const MiniCartModal = () => {
         )}
       </button>
 
+      {/* Overlay */}
       <div style={overlayStyle} onClick={handleClose}></div>
 
+      {/* Modal */}
       <div ref={modalRef} style={modalStyle}>
+        {/* Header */}
         <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
           <h5 className="m-0">Giỏ hàng ({cartCount})</h5>
           <button
@@ -170,14 +191,17 @@ const MiniCartModal = () => {
           ></button>
         </div>
 
+        {/* Content */}
         <div className="flex-grow-1 overflow-auto">
-          {loading ? (
-            <div className="text-center py-4">
+          {isLoading && (
+            <div className="position-absolute top-50 start-50 translate-middle">
               <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
+                <span className="visually-hidden">Đang tải...</span>
               </div>
             </div>
-          ) : items.length === 0 ? (
+          )}
+
+          {!isLoading && items.length === 0 ? (
             <div className="text-center py-4">
               <img
                 src="http://127.0.0.1:9000/data/cart/1741942901268_empty-cart.png"
@@ -199,7 +223,7 @@ const MiniCartModal = () => {
               </button>
             </div>
           ) : (
-            <div>
+            <div className={isLoading ? 'opacity-50' : ''}>
               {items.map(item => (
                 <div key={item.id} className="border-bottom p-3">
                   <div className="d-flex">
@@ -223,6 +247,7 @@ const MiniCartModal = () => {
                           className="btn btn-sm text-danger p-0"
                           onClick={() => removeItem(item.id)}
                           aria-label="Remove item"
+                          disabled={isLoading}
                         >
                           <i className="bi bi-trash"></i>
                         </button>
@@ -243,6 +268,7 @@ const MiniCartModal = () => {
           )}
         </div>
 
+        {/* Footer */}
         {items.length > 0 && (
           <div className="border-top p-3">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -253,12 +279,14 @@ const MiniCartModal = () => {
               <button
                 className="btn btn-outline-secondary flex-grow-1"
                 onClick={() => navigateTo('/order/cart')}
+                disabled={isLoading}
               >
                 XEM GIỎ HÀNG
               </button>
               <button
                 className="btn btn-danger flex-grow-1"
                 onClick={() => navigateTo('/order/checkout', { selectedProducts: items })}
+                disabled={isLoading}
               >
                 MUA HÀNG
               </button>
