@@ -11,7 +11,7 @@ function ShopLayout() {
     <ChatProvider>
       <Header />
       <Outlet />
-      <ChatPopup userId={user.id} />
+      {user && user.id && <ChatPopup userId={user.id} />}
       <Footer />
     </ChatProvider>
   );

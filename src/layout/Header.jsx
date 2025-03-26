@@ -28,9 +28,6 @@ function Header() {
 		}
 	};
 
-	// Kiểm tra xem người dùng đã là người bán chưa
-	const isSeller = user && user.role === 'seller';
-
 	return (
 		<div className='shadow-sm'>
 			<nav className='bg-danger'>
@@ -45,18 +42,6 @@ function Header() {
 								Kênh người bán
 							</Link>
 						</li>
-						<li className='nav-link px-0 text-light'>|</li>
-
-						{!isAuthenticated && (
-							<li className='nav-item'>
-								<Link
-									to='/login'
-									className='nav-link link-body-emphasis px-2 text-light'
-								>
-									Trở thành người bán
-								</Link>
-							</li>
-						)}
 					</ul>
 					<ul className='nav'>
 						{isAuthenticated ? (
