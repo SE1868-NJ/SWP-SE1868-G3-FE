@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { productService } from '../../services/productService';
 import { authService } from '../../services/authService';
 
@@ -160,20 +160,4 @@ export const useAuthActions = () => {
         loginAndRedirect,
         logoutAndRedirect
     };
-};
-
-// Component Route được bảo vệ
-export const ProtectedRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useAuth();
-    if (loading) {
-        return <div className="d-flex justify-content-center p-5">
-            <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Đang tải...</span>
-            </div>
-        </div>;
-    }
-    if (!isAuthenticated) {
-        return <Navigate to="/login" />;
-    }
-    return children;
 };
