@@ -7,9 +7,8 @@ const OrderTable = ({
   error,
   selectedOrderId,
   toggleOrderDetails,
-  handleStatusChange,
-  orderType,
-  orderDetails
+  orderDetails,
+  handleStatusChange
 }) => {
   if (loading) {
     return (
@@ -49,7 +48,6 @@ const OrderTable = ({
             <th>SĐT</th>
             <th>ĐỊA CHỈ</th>
             <th>TỔNG TIỀN</th>
-            <th>EMAIL</th>
             <th>TRẠNG THÁI</th>
             <th>NGÀY TẠO</th>
             <th>HÀNH ĐỘNG</th>
@@ -68,23 +66,20 @@ const OrderTable = ({
                   </button>
                 </td>
                 <td>{order.order_id}</td>
-                <td>{order.payment_method === "CASH ON DELIVERY" ? "THANH TOÁN KHI NHẬN HÀNG" :
-                  order.payment_method === "CREDIT CARD" ? "THẺ TÍN DỤNG" :
-                    order.payment_method === "PAYPAL" ? "PAYPAL" : order.payment_method}</td>
+                <td>{order.payment_method}</td>
                 <td>{order.full_name}</td>
                 <td>{order.phone}</td>
                 <td className="text-truncate" style={{ maxWidth: '150px' }}>{order.address}</td>
-                <td>{order.total.toLocaleString()}₫</td>
-                <td>{order.email}</td>
+                <td>{order.total}₫</td>
                 <td>
-                  <span className={`badge ${order.status === 'pending' ? 'bg-warning' :
-                    order.status === 'processing' ? 'bg-primary' :
-                      order.status === 'completed' ? 'bg-success' :
+                  <span className={`badge ${order.status === 'PENDING' ? 'bg-warning' :
+                    order.status === 'PROCESSING' ? 'bg-primary' :
+                      order.status === 'COMPLETED' ? 'bg-success' :
                         'bg-danger'
                     }`}>
-                    {order.status === 'pending' ? 'Chờ xử lý' :
-                      order.status === 'processing' ? 'Đang xử lý' :
-                        order.status === 'completed' ? 'Hoàn thành' :
+                    {order.status === 'PENDING' ? 'Chờ xử lý' :
+                      order.status === 'PROCESSING' ? 'Đang xử lý' :
+                        order.status === 'COMPLETED' ? 'Hoàn thành' :
                           'Đã hủy'}
                   </span>
                 </td>
@@ -95,47 +90,40 @@ const OrderTable = ({
                       <span>Xác nhận</span>
                     </button>
                     <ul className="dropdown-menu">
-                      {orderType === 'new' && (
-                        <li>
-                          <button
-                            className="dropdown-item"
-                            onClick={() => handleStatusChange(order.order_id, 'processing')}
-                          >
-                            Xử lý đơn hàng
-                          </button>
-                        </li>
-                      )}
-                      {orderType === 'processing' && (
-                        <li>
-                          <button
-                            className="dropdown-item"
-                            onClick={() => handleStatusChange(order.order_id, 'completed')}
-                          >
-                            Hoàn thành đơn hàng
-                          </button>
-                        </li>
-                      )}
-                      {(orderType === 'new' || orderType === 'processing') && (
-                        <li>
-                          <button
-                            className="dropdown-item text-danger"
-                            onClick={() => handleStatusChange(order.order_id, 'cancelled')}
-                          >
-                            Hủy đơn hàng
-                          </button>
-                        </li>
-                      )}
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => handleStatusChange(order.order_id, 'PROCESSING')}
+                        >
+                          Xử lý đơn hàng
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => handleStatusChange(order.order_id, 'COMPLETED')}
+                        >
+                          Hoàn thành đơn hàng
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item text-danger"
+                          onClick={() => handleStatusChange(order.order_id, 'CANCELLED')}
+                        >
+                          Hủy đơn hàng
+                        </button>
+                      </li>
                     </ul>
                   </div>
                 </td>
               </tr>
-
               {selectedOrderId === order.order_id && (
                 <tr>
                   <td colSpan="11" className="border-0 p-0">
                     <div className="px-4 py-3 bg-light">
                       <OrderProductDetails
-                        orderDetails={orderDetails}
+                        orderDetails={order.OrderDetails || []}
                         orderId={order.order_id}
                       />
                     </div>

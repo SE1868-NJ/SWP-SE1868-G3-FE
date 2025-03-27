@@ -59,5 +59,50 @@ export const shopService = {
             throw error;
         }
     },
-    
+
+    getNewOrderByShop: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/order/get_new_order_by_shop/${shopId}`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    getProcessingOrderByShop: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/order/get_processing_order_by_shop/${shopId}`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    getCompletedOrderByShop: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/order/get_completed_order_by_shop/${shopId}`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    getCancelledOrderByShop: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/order/get_cancelled_order_by_shop/${shopId}`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    updateStatus: async (orderId, status) => {
+        try {
+            const response = await api.post(`/shop/order/update_order_status/${orderId}`, { status });
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 };

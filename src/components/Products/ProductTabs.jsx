@@ -11,10 +11,10 @@ const ProductTabs = ({ product }) => {
 
     return (
         <Container className="mt-5">
-            <Tab.Container defaultActiveKey="details">
+            <Tab.Container defaultActiveKey="reviews">
                 {/* Tabs Navigation */}
                 <Nav variant="tabs" className="border-bottom fw-bold fs-5">
-                    <Nav.Item>
+                    {/* <Nav.Item>
                         <Nav.Link eventKey="details" className="px-4 text-dark">
                             Chi tiết sản phẩm
                         </Nav.Link>
@@ -23,7 +23,7 @@ const ProductTabs = ({ product }) => {
                         <Nav.Link eventKey="description" className="px-4 text-dark">
                             Mô tả sản phẩm
                         </Nav.Link>
-                    </Nav.Item>
+                    </Nav.Item> */}
                     <Nav.Item>
                         <Nav.Link eventKey="reviews" className="px-4 text-dark">
                             Đánh giá
@@ -32,13 +32,13 @@ const ProductTabs = ({ product }) => {
                 </Nav>
 
                 <Tab.Content className="mt-4">
-                    <Tab.Pane eventKey="details">
+                    {/* <Tab.Pane eventKey="details">
                         <ProductDetails product={product} />
                     </Tab.Pane>
 
                     <Tab.Pane eventKey="description">
                         <ProductDescription product={product} />
-                    </Tab.Pane>
+                    </Tab.Pane> */}
 
                     <Tab.Pane eventKey="reviews">
                         <ProductReviews productId={product.id} />
