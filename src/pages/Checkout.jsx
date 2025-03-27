@@ -10,6 +10,7 @@ import { useAuth } from "../hooks/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Socket } from '../services/socket';
 import { toast } from 'react-toastify';
+import { paymentService } from "../services/paymentService";
 
 const Checkout = () => {
   const location = useLocation();
@@ -38,6 +39,11 @@ const Checkout = () => {
   const totalProductPrice = selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalAmount = totalProductPrice + shippingFee - voucherDiscount;
 
+  const generateOrderId = () => {
+    const timestamp = Date.now();
+    return timestamp; 
+  };
+
   const handlePlaceOrder = async () => {
     try {
       setIsProcessing(true);
@@ -58,14 +64,28 @@ const Checkout = () => {
         voucher_id: voucherId || null,
       }
 
-      // const response = await orderService.createOrder(dataOrder);
+      const payload = {
+        amount: totalAmount,
+        orderId: generateOrderId(),
+        orderDescription: "",
+        bankCode: "",
+        language: "en",
+      };
 
-      Socket.emit('order_placed', dataOrder);
-      
+      // Socket.emit('order_placed', dataOrder);
+      console.log('paymentMethodId:', payload);
+
       if (paymentMethodId === "cod") {
         navigate(`/orders/pending`);
       } else if (paymentMethodId === "bank") {
-        //navigate(`/payment/${response.data.data.id}`);
+        const response = await paymentService.getUrlVNPay(payload);
+        console.log('response:', response);
+        if (response && response.paymentUrl) {
+          window.location.href = response.paymentUrl;
+        } else {
+          setError('Không nhận được URL thanh toán từ server.');
+          console.error('Server response missing paymentUrl:', response.data);
+        }
       }
 
     } catch (error) {
