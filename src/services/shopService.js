@@ -102,6 +102,15 @@ export const shopService = {
         } catch (error) {
             throw error;
         }
+    },
+
+    getDeliveryOrders: async (shopId) => {
+        try {
+            const response = await api.get(`/shop/order/get_delivery_order_by_shop/${shopId}`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
     }
 
 };
