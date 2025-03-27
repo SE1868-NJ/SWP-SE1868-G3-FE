@@ -5,16 +5,16 @@ import StatCards from '../../components/Seller/Dashboard/StatCards';
 import ChartSection from '../../components/Seller/Dashboard/ChartSection';
 import DataSection from '../../components/Seller/Dashboard/DataSection';
 import AiAssistant from '../../components/Seller/Dashboard/AiAssistant';
+import { productService } from '../../services/productService';
 
 function DashboardPage() {
   const { shops } = useSeller();
   const [stats, setStats] = useState({
-    totalOrders: 56,
-    totalProducts: 50
+    totalOrders: 0,
+    totalProducts: 0
   });
-
   const [timeRange, setTimeRange] = useState('today');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Sample data for charts
   const [chartData, setChartData] = useState([
@@ -44,22 +44,40 @@ function DashboardPage() {
     { id: '#ORD-2456', customer: 'Lê Văn C', amount: '₫899.000', status: 'new' }
   ]);
 
-  // Get current shop name
-  const currentShop = shops.length > 0 ? shops[0] : { shop_name: 'Chợ Làng Store' };
+  // Get current shop
+  const currentShop = shops.length > 0 ? shops[0] : { shop_id: null, shop_name: 'Cửa hàng của bạn' };
 
-  // Simulate data loading when timeRange changes
   useEffect(() => {
-    setLoading(true);
+    const fetchProductCount = async () => {
+      try {
+        setLoading(true);
+        const shopId = currentShop.shop_id || currentShop.id;
+        if (!shopId) {
+          setLoading(false);
+          return;
+        }
+        try {
+          // Lấy sản phẩm theo shop ID
+          const productsResponse = await productService.getProductsByShop(shopId);
+          const shopProducts = productsResponse?.products || [];
+          // Cập nhật tổng số sản phẩm
+          setStats(prevStats => ({
+            ...prevStats,
+            totalProducts: shopProducts.length || 0
+          }));
+        } catch (apiError) {
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
 
-    // Simulate API call
-    const timer = setTimeout(() => {
-      // Here you would fetch data based on the timeRange
-      // For now, just set loading to false
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [timeRange]);
+    // Chỉ gọi fetchProductCount khi shops đã được load
+    if (shops.length > 0) {
+      fetchProductCount();
+    }
+  }, [shops, currentShop]);
 
   const handleTimeRangeChange = (newRange) => {
     setTimeRange(newRange);

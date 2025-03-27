@@ -10,6 +10,28 @@ export const productService = {
 		}
 	},
 
+	// Thêm phương thức mới để lấy tất cả sản phẩm
+	getAllProducts: async () => {
+		try {
+			const response = await api.get(`/shop/product`);
+			return response.data;
+		} catch (error) {
+			console.error("Lỗi khi lấy tất cả sản phẩm:", error);
+			throw error;
+		}
+	},
+
+	// Phương thức lấy sản phẩm theo shop
+	getProductsByShop: async (shopId) => {
+		try {
+			const response = await api.get(`/shop/${shopId}/products`);
+			return response.data;
+		} catch (error) {
+			console.error(`Lỗi khi lấy sản phẩm cho shop ${shopId}:`, error);
+			throw error;
+		}
+	},
+
 	addToCart: async (product_id, user_id) => {
 		try {
 			const response = await api.post(`/shop/cart/add_to_cart`, {
@@ -54,6 +76,7 @@ export const productService = {
 			throw error;
 		}
 	},
+
 	getTopSearchedProducts: async (searchCount = 0, limit = 4) => {
 		try {
 			const url = `/shop/product/get_top_searched_products?search_count=${searchCount}&limit=${limit}`;
@@ -70,8 +93,4 @@ export const productService = {
 			throw error;
 		}
 	}
-
-	
-	
-
 };
