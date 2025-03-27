@@ -25,9 +25,13 @@ function Sidebar() {
 					<div className='navbar-brand w-100 me-0 text-center'>
 						<Link
 							to='/'
-							className='text-white fw-bold text-decoration-none'
+							className='link-body-emphasis text-white fw-bold text-decoration-none'
 							style={{ fontSize: '1.25rem' }}
 						>
+							<i
+								className='bi bi-bag-heart-fill me-2'
+								style={{ fontSize: '1.25rem' }}
+							/>
 							Chợ Làng
 						</Link>
 					</div>
@@ -60,18 +64,13 @@ function Sidebar() {
 							<div className='accordion-body'>
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/message'} className='nav-link'>
+										<Link to={'/seller/shop-info'} className='nav-link'>
 											Thông tin gian hàng
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/ratting'} className='nav-link'>
-											Cập nhật gian hàng
-										</Link>
-									</li>
-									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
-											Xoá gian hàng
+											Trang trí gian hàng
 										</Link>
 									</li>
 								</ul>
@@ -196,7 +195,7 @@ function Sidebar() {
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
+										<Link to={'/seller/ratting/shopID'} className='nav-link'>
 											Quản lý đánh giá
 										</Link>
 									</li>

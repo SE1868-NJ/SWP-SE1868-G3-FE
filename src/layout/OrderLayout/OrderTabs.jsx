@@ -13,11 +13,8 @@ const OrderTabs = () => {
 				{[
 					{ key: 'all', label: 'Tất cả' },
 					{ key: 'pending', label: 'Chờ thanh toán' },
-					{ key: 'shipping', label: 'Vận chuyển' },
-					{ key: 'delivery', label: 'Chờ giao hàng' },
 					{ key: 'completed', label: 'Hoàn thành' },
 					{ key: 'cancelled', label: 'Đã hủy' },
-					{ key: 'refund', label: 'Trả hàng/Hoàn tiền' },
 				].map((tab) => (
 					<li key={tab.key} className='nav-item flex-fill'>
 						<button
