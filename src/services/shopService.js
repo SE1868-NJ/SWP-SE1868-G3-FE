@@ -52,7 +52,6 @@ export const shopService = {
             if (endDate) params.endDate = endDate;
     
             const response = await api.get(`/shop/feedbacks/${shopId}`, { params });
-            console.log('Feedbacks fetched:', response.data);
 
             return response.data;
         } catch (error) {

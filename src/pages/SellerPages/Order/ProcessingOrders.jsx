@@ -15,7 +15,6 @@ const ProcessingOrders = () => {
   const fetchOrders = async () => {
     try {
       const data = await shopService.getProcessingOrderByShop(1);
-      // console.log(data);
       setOrders(data.data);
       setLoading(false);
     } catch (error) {
@@ -32,7 +31,6 @@ const ProcessingOrders = () => {
     setSelectedOrderId(orderId);
 
     const order = orders.find(order => order.order_id === orderId);
-    console.log(order, 'order');
     setOrderDetails({ [orderId]: order.OrderDetails });
   };
 

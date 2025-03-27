@@ -9,7 +9,6 @@ const OrderCard = ({ order, activeTab }) => {
 	const handleOpenReviewModal = () => setShowReviewModal(true);
 	const handleCloseReviewModal = () => setShowReviewModal(false);
 	const handleSubmitReview = (reviewData) => {
-		console.log("Đã nhận đánh giá:", reviewData);
 		// Gửi đánh giá đến API
 		// ...
 	};
@@ -24,8 +23,8 @@ const OrderCard = ({ order, activeTab }) => {
 				);
 			case 'shipping':
 				return <span className='ms-3 text-info fw-bold'>ĐANG VẬN CHUYỂN</span>;
-			case 'delivery':
-				return <span className='ms-3 text-primary fw-bold'>CHỜ GIAO HÀNG</span>;
+			case 'processing':
+				return <span className='ms-3 text-primary fw-bold'>ĐANG XỬ LÝ</span>;
 			case 'cancelled':
 				return <span className='ms-3 text-danger fw-bold'>ĐÃ HỦY</span>;
 			case 'refund':
@@ -85,10 +84,6 @@ const OrderCard = ({ order, activeTab }) => {
 	// Lấy thông tin sản phẩm để truyền vào modal
 	const productForReview = order?.OrderDetails?.[0]?.Product || null;
 	const productIdForReview = order?.OrderDetails?.[0]?.product_id || null;
-	console.log('Product for Review:', productForReview);
-	console.log('Order:', order);
-	console.log('OrderDetails:', order?.OrderDetails);
-	console.log('Product ID for Review:', productIdForReview);
 	return (
 		<>
 			<div className='card mb-3 order-card'>

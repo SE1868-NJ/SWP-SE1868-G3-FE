@@ -22,7 +22,6 @@ function Login() {
 			...loginData,
 			[name]: value,
 		});
-		console.log(loginData);
 	};
 
 	const handleBlur = (e) => {
@@ -31,7 +30,6 @@ function Login() {
 			...preLoginData,
 			[name]: value,
 		}));
-		console.log(loginData);
 	};
 
 	const handleLogin = async (e) => {
@@ -47,7 +45,6 @@ function Login() {
 				console.error('Invalid response structure:', response);
 			}
 		} catch (error) {
-			console.log(error);
 			navigate('/login');
 		}
 	};

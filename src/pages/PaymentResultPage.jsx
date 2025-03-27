@@ -24,8 +24,6 @@ const PaymentResultPage = () => {
         const errorCodeMatch = message?.match(/\(Mã lỗi: (\w+)\)/);
         const responseCode = errorCodeMatch ? errorCodeMatch[1] : null;
 
-        console.log('Payment Result Params:', { success, message, orderId, amount, responseCode });
-
         if (success !== null) {
             if (success === 'true') {
                 setPaymentResult({

@@ -13,7 +13,6 @@ function PendingOrder() {
 	const fetchPendingOrder = async () => {
 		try {
 			const data = await orderService.getPendingPaymentOrders(userId);
-			console.log('Fetched orders:', data); // Thêm console.log để kiểm tra dữ liệu
 			setOrders(data);
 		} catch (error) {
 			console.error(
@@ -24,8 +23,9 @@ function PendingOrder() {
 	};
 
 
-	fetchPendingOrder();
-
+	useEffect(() => {
+		fetchPendingOrder();
+	}, []);	
 
 	return (
 		<div className='container-fluid p-0'>

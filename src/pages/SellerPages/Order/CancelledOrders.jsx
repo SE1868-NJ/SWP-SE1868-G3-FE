@@ -31,7 +31,6 @@ const CancelledOrders = () => {
     setSelectedOrderId(orderId);
 
     const order = orders.find(order => order.order_id === orderId);
-    console.log(order, 'order');
     setOrderDetails({ [orderId]: order.OrderDetails });
   };
   const handleSearch = (e) => {

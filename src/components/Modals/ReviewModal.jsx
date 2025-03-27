@@ -4,7 +4,6 @@ import { FaCamera, FaStar, FaTimes } from 'react-icons/fa';
 import { feedbackService } from '../../services/feedbackService';
 
 const ReviewModal = ({ show, onHide, product, onSubmitReview }) => {
-  console.log('ReviewModal rendered, show:', show);
   const [rating, setRating] = useState(5);
   const [hover, setHover] = useState(0);
   const [reviewText, setReviewText] = useState('');
@@ -67,7 +66,6 @@ const ReviewModal = ({ show, onHide, product, onSubmitReview }) => {
   }, [images, onHide]);
 
   const handleCloseSuccess = useCallback(() => {
-    console.log('Closing success modal');
     setShowSuccessModal(false);
     handleClose();
   }, [handleClose]);
@@ -105,11 +103,9 @@ const ReviewModal = ({ show, onHide, product, onSubmitReview }) => {
         });
 
         const response = await feedbackService.createFeedback(formData);
-        console.log('API response:', response);
 
         // Kiểm tra dựa trên message thay vì status
         if (response && response.message === 'Gửi đánh giá thành công!') {
-          console.log('Feedback submitted successfully, showing success modal');
           if (onSubmitReview) {
             onSubmitReview(response.feedback); // Sử dụng response.feedback thay vì response.data
           }

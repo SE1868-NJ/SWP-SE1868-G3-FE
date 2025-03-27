@@ -37,7 +37,6 @@ const NewOrders = () => {
   const fetchOrders = async () => {
     try {
       const data = await shopService.getNewOrderByShop(1);
-      // console.log(data);
       setOrders(data.data);
       setLoading(false);
     } catch (error) {
@@ -54,7 +53,6 @@ const NewOrders = () => {
     setSelectedOrderId(orderId);
 
     const order = orders.find(order => order.order_id === orderId);
-    console.log(order, 'order');
     setOrderDetails({ [orderId]: order.OrderDetails });
   };
 

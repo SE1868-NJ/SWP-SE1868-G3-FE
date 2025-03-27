@@ -15,7 +15,6 @@ const AllOrders = () => {
 		setLoading(true);
 		try {
 			const data = await orderService.getAllOrders(userId);
-			console.log('API response for all orders:', data);
 
 			if (!data) {
 				setOrders([]);

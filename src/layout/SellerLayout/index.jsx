@@ -12,7 +12,7 @@ function SellerLayout() {
 
 	useEffect(() => {
 		Socket.emit('join-checkout', user.shop_id);
-		console.log('Join checkout room', user.shop_id);
+
 	}, []);
 
 	useEffect(() => {

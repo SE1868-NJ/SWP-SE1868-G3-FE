@@ -21,7 +21,6 @@ const Checkout = () => {
   const [toastVariant, setToastVariant] = useState('success');
 
   const selectedProducts = location.state?.selectedProducts || [];
-  console.log(selectedProducts);
 
   const [selectedAddressId, setSelectedAddressId] = useState("1");
   const [shippingMethodId, setShippingMethodId] = useState("nhanh");
@@ -37,7 +36,6 @@ const Checkout = () => {
   const formatCurrency = (amount) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
 
   const totalProductPrice = selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  console.log(selectedProducts, 'selectedProducts');
   const totalAmount = totalProductPrice + shippingFee - voucherDiscount;
 
   const handlePlaceOrder = async () => {

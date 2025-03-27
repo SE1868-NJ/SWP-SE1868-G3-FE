@@ -6,7 +6,6 @@ export const authService = {
 			'http://localhost:4000/auth/register',
 			userData
 		);
-		console.log(response);
 		return response.data.data;
 	},
 	login: async (loginData) => {
@@ -14,7 +13,6 @@ export const authService = {
 			'http://localhost:4000/auth/login',
 			loginData
 		);
-		console.log(response);
 		return response.data.data;
 	},
 };

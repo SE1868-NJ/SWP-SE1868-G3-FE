@@ -69,13 +69,11 @@ function ListPage() {
 	const fetchTopSearchProducts = async () => {
 		try {
 			const products = await productService.getTopSearchedProducts(0, 4); // Thử search_count=0 để lấy nhiều hơn
-			console.log('Raw products from API:', products);
 			if (products && products.length > 0) {
 				const sortedProducts = products.sort(
 					(a, b) => (b.search_count || 0) - (a.search_count || 0),
 				);
 				const top4Products = sortedProducts.slice(0, 4); // Lấy top 4
-				console.log('Top 4 sorted products:', top4Products);
 				setTopSearchProducts(top4Products);
 			} else {
 				console.warn('No top search products available');
