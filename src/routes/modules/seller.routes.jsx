@@ -7,6 +7,7 @@ import NewOrders from '../../pages/SellerPages/Order/NewOrders';
 import ProcessingOrders from '../../pages/SellerPages/Order/ProcessingOrders';
 import CompletedOrders from '../../pages/SellerPages/Order/CompletedOrders';
 import CancelledOrders from '../../pages/SellerPages/Order/CancelledOrders';
+import OrdersInDelivery from '../../pages/SellerPages/Order/OrdersInDelivery';
 
 export const sellerRoutes = [
 	{
@@ -52,6 +53,10 @@ export const sellerRoutes = [
 	{
 		path: 'orders/cancelled',
 		element: <CancelledOrders />,
+	},
+	{
+		path: 'orders/ship',
+		element: <OrdersInDelivery />,
 	}
 
 ];
