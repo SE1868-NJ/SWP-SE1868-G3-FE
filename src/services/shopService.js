@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import api from './axios';
 
 export const shopService = {
@@ -17,7 +16,7 @@ export const shopService = {
 		try {
 			const response = await api.post(`/shop/${shopId}/update`, formData, {
 				headers: {
-					'Content-Type': 'multipart/form-data'  // Changed to multipart/form-data for file upload
+					'Content-Type': 'multipart/form-data'
 				}
 			});
 			return response.data;

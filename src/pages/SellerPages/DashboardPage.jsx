@@ -13,6 +13,11 @@ function DashboardPage() {
     totalOrders: 0,
     totalProducts: 0
   });
+
+  const [revenueProducts, setRevenueProducts] = useState([]); // Sản phẩm theo doanh thu
+  const [quantityProducts, setQuantityProducts] = useState([]); // Sản phẩm theo số lượng
+  const [activeTab, setActiveTab] = useState('revenue'); // Tab đang active
+
   const [timeRange, setTimeRange] = useState('today');
   const [loading, setLoading] = useState(true);
 
@@ -27,16 +32,6 @@ function DashboardPage() {
     { name: '18:00', revenue: 6200, orders: 10 },
     { name: '21:00', revenue: 7500, orders: 12 }
   ]);
-
-  // Sample data for products
-  const [rankingProducts, setRankingProducts] = useState([
-    { name: "Protinex Powder", price: 549000, stock: 8478, soldQuantity: 325, totalRevenue: 178425000 },
-    { name: "VitaGreen Capsules", price: 150000, stock: 4785, soldQuantity: 412, totalRevenue: 61800000 },
-    { name: "Fresh Fruits Basket", price: 299000, stock: 120, soldQuantity: 189, totalRevenue: 56511000 },
-    { name: "Organic Coffee Beans", price: 180000, stock: 350, soldQuantity: 278, totalRevenue: 50040000 },
-    { name: "Natural Honey Jar", price: 125000, stock: 520, soldQuantity: 367, totalRevenue: 45875000 }
-  ]);
-
   // Sample data for orders
   const [recentOrders, setRecentOrders] = useState([
     { id: '#ORD-2458', customer: 'Nguyễn Văn A', amount: '₫549.000', status: 'completed' },
@@ -47,6 +42,7 @@ function DashboardPage() {
   // Get current shop
   const currentShop = shops.length > 0 ? shops[0] : { shop_id: null, shop_name: 'Cửa hàng của bạn' };
 
+  // Lấy tổng số sản phẩm
   useEffect(() => {
     const fetchProductCount = async () => {
       try {
@@ -66,9 +62,11 @@ function DashboardPage() {
             totalProducts: shopProducts.length || 0
           }));
         } catch (apiError) {
+          console.error("Lỗi API khi lấy sản phẩm:", apiError);
         }
         setLoading(false);
       } catch (error) {
+        console.error("Lỗi khi fetchProductCount:", error);
         setLoading(false);
       }
     };
@@ -79,8 +77,50 @@ function DashboardPage() {
     }
   }, [shops, currentShop]);
 
+  // Lấy dữ liệu xếp hạng sản phẩm (cả doanh thu và số lượng)
+  useEffect(() => {
+    const fetchRankingProducts = async () => {
+      try {
+        setLoading(true);
+        const shopId = currentShop.shop_id || currentShop.id;
+        if (!shopId) {
+          setLoading(false);
+          return;
+        }
+
+        // Gọi song song cả hai API để tối ưu hiệu suất
+        const [revenueResponse, quantityResponse] = await Promise.all([
+          productService.getTopProductsByRevenue(5),
+          productService.getTopProductsByQuantity(5)
+        ]);
+
+        console.log("Dữ liệu sản phẩm theo doanh thu:", revenueResponse);
+        console.log("Dữ liệu sản phẩm theo số lượng:", quantityResponse);
+
+        // Cập nhật cả hai state
+        setRevenueProducts(revenueResponse || []);
+        setQuantityProducts(quantityResponse || []);
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm xếp hạng:", error);
+        setLoading(false);
+      }
+    };
+
+    if (shops.length > 0) {
+      fetchRankingProducts();
+    }
+  }, [shops, currentShop]);
+
   const handleTimeRangeChange = (newRange) => {
     setTimeRange(newRange);
+  };
+
+  // Xử lý chuyển tab
+  const handleTabChange = (tab) => {
+    console.log("Chuyển tab sang:", tab);
+    setActiveTab(tab);
   };
 
   return (
@@ -102,12 +142,17 @@ function DashboardPage() {
       {/* AI Assistant */}
       <AiAssistant
         chartData={chartData}
-        rankingProducts={rankingProducts}
+        rankingProducts={activeTab === 'revenue' ? revenueProducts : quantityProducts}
         orders={recentOrders}
       />
 
       {/* Data tables section */}
-      <DataSection rankingProducts={rankingProducts} orders={recentOrders} />
+      <DataSection
+        rankingProducts={activeTab === 'revenue' ? revenueProducts : quantityProducts}
+        orders={recentOrders}
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+      />
     </div>
   );
 }

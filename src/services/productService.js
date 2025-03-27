@@ -92,5 +92,31 @@ export const productService = {
 			console.error("API error:", error.response?.data || error.message);
 			throw error;
 		}
+	},
+
+	getTopProductsByRevenue: async (limit = 5) => {
+		try {
+			const url = `/shop/product/top-products?sortBy=revenue&limit=${limit}`;
+			const response = await api.get(url);
+			const products = response.data || [];
+			return products;
+		} catch (error) {
+			console.error("API error:", error.response?.data || error.message);
+			throw error;
+		}
+	},
+
+	getTopProductsByQuantity: async (limit = 5) => {
+		try {
+			const url = `/shop/product/top-products?sortBy=quantity&limit=${limit}`;
+			const response = await api.get(url);
+			console.log("Top products by quantity response:", response.data); // Thêm log để debug
+			const products = response.data || [];
+			return products;
+		} catch (error) {
+			console.error("API error:", error.response?.data || error.message);
+			throw error;
+		}
 	}
+
 };

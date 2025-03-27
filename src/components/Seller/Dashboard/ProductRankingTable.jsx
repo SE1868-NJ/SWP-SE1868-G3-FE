@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-const ProductRankingTable = ({ initialProducts = [] }) => {
-  const [viewMode, setViewMode] = useState('revenue');
+const ProductRankingTable = ({ initialProducts = [], activeTab, onTabChange }) => {
   const [products, setProducts] = useState([]);
+
+  // Sử dụng active tab từ parent thay vì local state
+  const viewMode = activeTab || 'revenue';
 
   useEffect(() => {
     if (initialProducts.length === 0) return;
@@ -10,16 +12,20 @@ const ProductRankingTable = ({ initialProducts = [] }) => {
     let sortedProducts = [...initialProducts];
 
     if (viewMode === 'revenue') {
-      sortedProducts.sort((a, b) => b.totalRevenue - a.totalRevenue);
+      sortedProducts.sort((a, b) => b.revenue - a.revenue);
     } else {
-      sortedProducts.sort((a, b) => b.soldQuantity - a.soldQuantity);
+      sortedProducts.sort((a, b) => b.total_quantity - a.total_quantity);
     }
 
     setProducts(sortedProducts.slice(0, 5));
   }, [viewMode, initialProducts]);
 
   const handleModeChange = (mode) => {
-    setViewMode(mode);
+    console.log("Chuyển mode sang:", mode);
+    // Gọi hàm từ parent component
+    if (onTabChange) {
+      onTabChange(mode);
+    }
   };
 
   const formatCurrency = (amount) => {
@@ -49,7 +55,7 @@ const ProductRankingTable = ({ initialProducts = [] }) => {
                   }}
                 >
                   <i className={`bi bi-currency-dollar me-1`}></i>
-                  Theo doanh số
+                  Theo doanh thu
                 </button>
               </li>
               <li className="nav-item">
@@ -88,8 +94,10 @@ const ProductRankingTable = ({ initialProducts = [] }) => {
                   {products.map((product, index) => (
                     <tr key={index}>
                       <td className="fw-medium">{index + 1}</td>
-                      <td>{product.name}</td>
-                      <td className="text-end fw-medium" style={{ color: '#2c3e50' }}>{formatCurrency(product.totalRevenue)}</td>
+                      <td>{product.Product ? product.Product.product_name : 'Tên sản phẩm không có'}</td>
+                      <td className="text-end fw-medium" style={{ color: '#2c3e50' }}>
+                        {product.revenue ? formatCurrency(product.revenue) : '0 đ'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -112,27 +120,15 @@ const ProductRankingTable = ({ initialProducts = [] }) => {
                   {products.map((product, index) => (
                     <tr key={index}>
                       <td className="fw-medium">{index + 1}</td>
-                      <td>{product.name}</td>
-                      <td className="text-end fw-medium" style={{ color: '#2c3e50' }}>{product.soldQuantity.toLocaleString('vi-VN')}</td>
+                      <td>{product.Product ? product.Product.product_name : 'Tên sản phẩm không có'}</td>
+                      <td className="text-end fw-medium" style={{ color: '#2c3e50' }}>
+                        {parseInt(product.total_quantity) || 0}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
-        )}
-
-        {products.length === 0 && (
-          <div className="text-center py-5">
-            <img
-              src="/placeholder-empty.png"
-              alt="Không có dữ liệu"
-              style={{ width: '100px', opacity: 0.5 }}
-              onError={(e) => {
-                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0yNSAyNUg3NVY3NUgyNVoiIHN0cm9rZT0iI2RkZCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBzdHJva2UtZGFzaGFycmF5PSI1LDUiLz48cGF0aCBkPSJNNDAgNDBMNjAgNjBNNjAgNDBMNDAgNjAiIHN0cm9rZT0iI2RkZCIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+';
-              }}
-            />
-            <p className="text-muted mt-3">Không có dữ liệu</p>
           </div>
         )}
       </div>
