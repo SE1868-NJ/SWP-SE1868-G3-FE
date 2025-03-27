@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import OrderTable from '../../../components/Seller/Order/OrderTable';
+import { shopService } from '../../../services/shopService';
 
 const CompletedOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -10,62 +11,28 @@ const CompletedOrders = () => {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const mockOrders = [
-    {
-      order_id: "5",
-      user_id: "5",
-      payment_method: "PAYPAL",
-      name: "Hoàng Văn Đạt",
-      phone: "0945678901",
-      address: "202 Đường Cách Mạng Tháng 8, Quận 3, TP.HCM",
-      pincode: "700000",
-      total: 4200000,
-      email: "hoangvandat@gmail.com",
-      status: "completed",
-      created_at: "2025-03-10"
-    },
-    {
-      order_id: "6",
-      user_id: "6",
-      payment_method: "THẺ TÍN DỤNG",
-      name: "Nguyễn Thị Hoa",
-      phone: "0956789012",
-      address: "303 Đường Điện Biên Phủ, Quận Bình Thạnh, TP.HCM",
-      pincode: "700000",
-      total: 1875000,
-      email: "nguyenthihoa@gmail.com",
-      status: "completed",
-      created_at: "2025-03-09"
+  const fetchOrders = async () => {
+    try {
+      const data = await shopService.getCompletedOrderByShop(1);
+      setOrders(data.data);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
     }
-  ];
-
-  const mockOrderDetails = [
-    {
-      id: 1,
-      order_id: "5",
-      product_id: "10",
-      product_name: "Loa bluetooth không dây",
-      image: "https://via.placeholder.com/80x80",
-      quantity: 2,
-      price: 2100000,
-      subtotal: 4200000
-    }
-  ];
+  }
 
   useEffect(() => {
-    setOrders(mockOrders);
-    setLoading(false);
+    fetchOrders();
   }, []);
 
-  const toggleOrderDetails = (orderId) => {
-    setSelectedOrderId(selectedOrderId === orderId ? null : orderId);
 
-    if (orderId && !orderDetails[orderId]) {
-      setOrderDetails(prevDetails => ({
-        ...prevDetails,
-        [orderId]: mockOrderDetails
-      }));
-    }
+  const toggleOrderDetails = (orderId) => {
+    setSelectedOrderId(orderId);
+
+    const order = orders.find(order => order.order_id === orderId);
+    console.log(order, 'order');
+    setOrderDetails({ [orderId]: order.OrderDetails });
   };
 
   const handleSearch = (e) => {
@@ -105,27 +72,6 @@ const CompletedOrders = () => {
             orderType="completed"
             orderDetails={orderDetails}
           />
-
-          {/* Phân trang đơn giản */}
-          {/* {!loading && !error && orders.length > 0 && (
-            <nav className="mt-4">
-              <ul className="pagination justify-content-center">
-                <li className="page-item disabled">
-                  <button className="page-link">
-                    <i className="bi bi-chevron-left"></i>
-                  </button>
-                </li>
-                <li className="page-item active">
-                  <button className="page-link">1</button>
-                </li>
-                <li className="page-item disabled">
-                  <button className="page-link">
-                    <i className="bi bi-chevron-right"></i>
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          )} */}
         </div>
       </div>
     </div>

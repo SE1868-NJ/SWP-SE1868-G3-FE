@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import OrderTable from '../../../components/Seller/Order/OrderTable';
+import { shopService } from '../../../services/shopService';
 
 const ProcessingOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -11,74 +12,36 @@ const ProcessingOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const mockOrders = [
-    {
-      order_id: "3",
-      user_id: "3",
-      payment_method: "THANH TOÁN KHI NHẬN HÀNG",
-      name: "Lê Văn Cường",
-      phone: "0934567890",
-      address: "789 Đường Nguyễn Du, Quận 5, TP.HCM",
-      pincode: "700000",
-      total: 1250000,
-      email: "levancuong@gmail.com",
-      status: "processing",
-      created_at: "2025-03-14"
-    },
-    {
-      order_id: "4",
-      user_id: "4",
-      payment_method: "THẺ TÍN DỤNG",
-      name: "Phạm Thị Dung",
-      phone: "0923456789",
-      address: "101 Đường Lý Tự Trọng, Quận 10, TP.HCM",
-      pincode: "700000",
-      total: 3450000,
-      email: "phamthidung@gmail.com",
-      status: "processing",
-      created_at: "2025-03-13"
+  const fetchOrders = async () => {
+    try {
+      const data = await shopService.getProcessingOrderByShop(1);
+      // console.log(data);
+      setOrders(data.data);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
     }
-  ];
-
-  const mockOrderDetails = [
-    {
-      id: 1,
-      order_id: "3",
-      product_id: "5",
-      product_name: "Tai nghe cao cấp",
-      image: "https://via.placeholder.com/80x80",
-      quantity: 1,
-      price: 1250000,
-      subtotal: 1250000
-    }
-  ];
+  }
 
   useEffect(() => {
-    setOrders(mockOrders);
-    setLoading(false);
+    fetchOrders();
   }, []);
 
   const toggleOrderDetails = (orderId) => {
-    setSelectedOrderId(selectedOrderId === orderId ? null : orderId);
+    setSelectedOrderId(orderId);
 
-    if (orderId && !orderDetails[orderId]) {
-      setOrderDetails(prevDetails => ({
-        ...prevDetails,
-        [orderId]: mockOrderDetails
-      }));
-    }
+    const order = orders.find(order => order.order_id === orderId);
+    console.log(order, 'order');
+    setOrderDetails({ [orderId]: order.OrderDetails });
   };
 
-  const handleStatusChange = (orderId, newStatus) => {
-    console.log(`Đơn hàng ${orderId} đã thay đổi trạng thái thành ${newStatus}`);
-
-    const updatedOrders = orders.filter(order => order.order_id !== orderId);
-    setOrders(updatedOrders);
-
-    if (selectedOrderId === orderId) {
-      setSelectedOrderId(null);
+  const handleStatusChange = async (orderId, status) => {
+    const response = await shopService.updateStatus(orderId, status);
+    if (response) {
+      fetchOrders();
     }
-  };
+  }
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
@@ -117,27 +80,6 @@ const ProcessingOrders = () => {
             orderType="processing"
             orderDetails={orderDetails}
           />
-
-          {/* Phân trang đơn giản */}
-          {/* {!loading && !error && orders.length > 0 && (
-            <nav className="mt-4">
-              <ul className="pagination justify-content-center">
-                <li className="page-item disabled">
-                  <button className="page-link">
-                    <i className="bi bi-chevron-left"></i>
-                  </button>
-                </li>
-                <li className="page-item active">
-                  <button className="page-link">1</button>
-                </li>
-                <li className="page-item disabled">
-                  <button className="page-link">
-                    <i className="bi bi-chevron-right"></i>
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          )} */}
         </div>
       </div>
     </div>

@@ -17,7 +17,7 @@ const NewOrders = () => {
 
     Socket.on('new_order', (newOrder) => {
       setOrders(prevOrders => [...prevOrders, newOrder]);
-      
+
       toast.success('Đã có đơn hàng mới!', {
         position: "top-right",
         autoClose: 5000,
@@ -33,31 +33,31 @@ const NewOrders = () => {
       Socket.off('new_order');
     };
   }, []);
+  
+  const fetchOrders = async () => {
+    try {
+      const data = await shopService.getNewOrderByShop(1);
+      // console.log(data);
+      setOrders(data.data);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const data = await shopService.getNewOrderByShop(1);
-        // console.log(data);
-        setOrders(data.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-    }
-
     fetchOrders();
   }, []);
 
   const toggleOrderDetails = (orderId) => {
-      setSelectedOrderId(orderId);
+    setSelectedOrderId(orderId);
 
-      const order = orders.find(order => order.order_id === orderId);
-      console.log(order, 'order');
-      setOrderDetails({ [orderId]: order.OrderDetails });
+    const order = orders.find(order => order.order_id === orderId);
+    console.log(order, 'order');
+    setOrderDetails({ [orderId]: order.OrderDetails });
   };
-  
+
   const handleSearch = (e) => {
     if (e) e.preventDefault();
 
@@ -73,8 +73,11 @@ const NewOrders = () => {
     }
   };
 
-  const handleStatusChange = (orderId, status) => {
-
+  const handleStatusChange = async (orderId, status) => {
+    const response = await shopService.updateStatus(orderId, status);
+    if (response) {
+      fetchOrders();
+    }
   }
 
   return (

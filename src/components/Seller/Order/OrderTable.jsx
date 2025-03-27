@@ -72,14 +72,14 @@ const OrderTable = ({
                 <td className="text-truncate" style={{ maxWidth: '150px' }}>{order.address}</td>
                 <td>{order.total}₫</td>
                 <td>
-                  <span className={`badge ${order.status === 'pending' ? 'bg-warning' :
-                    order.status === 'processing' ? 'bg-primary' :
-                      order.status === 'completed' ? 'bg-success' :
+                  <span className={`badge ${order.status === 'PENDING' ? 'bg-warning' :
+                    order.status === 'PROCESSING' ? 'bg-primary' :
+                      order.status === 'COMPLETED' ? 'bg-success' :
                         'bg-danger'
                     }`}>
-                    {order.status === 'pending' ? 'Chờ xử lý' :
-                      order.status === 'processing' ? 'Đang xử lý' :
-                        order.status === 'completed' ? 'Hoàn thành' :
+                    {order.status === 'PENDING' ? 'Chờ xử lý' :
+                      order.status === 'PROCESSING' ? 'Đang xử lý' :
+                        order.status === 'COMPLETED' ? 'Hoàn thành' :
                           'Đã hủy'}
                   </span>
                 </td>
@@ -93,7 +93,7 @@ const OrderTable = ({
                       <li>
                         <button
                           className="dropdown-item"
-                          onClick={() => handleStatusChange(order.order_id, 'processing')}
+                          onClick={() => handleStatusChange(order.order_id, 'PROCESSING')}
                         >
                           Xử lý đơn hàng
                         </button>
@@ -101,7 +101,7 @@ const OrderTable = ({
                       <li>
                         <button
                           className="dropdown-item"
-                          onClick={() => handleStatusChange(order.order_id, 'completed')}
+                          onClick={() => handleStatusChange(order.order_id, 'COMPLETED')}
                         >
                           Hoàn thành đơn hàng
                         </button>
@@ -109,7 +109,7 @@ const OrderTable = ({
                       <li>
                         <button
                           className="dropdown-item text-danger"
-                          onClick={() => handleStatusChange(order.order_id, 'cancelled')}
+                          onClick={() => handleStatusChange(order.order_id, 'CANCELLED')}
                         >
                           Hủy đơn hàng
                         </button>
