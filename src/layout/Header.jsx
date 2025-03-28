@@ -10,12 +10,10 @@ function Header() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const navigate = useNavigate();
 
-	// Cập nhật userData khi user thay đổi
 	useEffect(() => {
 		setUserData(user);
 	}, [user]);
 
-	// Hàm xử lý đăng xuất
 	const handleLogout = (e) => {
 		e.preventDefault();
 		logoutAndRedirect('/login');
@@ -56,7 +54,7 @@ function Header() {
 								</a>
 								<ul className='dropdown-menu dropdown-menu-end border-0 shadow-sm bg-body-tertiary'>
 									<li>
-										<Link to='/purchase' className='dropdown-item'>
+										<Link to='/orders/all' className='dropdown-item'>
 											Đơn mua
 										</Link>
 									</li>
