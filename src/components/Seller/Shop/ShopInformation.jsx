@@ -100,20 +100,26 @@ function ShopInformation() {
     try {
       setIsLoading(true);
       const formData = new FormData();
-      Object.entries(shopData).forEach(([key, value]) => {
-        if (key !== 'shop_logo') {
-          formData.append(key, value || '');
-        }
-      });
+
+      formData.append('shop_name', shopData.shop_name || '');
+      formData.append('shop_description', shopData.shop_description || '');
+      formData.append('shop_address', shopData.shop_address || '');
+      formData.append('shop_email', shopData.shop_email || '');
+      formData.append('shop_phone', shopData.shop_phone || '');
+
       if (selectedFile) {
         formData.append('shop_logo', selectedFile);
       }
-      const updatedShop = await shopService.updateShop(selectedShopId, formData);
+
+      const response = await shopService.updateShop(selectedShopId, formData);
+      const updatedShop = response.data || response;
+
       setIsLoading(false);
       setIsEditing(false);
       setPreviewImage(null);
       setSelectedFile(null);
       setShopDetails(updatedShop);
+
       setShopData({
         shop_name: updatedShop.shop_name || '',
         shop_description: updatedShop.shop_description || '',
@@ -122,8 +128,10 @@ function ShopInformation() {
         shop_email: updatedShop.shop_email || '',
         shop_phone: updatedShop.shop_phone || ''
       });
+
       setSaveMessage({ type: 'success', text: 'Cập nhật thông tin thành công!' });
     } catch (error) {
+      console.error("Lỗi khi cập nhật shop:", error);
       setIsLoading(false);
       setSaveMessage({ type: 'danger', text: 'Đã xảy ra lỗi, vui lòng thử lại sau' });
     }
@@ -135,32 +143,6 @@ function ShopInformation() {
       updateShopData(shopDetails);
     }
   };
-
-  if (isLoading && !shopDetails) {
-    return (
-      <div className="container mt-4 text-center">
-        <div className="spinner-border text-danger" role="status">
-          <span className="visually-hidden">Đang tải...</span>
-        </div>
-        <p className="mt-2">Đang tải thông tin gian hàng...</p>
-      </div>
-    );
-  }
-
-  // if (!shopDetails && shops.length === 0) {
-  //   return (
-  //     <div className="container mt-4">
-  //       <div className="alert alert-warning">
-  //         <i className="bi bi-exclamation-triangle me-2"></i>
-  //         Không tìm thấy gian hàng nào. Vui lòng tạo gian hàng mới.
-  //       </div>
-  //       <Link to="/seller/shop/create" className="btn btn-danger">
-  //         <i className="bi bi-plus-circle me-2"></i>
-  //         Tạo gian hàng mới
-  //       </Link>
-  //     </div>
-  //   );
-  // }
 
   const renderFormField = (label, name, placeholder, type = "text", rows = null) => {
     return (
@@ -276,18 +258,32 @@ function ShopInformation() {
               <div className="text-center">
                 <p className="fw-bold mb-2">Logo của Shop</p>
                 <div className="d-flex justify-content-center align-items-center mb-3">
-                  <img
-                    src={previewImage ||
-                      (shopData.shop_logo ? `http://localhost:4000${shopData.shop_logo}` : "https://via.placeholder.com/300")}
-                    alt="Shop logo"
-                    className="img-fluid rounded-circle border"
-                    style={{ width: '120px', height: '120px', objectFit: 'cover' }}
-                    onError={(e) => {
-                      console.error("Lỗi tải ảnh:", e);
-                      e.target.onerror = null;
-                      e.target.src = "https://via.placeholder.com/300";
-                    }}
-                  />
+                  {previewImage ? (
+                    <img
+                      src={previewImage}
+                      alt="Preview logo"
+                      className="img-fluid rounded-circle border"
+                      style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                    />
+                  ) : shopData.shop_logo ? (
+                    <img
+                      src={shopData.shop_logo}
+                      alt="Shop logo"
+                      className="img-fluid rounded-circle border"
+                      style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://via.placeholder.com/300";
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="rounded-circle border d-flex justify-content-center align-items-center bg-light"
+                      style={{ width: '120px', height: '120px' }}
+                    >
+                      <i className="bi bi-shop text-secondary" style={{ fontSize: '48px' }}></i>
+                    </div>
+                  )}
                 </div>
                 {isEditing && (
                   <div className="mb-3">
