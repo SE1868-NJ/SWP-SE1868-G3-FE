@@ -38,18 +38,12 @@ function ListPage() {
 	const [products, setProducts] = useState([]);
 	const [totalPages, setTotalPages] = useState(0);
 	const [topSearchProducts, setTopSearchProducts] = useState([]);
-	const {
-		handleAddCart,
-		showToast,
-		user,
-		toastMessage,
-		toastVariant,
-		setShowToast,
-	} = useAuth();
+
+	const { handleAddCart, user, showToast, toastMessage, toastVariant, setShowToast } = useAuth();
 
 	useEffect(() => {
 		fetchProducts();
-	}, [currentPage]);
+	}, [currentPage, selectedCategory]);
 
 	useEffect(() => {
 		fetchTopSearchProducts();
@@ -58,6 +52,9 @@ function ListPage() {
 	const fetchProducts = async () => {
 		try {
 			const params = { page: currentPage, limit: itemsPerPage };
+			if (selectedCategory) {
+				params.category = selectedCategory;
+			}
 			const response = await productService.getProducts(params);
 			setProducts(response.items);
 			setTotalPages(response.metadata.totalPages);
@@ -68,7 +65,8 @@ function ListPage() {
 
 	const fetchTopSearchProducts = async () => {
 		try {
-			const products = await productService.getTopSearchedProducts(0, 4); // Thử search_count=0 để lấy nhiều hơn
+			const products = await productService.getTopSearchedProducts(0, 4);
+
 			if (products && products.length > 0) {
 				const sortedProducts = products.sort(
 					(a, b) => (b.search_count || 0) - (a.search_count || 0),
@@ -76,7 +74,6 @@ function ListPage() {
 				const top4Products = sortedProducts.slice(0, 4); // Lấy top 4
 				setTopSearchProducts(top4Products);
 			} else {
-				console.warn('No top search products available');
 				setTopSearchProducts([]);
 			}
 		} catch (error) {
@@ -84,6 +81,17 @@ function ListPage() {
 			setTopSearchProducts([]);
 		}
 	};
+
+	// const handleAddToCart = (product) => {
+	// 	const result = handleAddCart(product, user?.id);
+
+	// 	if (result) {
+	// 		// Toast sẽ được hiển thị bởi handleAddCart
+	// 	} else {
+	// 		// Có thể xử lý thêm nếu cần
+	// 	}
+	// };
+
 	const handleFlashSaleNext = () => {
 		if (flashSaleIndex + flashSaleItems < products.length) {
 			setFlashSaleIndex(flashSaleIndex + 1);
@@ -108,10 +116,6 @@ function ListPage() {
 		}
 	};
 
-	// const handleCategorySelect = (category) => {
-	// 	navigate(`/products?category=${encodeURIComponent(category)}`);
-	// };
-
 	const handleOpenDetail = (product) => {
 		setSelectedProduct(product);
 		setShowDetail(true);
@@ -121,6 +125,7 @@ function ListPage() {
 		setSelectedProduct(null);
 		setShowDetail(false);
 	};
+
 	const handleCategorySelect = (category) => {
 		navigate(`/search?category=${encodeURIComponent(category)}`);
 	};
@@ -130,7 +135,6 @@ function ListPage() {
 			<Advertisement images={images} />
 			<Categories
 				categories={categories}
-				// selectedCategory={selectedCategory}
 				onCategorySelect={handleCategorySelect}
 			/>
 			<FlashSale
@@ -154,7 +158,7 @@ function ListPage() {
 				products={products}
 				onAddCart={handleAddCart}
 				onZoom={handleOpenDetail}
-				user_id={user.id}
+				user_id={user?.id}
 			/>
 			<CustomPagination
 				currentPage={currentPage}

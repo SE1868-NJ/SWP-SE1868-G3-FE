@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
-import Stack from '../components/Stack';
-import { Row, Col } from '../components/Grid';
-import Card from '../components/Card';
+import Stack from '../../components/Stack';
+import { Row, Col } from '../../components/Grid';
+import Card from '../../components/Card';
 import { InputGroup, Button } from 'react-bootstrap';
-import { authService } from '../services/authService';
+import { authService } from '../../services/authService';
 
 function Signup() {
 	const navigate = useNavigate();

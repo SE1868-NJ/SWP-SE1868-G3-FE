@@ -9,11 +9,26 @@ import { orderRoutes } from './modules/order.routes';
 import { sellerRoutes } from './modules/seller.routes';
 import SellerLayout from '../layout/SellerLayout';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
+import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
 import { orderDetailRoutes } from './modules/orderDetail.routes';
 import { OrderProvider } from '../hooks/contexts/OrderContext';
 import ShopLayout from '../layout/ShopLayout';
 import { shopRoute } from './modules/store.routes';
 import ProfileLayout from '../layout/ProfileLayout/ProfileLayout';
+
+// Chức năng wrap protected routes
+const wrapProtectedRoutes = (routes) => {
+	return routes.map(route => ({
+		...route,
+		element: <ProtectedRoute>{route.element}</ProtectedRoute>
+	}));
+};
+
+// Bọc các routes cần bảo vệ
+const protectedUserRoutes = wrapProtectedRoutes(userRoutes);
+const protectedSellerRoutes = wrapProtectedRoutes([...sellerRoutes, ...shopRoutes]);
+const protectedOrderRoutes = wrapProtectedRoutes(orderRoutes);
+const protectedOrderDetailRoutes = wrapProtectedRoutes(orderDetailRoutes);
 
 const routes = [
 	{
@@ -23,7 +38,7 @@ const routes = [
 				<Layout />
 			</OrderProvider>
 		),
-		children: [...homeRoute, ...authRoutes, ...orderDetailRoutes],
+		children: [...homeRoute, ...authRoutes, ...protectedOrderDetailRoutes],
 	},
 	{
 		path: '/',
@@ -32,18 +47,17 @@ const routes = [
 				<ProfileLayout />
 			</OrderProvider>
 		),
-		children: userRoutes,
+		children: protectedUserRoutes,
 	},
-
 	{
 		path: '/seller',
 		element: <SellerLayout />,
-		children: [...sellerRoutes, ...shopRoutes],
+		children: protectedSellerRoutes,
 	},
 	{
 		path: '/order',
 		element: <CartLayout />,
-		children: orderRoutes,
+		children: protectedOrderRoutes,
 	},
 	{
 		path: '/shop',
