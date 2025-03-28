@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import OrderTable from '../../../components/Seller/Order/OrderTable';
 import { shopService } from '../../../services/shopService';
+import { useAuth } from '../../../hooks/contexts/AuthContext';
 
 const CancelledOrders = () => {
   const [orders, setOrders] = useState([]);
+  const {shop_id} = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [orderDetails, setOrderDetails] = useState({});
@@ -13,7 +15,8 @@ const CancelledOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const data = await shopService.getCancelledOrderByShop(1);
+      console.log(shop_id);
+      const data = await shopService.getCancelledOrderByShop(shop_id);
       setOrders(data.data);
       setLoading(false);
     } catch (error) {

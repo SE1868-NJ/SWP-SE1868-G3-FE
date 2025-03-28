@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [toastVariant, setToastVariant] = useState('success');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [shop_id, setShopId] = useState(null);
 
     // Kiểm tra token trong localStorage khi khởi động
     useEffect(() => {
@@ -123,7 +124,9 @@ export const AuthProvider = ({ children }) => {
             user,
             loading,
             login,
-            logout
+            logout,
+            shop_id,
+            setShopId
         }}>
             {children}
         </AuthContext.Provider>

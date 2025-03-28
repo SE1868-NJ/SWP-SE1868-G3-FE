@@ -8,10 +8,10 @@ import { useAuth } from '../../hooks/contexts/AuthContext';
 
 function SellerLayout() {
 
-	const { user } = useAuth();
+	const { shop_id } = useAuth();
 
 	useEffect(() => {
-		Socket.emit('join-checkout', user.shop_id);
+		Socket.emit('join-checkout', shop_id);
 
 	}, []);
 

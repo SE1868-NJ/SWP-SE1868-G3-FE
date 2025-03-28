@@ -8,8 +8,10 @@ import Card from '../components/Card';
 import { authService } from '../services/authService';
 
 import loginImg from '../assets/images/login.png';
+import { useAuth } from '../hooks/contexts/AuthContext';
 
 function Login() {
+	const {setShopId} = useAuth();
 	const navigate = useNavigate();
 	const [loginData, setLoginData] = useState({
 		email: '',
@@ -36,11 +38,14 @@ function Login() {
 		e.preventDefault();
 		try {
 			const response = await authService.login(loginData);
+			console.log(response, 'response');
 			if (response.user && response.token) {
 				const { token, user } = response;
 				localStorage.setItem('user', JSON.stringify(user));
 				localStorage.setItem('token', token);
-				navigate('/list_page');
+				// navigate('/list_page');
+				console.log(response.shop_id, 'shop_id');
+				setShopId(response.shop_id);
 			} else {
 				console.error('Invalid response structure:', response);
 			}

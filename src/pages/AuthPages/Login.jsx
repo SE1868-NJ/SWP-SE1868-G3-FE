@@ -7,9 +7,10 @@ import { Row, Col } from '../../components/Grid';
 import Card from '../../components/Card';
 import { authService } from '../../services/authService';
 import loginImg from '../../assets/images/login.png';
+// import { useAuth } from '../../hooks/contexts/AuthContext';
 
 function Login() {
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated, setShopId } = useAuth();
 	const { loginAndRedirect } = useAuthActions();
 	const navigate = useNavigate();
 
@@ -81,7 +82,7 @@ function Login() {
 
 		try {
 			const response = await authService.login(loginData);
-
+			console.log(response, 'response');
 			if (response?.user && response.token) {
 				const userData = {
 					id: response.user.user_id || response.user.id || response.user.userID,
@@ -91,6 +92,8 @@ function Login() {
 					gender: response.user.gender || '',
 					phone: response.user.phone || ''
 				};
+				console.log(response.shop_id, 'shop_id');
+				setShopId(response.shop_id);
 
 				setTooManyAttempts(false);
 				setCountdown(0);
