@@ -14,7 +14,7 @@ const ShopInfo = ({ shop }) => {
             <div className="d-flex align-items-center justify-content-between mb-3">
                 <div className="d-flex align-items-center gap-3">
                     <img
-                        src={`http://localhost:4000${shop.shop_logo}`}
+                        src={shop.shop_logo}
                         alt={`${shop.shop_name} Logo`}
                         style={{
                             width: "70px",
