@@ -72,8 +72,8 @@ const Checkout = () => {
         language: "en",
       };
 
-      // Socket.emit('order_placed', dataOrder);
-      console.log('paymentMethodId:', payload);
+      Socket.emit('order_placed', dataOrder);
+      // console.log('paymentMethodId:', payload);
 
       if (paymentMethodId === "cod") {
         navigate(`/orders/pending`);
