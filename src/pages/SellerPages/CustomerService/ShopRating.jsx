@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { shopService } from '../../../services/shopService';
 import { useParams } from 'react-router-dom';
-import ShopRatingOverview from '../../../components/Seller/Order/Rating/ShopRatingOverview';
-import ShopFeedbackList from '../../../components/Seller/Order/Rating/ShopFeedbackList';
+import ShopRatingOverview from '../../../components/Seller/CustomerService/Rating/ShopRatingOverview';
+import ShopFeedbackList from '../../../components/Seller/CustomerService/Rating/ShopFeedbackList';
 
 
 function ShopRating() {

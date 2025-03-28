@@ -11,6 +11,9 @@ import CompletedOrders from '../../pages/SellerPages/Order/CompletedOrders';
 import CancelledOrders from '../../pages/SellerPages/Order/CancelledOrders';
 import OrdersInDelivery from '../../pages/SellerPages/Order/OrdersInDelivery';
 
+import ShopChat from "../../pages/SellerPages/CustomerService/ShopChat";
+import ShopRating from "../../pages/SellerPages/CustomerService/ShopRating";
+
 export const sellerRoutes = [
 	{
 		path: '/seller',
@@ -55,6 +58,13 @@ export const sellerRoutes = [
 	{
 		path: 'orders/ship',
 		element: <OrdersInDelivery />,
-	}
-
+	},
+	{
+		path: "/seller/chat",
+		element: <ShopChat />,
+	},
+	{
+		path: '/seller/ratting/:shopId',
+		element: <ShopRating />
+	},
 ];

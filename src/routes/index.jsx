@@ -1,20 +1,22 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from '../layout';
 import CartLayout from '../layout/CartLayout/';
+import SellerLayout from '../layout/SellerLayout';
+import ShopLayout from '../layout/ShopLayout';
+import ProfileLayout from '../layout/ProfileLayout/ProfileLayout';
+
 import { authRoutes } from './modules/auth.routes';
 import { shopRoutes } from './modules/shop.routes';
 import { userRoutes } from './modules/user.routes';
 import { homeRoute } from './modules/home.routes';
 import { orderRoutes } from './modules/order.routes';
 import { sellerRoutes } from './modules/seller.routes';
-import SellerLayout from '../layout/SellerLayout';
+import { orderDetailRoutes } from './modules/orderDetail.routes';
+import { shopRoute } from './modules/store.routes';
+
+import { OrderProvider } from '../hooks/contexts/OrderContext';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
 import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
-import { orderDetailRoutes } from './modules/orderDetail.routes';
-import { OrderProvider } from '../hooks/contexts/OrderContext';
-import ShopLayout from '../layout/ShopLayout';
-import { shopRoute } from './modules/store.routes';
-import ProfileLayout from '../layout/ProfileLayout/ProfileLayout';
 
 const wrapProtectedRoutes = (routes) => {
 	return routes.map(route => ({
