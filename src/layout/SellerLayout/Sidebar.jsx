@@ -153,6 +153,11 @@ function Sidebar() {
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/ship'} className='nav-link'>
+											Đơn hàng đang được giao
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
 										<Link to={'/seller/orders/completed'} className='nav-link'>
 											Đơn hàng đã hoàn thành
 										</Link>
@@ -160,11 +165,6 @@ function Sidebar() {
 									<li className='list-group-item px-0'>
 										<Link to={'/seller/orders/cancelled'} className='nav-link'>
 											Đơn hàng đã hủy
-										</Link>
-									</li>
-									<li className='list-group-item px-0'>
-										<Link to={'/seller/orders/ship'} className='nav-link'>
-											Đơn hàng đang được giao
 										</Link>
 									</li>
 								</ul>
