@@ -1,8 +1,10 @@
 import ShopInfoPage from '../../pages/SellerPages/Shop/ShopInfoPage';
-import Suppliers from '../../pages/SellerPages/suppliers/Suppliers';
-import AddSupplier from '../../pages/SellerPages/suppliers/AddSupplier';
-import EditSupplier from '../../pages/SellerPages/suppliers/EditSupplier';
-import ViewSupplier from '../../pages/SellerPages/suppliers/ViewSupplier';
+
+import Suppliers from '../../pages/SellerPages/Supplier/Suppliers';
+import AddSupplier from '../../pages/SellerPages/Supplier/AddSupplier';
+import EditSupplier from '../../pages/SellerPages/Supplier/EditSupplier';
+import ViewSupplier from '../../pages/SellerPages/Supplier/ViewSupplier';
+
 import NewOrders from '../../pages/SellerPages/Order/NewOrders';
 import ProcessingOrders from '../../pages/SellerPages/Order/ProcessingOrders';
 import CompletedOrders from '../../pages/SellerPages/Order/CompletedOrders';

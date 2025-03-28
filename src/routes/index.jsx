@@ -16,7 +16,6 @@ import ShopLayout from '../layout/ShopLayout';
 import { shopRoute } from './modules/store.routes';
 import ProfileLayout from '../layout/ProfileLayout/ProfileLayout';
 
-// Chức năng wrap protected routes
 const wrapProtectedRoutes = (routes) => {
 	return routes.map(route => ({
 		...route,
@@ -24,7 +23,6 @@ const wrapProtectedRoutes = (routes) => {
 	}));
 };
 
-// Bọc các routes cần bảo vệ
 const protectedUserRoutes = wrapProtectedRoutes(userRoutes);
 const protectedSellerRoutes = wrapProtectedRoutes([...sellerRoutes, ...shopRoutes]);
 const protectedOrderRoutes = wrapProtectedRoutes(orderRoutes);
