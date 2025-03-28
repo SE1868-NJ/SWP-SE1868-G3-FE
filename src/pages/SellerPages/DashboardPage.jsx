@@ -6,6 +6,7 @@ import ChartSection from '../../components/Seller/Dashboard/ChartSection';
 import DataSection from '../../components/Seller/Dashboard/DataSection';
 import AiAssistant from '../../components/Seller/Dashboard/AiAssistant';
 import { productService } from '../../services/productService';
+import { orderService } from '../../services/orderService';
 
 function DashboardPage() {
   const { shops } = useSeller();
@@ -32,6 +33,7 @@ function DashboardPage() {
     { name: '18:00', revenue: 6200, orders: 10 },
     { name: '21:00', revenue: 7500, orders: 12 }
   ]);
+
   // Sample data for orders
   const [recentOrders, setRecentOrders] = useState([
     { id: '#ORD-2458', customer: 'Nguyễn Văn A', amount: '₫549.000', status: 'completed' },
@@ -44,18 +46,22 @@ function DashboardPage() {
 
   // Lấy tổng số sản phẩm
   useEffect(() => {
-    const fetchProductCount = async () => {
+    const fetchShopData = async () => {
       try {
         setLoading(true);
         const shopId = currentShop.shop_id || currentShop.id;
+
         if (!shopId) {
           setLoading(false);
           return;
         }
+
+        // Fetch products count
         try {
           // Lấy sản phẩm theo shop ID
           const productsResponse = await productService.getProductsByShop(shopId);
           const shopProducts = productsResponse?.products || [];
+
           // Cập nhật tổng số sản phẩm
           setStats(prevStats => ({
             ...prevStats,
@@ -64,16 +70,31 @@ function DashboardPage() {
         } catch (apiError) {
           console.error("Lỗi API khi lấy sản phẩm:", apiError);
         }
+
+        // Fetch orders count
+        try {
+          // Lấy số lượng đơn hàng của shop
+          const orderCount = await orderService.getOrderCountByShopId(shopId);
+
+          // Cập nhật tổng số đơn hàng
+          setStats(prevStats => ({
+            ...prevStats,
+            totalOrders: orderCount || 0
+          }));
+        } catch (orderError) {
+          console.error("Lỗi khi lấy số lượng đơn hàng:", orderError);
+        }
+
         setLoading(false);
       } catch (error) {
-        console.error("Lỗi khi fetchProductCount:", error);
+        console.error("Lỗi khi fetchShopData:", error);
         setLoading(false);
       }
     };
 
-    // Chỉ gọi fetchProductCount khi shops đã được load
+    // Chỉ gọi fetchShopData khi shops đã được load
     if (shops.length > 0) {
-      fetchProductCount();
+      fetchShopData();
     }
   }, [shops, currentShop]);
 
