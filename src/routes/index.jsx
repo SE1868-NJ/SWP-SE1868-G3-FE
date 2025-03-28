@@ -6,13 +6,12 @@ import ShopLayout from '../layout/ShopLayout';
 import ProfileLayout from '../layout/ProfileLayout/ProfileLayout';
 
 import { authRoutes } from './modules/auth.routes';
-import { shopRoutes } from './modules/shop.routes';
+import { shopRoute } from './modules/shop.routes';
 import { userRoutes } from './modules/user.routes';
 import { homeRoute } from './modules/home.routes';
 import { orderRoutes } from './modules/order.routes';
 import { sellerRoutes } from './modules/seller.routes';
 import { orderDetailRoutes } from './modules/orderDetail.routes';
-import { shopRoute } from './modules/store.routes';
 
 import { OrderProvider } from '../hooks/contexts/OrderContext';
 import { AuthProvider } from '../hooks/contexts/AuthContext';
@@ -26,7 +25,7 @@ const wrapProtectedRoutes = (routes) => {
 };
 
 const protectedUserRoutes = wrapProtectedRoutes(userRoutes);
-const protectedSellerRoutes = wrapProtectedRoutes([...sellerRoutes, ...shopRoutes]);
+const protectedSellerRoutes = wrapProtectedRoutes(sellerRoutes);
 const protectedOrderRoutes = wrapProtectedRoutes(orderRoutes);
 const protectedOrderDetailRoutes = wrapProtectedRoutes(orderDetailRoutes);
 
