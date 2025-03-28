@@ -15,14 +15,11 @@ const ProductInfo = ({
     <div className="d-flex flex-column gap-3">
         {/* Tên sản phẩm */}
         <h1 className="fw-bold mb-1" style={{ fontSize: '1.8rem' }}>{product.product_name}</h1>
-
-        {/* Đánh giá */}
         <div className="d-flex align-items-center gap-3 mt-1" style={{ fontSize: "0.9rem", color: "#666" }}>
-        <span className="fw-bold text-dark">
-    {typeof product.rating === 'number' ? product.rating.toFixed(1) : 'N/A'}
-</span>
+            {/* <span className="fw-bold text-dark">
+            </span> */}
 
-            <div className="d-flex align-items-center">
+            {/* <div className="d-flex align-items-center">
                 {[...Array(5)].map((_, i) => {
                     const percentage = product.rating - i;
 
@@ -54,7 +51,7 @@ const ProductInfo = ({
             </div>
             <span>
                 <strong>{product.count_feedback}</strong> Đánh Giá
-            </span>
+            </span> */}
             {/* <span>
                 <strong>{soldQuantity.toLocaleString()}</strong> Sold
             </span> */}

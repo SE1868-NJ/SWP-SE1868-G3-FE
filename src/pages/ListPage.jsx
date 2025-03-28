@@ -66,6 +66,7 @@ function ListPage() {
 	const fetchTopSearchProducts = async () => {
 		try {
 			const products = await productService.getTopSearchedProducts(0, 4);
+
 			if (products && products.length > 0) {
 				const sortedProducts = products.sort(
 					(a, b) => (b.search_count || 0) - (a.search_count || 0),

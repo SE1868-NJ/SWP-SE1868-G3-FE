@@ -15,7 +15,6 @@ const CompletedOrder = () => {
 		setLoading(true);
 		try {
 			const data = await orderService.getCompletedOrders(userId);
-			console.log('API response for completed orders:', data);
 
 			if (!data) {
 				setOrders([]);
@@ -47,7 +46,7 @@ const CompletedOrder = () => {
 	};
 
 	useEffect(() => {
-		if (status === 'completed' && userId) {
+		if (status === 'COMPLETED' && userId) {
 			fetchCompletedOrders();
 		} else {
 			setOrders([]); // Xóa danh sách khi không ở trạng thái "completed"
@@ -59,12 +58,12 @@ const CompletedOrder = () => {
 	};
 
 	if (loading) {
-		return <div className='text-center py-4'>Đang tải dữ liệu...</div>;
+		return <div className='text-center py-4'>Đang tải dữ liệu...aaaa</div>;
 	}
 
 	return (
 		<div className='container'>
-			{status === 'completed' && orders.length > 0 ? (
+			{status === 'COMPLETED' && orders.length > 0 ? (
 				<div className='order-list'>
 					{orders.map((order, index) => (
 						<OrderCard
@@ -75,8 +74,8 @@ const CompletedOrder = () => {
 					))}
 				</div>
 			) : (
-				<div className='text-center py-4'>
-					{status === 'completed'
+				<div className='text-center py-4'>	
+					{status === 'COMPLETED'
 						? 'Không có đơn hàng nào đã hoàn thành.'
 						: "Vui lòng chọn trạng thái 'Đã hoàn thành' để xem đơn hàng."}
 				</div>

@@ -162,6 +162,11 @@ function Sidebar() {
 											Đơn hàng đã hủy
 										</Link>
 									</li>
+									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/ship'} className='nav-link'>
+											Đơn hàng đang được giao
+										</Link>
+									</li>
 								</ul>
 							</div>
 						</div>
@@ -195,7 +200,7 @@ function Sidebar() {
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
-										<Link to={'/seller/ratting'} className='nav-link'>
+										<Link to={'/seller/ratting/shopID'} className='nav-link'>
 											Quản lý đánh giá
 										</Link>
 									</li>

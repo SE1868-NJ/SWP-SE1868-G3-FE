@@ -6,7 +6,8 @@ import Home from '../../pages/Home';
 import ListPage from '../../pages/ListPage';
 import ProductDetails from '../../pages/ProductDetails';
 import SearchProduct from '../../pages/SearchProduct';
-import PaymentPage from '../../pages/PaymentPage';
+import PaymentPage from '../../pages/Payment';
+import PaymentResultPage from '../../pages/PaymentResultPage';
 
 export const homeRoute = [
 	{
@@ -37,4 +38,8 @@ export const homeRoute = [
 		path: '/checkout/payment',
 		element: <PaymentPage />,
 	},
+	{
+		path: "payment-result",
+		element: <PaymentResultPage/>
+	  }
 ];

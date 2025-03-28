@@ -9,7 +9,6 @@ export const orderService = {
 	getOrdersByUserId: async (userId) => {
 		try {
 			const response = await api.get(`/order/${userId}`);
-			console.log('API response for all orders:', response.data);
 			return response.data;
 		} catch (error) {
 			console.error(
@@ -23,7 +22,6 @@ export const orderService = {
 	getCompletedOrders: async (userId) => {
 		try {
 			const response = await api.get(`/order/completed/${userId}`);
-			console.log('API response for completed orders:', typeof response.data);
 			return response.data;
 		} catch (error) {
 			console.error(
@@ -38,7 +36,6 @@ export const orderService = {
 	getCancelledOrders: async (userId) => {
         try {
             const response = await api.get(`/order/cancelled/${userId}`);
-            console.log('API response in orderService:', response.data);
             return response.data;
         } catch (error) {
             console.error("Lỗi khi lấy danh sách đơn hàng đã hủy", error.response?.data || error.message);
@@ -59,7 +56,6 @@ export const orderService = {
 	getAllOrders: async (userId) => {
 		try {
       const response = await api.get(`order/all_orders/${userId}`);
-      console.log('API response for all orders:', typeof response.data);
       return response.data;
     } catch (error) {
       console.error(

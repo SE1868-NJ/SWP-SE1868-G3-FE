@@ -1,14 +1,12 @@
 import React from 'react';
 import OrderProductDetails from './OrderProductDetails';
 
-const OrderTable = ({
+const DeliveryTable = ({
   orders,
   loading,
   error,
   selectedOrderId,
   toggleOrderDetails,
-  orderDetails,
-  handleStatusChange
 }) => {
   if (loading) {
     return (
@@ -43,14 +41,13 @@ const OrderTable = ({
           <tr>
             <th></th>
             <th>MÃ ĐƠN HÀNG</th>
-            <th>PHƯƠNG THỨC</th>
+            <th>SHIPPER</th>
             <th>TÊN KHÁCH HÀNG</th>
             <th>SĐT</th>
             <th>ĐỊA CHỈ</th>
             <th>TỔNG TIỀN</th>
             <th>TRẠNG THÁI</th>
             <th>NGÀY TẠO</th>
-            <th>HÀNH ĐỘNG</th>
           </tr>
         </thead>
         <tbody>
@@ -66,7 +63,7 @@ const OrderTable = ({
                   </button>
                 </td>
                 <td>{order.order_id}</td>
-                <td>{order.payment_method}</td>
+                <td>SHIP1</td>
                 <td>{order.full_name}</td>
                 <td>{order.phone}</td>
                 <td className="text-truncate" style={{ maxWidth: '150px' }}>{order.address}</td>
@@ -74,49 +71,18 @@ const OrderTable = ({
                 <td>
                   <span className={`badge ${order.status === 'PENDING' ? 'bg-warning' :
                     order.status === 'PROCESSING' ? 'bg-primary' :
-                      order.status === 'COMPLETED' ? 'bg-success' :
-                        'bg-danger'
+                        order.status === 'DELIVERY' ? 'bg-info' :
+                            order.status === 'COMPLETED' ? 'bg-success' :
+                                'bg-danger'
                     }`}>
                     {order.status === 'PENDING' ? 'Chờ xử lý' :
                       order.status === 'PROCESSING' ? 'Đang xử lý' :
-                        order.status === 'COMPLETED' ? 'Hoàn thành' :
-                          'Đã hủy'}
+                        order.status === 'DELIVERY' ? 'Đang giao' :    
+                            order.status === 'COMPLETED' ? 'Hoàn thành' :
+                            'Đã hủy'}
                   </span>
                 </td>
                 <td>{order.created_at}</td>
-                <td>
-                  <div className="dropdown">
-                    <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                      <span>Xác nhận</span>
-                    </button>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => handleStatusChange(order.order_id, 'PROCESSING')}
-                        >
-                          Xử lý đơn hàng
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => handleStatusChange(order.order_id, 'COMPLETED')}
-                        >
-                          Hoàn thành đơn hàng
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item text-danger"
-                          onClick={() => handleStatusChange(order.order_id, 'CANCELLED')}
-                        >
-                          Hủy đơn hàng
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
               </tr>
               {selectedOrderId === order.order_id && (
                 <tr>
@@ -138,4 +104,4 @@ const OrderTable = ({
   );
 };
 
-export default OrderTable;
+export default DeliveryTable;

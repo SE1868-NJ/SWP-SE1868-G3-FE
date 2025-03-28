@@ -25,7 +25,6 @@ function Signup() {
 			...user,
 			[name]: value,
 		});
-		console.log(user);
 	};
 
 	const handleBlur = (e) => {
@@ -34,14 +33,12 @@ function Signup() {
 			...prevUser,
 			[name]: value,
 		}));
-		console.log(user);
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		try {
 			const response = authService.register(user);
-			console.log(response);
 			navigate('/login');
 		} catch (error) {
 			console.log(error);

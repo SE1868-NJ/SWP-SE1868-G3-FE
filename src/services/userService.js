@@ -32,9 +32,6 @@ const userService = {
             if (file) {
                 formData.append("avatar", file);
             }
-            for (let pair of formData.entries()) {
-                console.log(`${pair[0]}: ${pair[1]}`);
-            }
             const response = await api.put(`/user/update/${id}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
