@@ -34,7 +34,7 @@ function AddSupplier() {
 
   const modalMessages = {
     successMessage: 'Thêm nhà cung cấp thành công!',
-    errorMessage: 'Thêm nhà cung cấp thất bại! Vui lòng thử lại.',
+    errorMessage: 'Đã tồn tại Mã Nhà Cung Cấp! Vui lòng thử lại.',
     cancelMessage: 'Bạn có chắc chắn muốn hủy? Mọi thông tin sẽ không được lưu lại.'
   };
 
