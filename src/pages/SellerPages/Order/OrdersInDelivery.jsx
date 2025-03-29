@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import DeliveryTable from '../../../components/Seller/Order/DeliveryTable';
 import { shopService } from '../../../services/shopService';
-import { useAuth } from '../../../hooks/contexts/AuthContext';
+import { useSeller } from '../../../hooks/contexts/SellerContext';
 
 const OrdersInDelivery = () => {
   const [orders, setOrders] = useState([]);
@@ -11,11 +11,11 @@ const OrdersInDelivery = () => {
   const [orderDetails, setOrderDetails] = useState({});
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const {shop_id} = useAuth();
+  const {shops} = useSeller();
 
   const fetchOrders = async () => {
     try {
-      const data = await shopService.getDeliveryOrders(shop_id); 
+      const data = await shopService.getDeliveryOrders(shops); 
       setOrders(data.data);
       setLoading(false);
     } catch (error) {

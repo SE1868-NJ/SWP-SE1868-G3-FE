@@ -82,7 +82,6 @@ function Login() {
 
 		try {
 			const response = await authService.login(loginData);
-			console.log(response, 'response');
 			if (response?.user && response.token) {
 				const userData = {
 					id: response.user.user_id || response.user.id || response.user.userID,
@@ -92,13 +91,12 @@ function Login() {
 					gender: response.user.gender || '',
 					phone: response.user.phone || ''
 				};
-				console.log(response.shop_id, 'shop_id');
 				setShopId(response.shop_id);
 
 				setTooManyAttempts(false);
 				setCountdown(0);
 				setError('');
-				loginAndRedirect(userData, response.token, '/list_page');
+				loginAndRedirect(userData, response.token, response.shop_id, '/list_page');
 			} else {
 				setError('Cấu trúc phản hồi không hợp lệ');
 			}

@@ -59,7 +59,10 @@ const MiniCartModal = () => {
             price: Number(item.product.sale_price),
             quantity: item.quantity,
             image: item.product.image_url,
-            productId: item.product_id
+            storeName: shop.shop_info.shop_name,
+            stock: item.product.stock_quantity,
+            productId: item.product_id,
+            shopId: shop.shop_info.shop_id
           }))
         )
         : [];

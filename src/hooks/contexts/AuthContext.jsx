@@ -52,9 +52,10 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     // Các hàm xử lý auth
-    const login = (userData, token) => {
+    const login = (userData, token, shop_id) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('shop_id', shop_id); 
         setIsAuthenticated(true);
         setUser(userData);
     };
@@ -177,8 +178,8 @@ export const useAuthActions = () => {
     const navigate = useNavigate();
 
     // Đăng nhập và điều hướng
-    const loginAndRedirect = (userData, token, redirectPath = '/') => {
-        auth.login(userData, token);
+    const loginAndRedirect = (userData, token, shop_id, redirectPath = '/') => {
+        auth.login(userData, token, shop_id);
         navigate(redirectPath);
     };
 

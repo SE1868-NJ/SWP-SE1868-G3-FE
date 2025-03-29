@@ -4,10 +4,11 @@ import ShopChatList from '../../../components/Seller/CustomerService/Chat/ShopCh
 import ShopChatWindow from '../../../components/Seller/CustomerService/Chat/ShopChatWindow';
 import { chatService } from '../../../services/chatService';
 import { Socket } from '../../../services/socket';
-import { useAuth } from '../../../hooks/contexts/AuthContext';
+import { useSeller } from '../../../hooks/contexts/SellerContext';
 
 const ShopChat = () => {
-    const { shop_id: shopId } = useAuth(); 
+    const { shops } = useSeller(); 
+    const shopId = shops[0]?.shop_id;
 
     const [conversations, setConversations] = useState([]);
     const [selectedConversationId, setSelectedConversationId] = useState(null);
@@ -22,7 +23,7 @@ const ShopChat = () => {
     const fileInputRef = useRef(null); 
 
     const fetchConversations = useCallback(async () => {
-        if (!shopId) return; 
+        if (!shops) return; 
         setLoadingConversations(true);
         setErrorConversations(null);
         try {
@@ -106,7 +107,7 @@ const ShopChat = () => {
 
         const messageData = {
             conversation_id: selectedConversationId,
-            sender_id: shopId,
+            sender_id: shops[0].shop_id,
             sender_type: 'shop',
             message_text: message.trim(),
             message_type: 'text',
@@ -171,7 +172,7 @@ const ShopChat = () => {
 
         const optimisticMessage = {
             conversation_id: selectedConversationId,
-            sender_id: shopId,
+            sender_id: shops[0].shop_id,
             sender_type: 'shop',
             message_text: selectedFile.name,
             message_type: selectedFile.type.startsWith('image/') ? 'image' : 'file',
