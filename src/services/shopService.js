@@ -35,9 +35,32 @@ export const shopService = {
         }
     },
 
-    getProductsByShopAndCategory: async (shopId) => {
+    getProductsByShopAndCategory: async (shopId, params = {}) => {
         try {
-            const response = await api.get(`/shop/${shopId}/products`);
+            const { page = 1, limit = 10, category = null, sortBy = 'Phổ Biến', priceDirection = '' } = params;
+            let url = `/shop/${shopId}/products?page=${page}&limit=${limit}`;
+
+            if (category) {
+                url += `&category=${encodeURIComponent(category)}`;
+            }
+            let sort = 'newest';
+            switch (sortBy) {
+                case 'Phổ Biến':
+                    sort = 'popular';
+                    break;
+                case 'Mới Nhất':
+                    sort = 'newest';
+                    break;
+                case 'Bán Chạy':
+                    sort = 'bestseller';
+                    break;
+                case 'Giá':
+                    sort = priceDirection === 'asc' ? 'price_asc' : 'price_desc';
+                    break;
+            }
+            url += `&sort=${sort}`;
+
+            const response = await api.get(url);
             return response;
         } catch (error) {
             throw error;
