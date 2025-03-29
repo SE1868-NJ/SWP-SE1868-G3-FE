@@ -29,12 +29,14 @@ function AddSupplier() {
   const [modalStates, setModalStates] = useState({
     showSuccessModal: false,
     showErrorModal: false,
-    showCancelConfirmModal: false
+    showCancelConfirmModal: false,
+    showDuplicateCodeModal: false
   });
 
   const modalMessages = {
     successMessage: 'Thêm nhà cung cấp thành công!',
-    errorMessage: 'Đã tồn tại Mã Nhà Cung Cấp! Vui lòng thử lại.',
+    errorMessage: 'Thêm nhà cung cấp thất bại! Vui lòng thử lại.',
+    duplicateCodeMessage: 'Mã nhà cung cấp đã tồn tại! Vui lòng sử dụng mã khác.',
     cancelMessage: 'Bạn có chắc chắn muốn hủy? Mọi thông tin sẽ không được lưu lại.'
   };
 
@@ -80,7 +82,14 @@ function AddSupplier() {
       await supplierService.createSupplier(supplier);
       toggleModal('showSuccessModal', true);
     } catch (error) {
-      toggleModal('showErrorModal', true);
+      // Kiểm tra nếu là lỗi trùng mã nhà cung cấp
+      if (error.response && error.response.data &&
+        (error.response.data.message === 'duplicate_supplier_code' ||
+          error.response.data.message.includes('duplicate'))) {
+        toggleModal('showDuplicateCodeModal', true);
+      } else {
+        toggleModal('showErrorModal', true);
+      }
     } finally {
       setLoading(false);
     }

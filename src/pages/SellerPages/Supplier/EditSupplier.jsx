@@ -20,6 +20,7 @@ function EditSupplier() {
   const [modalStates, setModalStates] = useState({
     showSuccessModal: false,
     showErrorModal: false,
+    showDuplicateCodeModal: false,
     showCancelConfirmModal: false,
     showNotFoundModal: false
   });
@@ -27,6 +28,7 @@ function EditSupplier() {
   const modalMessages = {
     successMessage: 'Cập nhật nhà cung cấp thành công!',
     errorMessage: 'Lỗi khi cập nhật nhà cung cấp!',
+    duplicateCodeMessage: 'Mã nhà cung cấp đã tồn tại! Vui lòng sử dụng mã khác.',
     cancelMessage: 'Bạn có chắc chắn muốn hủy? Mọi thay đổi sẽ không được lưu lại.',
     notFoundMessage: 'Nhà cung cấp không tồn tại!'
   };
@@ -114,7 +116,14 @@ function EditSupplier() {
         toggleModal('showErrorModal', true);
       }
     } catch (error) {
-      toggleModal('showErrorModal', true);
+      // Kiểm tra nếu lỗi là do trùng mã nhà cung cấp
+      if (error.response && error.response.data &&
+        (error.response.data.message === 'duplicate_supplier_code' ||
+          error.response.data.message.includes('duplicate'))) {
+        toggleModal('showDuplicateCodeModal', true);
+      } else {
+        toggleModal('showErrorModal', true);
+      }
     } finally {
       setSaving(false);
     }

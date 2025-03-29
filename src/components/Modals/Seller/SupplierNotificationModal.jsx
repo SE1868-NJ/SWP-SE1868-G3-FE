@@ -1,196 +1,212 @@
 import React from 'react';
-import { Modal } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 
 function SupplierNotificationModal({
-  modals = {},
-  messages = {},
+  modals,
+  messages,
   onClose,
   onConfirm,
   onNavigate,
-  navigatePath = '/seller/suppliers'
+  navigatePath
 }) {
-  const {
-    showSuccessModal = false,
-    showErrorModal = false,
-    showCancelConfirmModal = false,
-    showDeleteConfirmModal = false,
-    showDeleteSuccessModal = false,
-    showDeleteErrorModal = false,
-    showNotFoundModal = false
-  } = modals;
-
-  const {
-    successMessage = 'Thao tác thành công!',
-    errorMessage = 'Đã xảy ra lỗi!',
-    cancelMessage = 'Bạn có chắc chắn muốn hủy? Mọi thay đổi sẽ không được lưu lại.',
-    deleteConfirmMessage = 'Bạn có chắc chắn muốn xóa nhà cung cấp này không?',
-    deleteSuccessMessage = 'Xóa nhà cung cấp thành công!',
-    deleteErrorMessage = 'Lỗi khi xóa nhà cung cấp!',
-    notFoundMessage = 'Nhà cung cấp không tồn tại!'
-  } = messages;
-
-  // Helper function to handle navigation or close
-  const handleSuccessAction = () => {
-    onClose('showSuccessModal');
-    if (onNavigate) onNavigate(navigatePath);
-  };
-
-  const handleDeleteSuccessAction = () => {
-    onClose('showDeleteSuccessModal');
-    if (onNavigate) onNavigate(navigatePath);
-  };
-
-  const handleNotFoundAction = () => {
-    onClose('showNotFoundModal');
-    if (onNavigate) onNavigate(navigatePath);
-  };
-
   return (
     <>
       {/* Success Modal */}
       <Modal
-        show={showSuccessModal}
-        onHide={() => handleSuccessAction()}
+        show={modals.showSuccessModal}
+        onHide={() => onClose('showSuccessModal')}
         centered
+        backdrop="static"
       >
-        <Modal.Body className="text-center p-4">
-          <p>{successMessage}</p>
-          <div className="d-flex justify-content-center gap-3">
-            <button
-              className="btn btn-secondary"
-              onClick={() => handleSuccessAction()}
-            >
-              OK
-            </button>
-          </div>
-        </Modal.Body>
+        <Modal.Header>
+          <Modal.Title>Thành công</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{messages.successMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => {
+              onClose('showSuccessModal');
+              if (navigatePath) {
+                onNavigate(navigatePath);
+              }
+            }}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
       </Modal>
 
       {/* Error Modal */}
       <Modal
-        show={showErrorModal}
+        show={modals.showErrorModal}
         onHide={() => onClose('showErrorModal')}
         centered
       >
-        <Modal.Body className="text-center p-4">
-          <p>{errorMessage}</p>
-          <div className="d-flex justify-content-center gap-3">
-            <button
-              className="btn btn-danger"
-              onClick={() => onClose('showErrorModal')}
-            >
-              OK
-            </button>
-          </div>
-        </Modal.Body>
+        <Modal.Header>
+          <Modal.Title>Lỗi</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{messages.errorMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => onClose('showErrorModal')}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Duplicate Code Error Modal */}
+      <Modal
+        show={modals.showDuplicateCodeModal}
+        onHide={() => onClose('showDuplicateCodeModal')}
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title>Lỗi</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{messages.duplicateCodeMessage || 'Mã nhà cung cấp đã tồn tại. Vui lòng sử dụng mã khác.'}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => onClose('showDuplicateCodeModal')}>
+            OK
+          </Button>
+        </Modal.Footer>
       </Modal>
 
       {/* Cancel Confirmation Modal */}
       <Modal
-        show={showCancelConfirmModal}
+        show={modals.showCancelConfirmModal}
         onHide={() => onClose('showCancelConfirmModal')}
         centered
       >
-        <Modal.Body className="text-center p-4">
-          <p>{cancelMessage}</p>
-          <div className="d-flex justify-content-center gap-3">
-            <button
-              className="btn btn-secondary"
-              onClick={() => onClose('showCancelConfirmModal')}
-            >
-              Quay lại
-            </button>
-            <button
-              className="btn btn-danger"
-              onClick={() => onNavigate(navigatePath)}
-            >
-              Có
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
-
-      {/* Delete Confirmation Modal */}
-      <Modal
-        show={showDeleteConfirmModal}
-        onHide={() => onClose('showDeleteConfirmModal')}
-        centered
-      >
-        <Modal.Body className="text-center p-4">
-          <p>{deleteConfirmMessage}</p>
-          <div className="d-flex justify-content-center gap-3">
-            <button
-              className="btn btn-secondary"
-              onClick={() => onClose('showDeleteConfirmModal')}
-            >
-              Quay lại
-            </button>
-            <button
-              className="btn btn-danger"
-              onClick={onConfirm}
-            >
-              Có
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
-
-      {/* Delete Success Modal */}
-      <Modal
-        show={showDeleteSuccessModal}
-        onHide={() => handleDeleteSuccessAction()}
-        centered
-      >
-        <Modal.Body className="text-center p-4">
-          <p>{deleteSuccessMessage}</p>
-          <div className="d-flex justify-content-center gap-3">
-            <button
-              className="btn btn-secondary"
-              onClick={() => handleDeleteSuccessAction()}
-            >
-              OK
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
-
-      {/* Delete Error Modal */}
-      <Modal
-        show={showDeleteErrorModal}
-        onHide={() => onClose('showDeleteErrorModal')}
-        centered
-      >
-        <Modal.Body className="text-center p-4">
-          <p>{deleteErrorMessage}</p>
-          <div className="d-flex justify-content-center gap-3">
-            <button
-              className="btn btn-danger"
-              onClick={() => onClose('showDeleteErrorModal')}
-            >
-              OK
-            </button>
-          </div>
-        </Modal.Body>
+        <Modal.Header>
+          <Modal.Title>Xác nhận</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{messages.cancelMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => onClose('showCancelConfirmModal')}
+          >
+            Không
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              onClose('showCancelConfirmModal');
+              if (navigatePath) {
+                onNavigate(navigatePath);
+              }
+            }}
+          >
+            Có
+          </Button>
+        </Modal.Footer>
       </Modal>
 
       {/* Not Found Modal */}
-      <Modal
-        show={showNotFoundModal}
-        onHide={() => handleNotFoundAction()}
-        centered
-      >
-        <Modal.Body className="text-center p-4">
-          <p>{notFoundMessage}</p>
-          <div className="d-flex justify-content-center gap-3">
-            <button
-              className="btn btn-secondary"
-              onClick={() => handleNotFoundAction()}
+      {modals.showNotFoundModal && (
+        <Modal
+          show={modals.showNotFoundModal}
+          onHide={() => onClose('showNotFoundModal')}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header>
+            <Modal.Title>Thông báo</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{messages.notFoundMessage}</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={() => {
+                onClose('showNotFoundModal');
+                if (navigatePath) {
+                  onNavigate(navigatePath);
+                }
+              }}
             >
-              Quay lại
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {modals.showDeleteConfirmModal && (
+        <Modal
+          show={modals.showDeleteConfirmModal}
+          onHide={() => onClose('showDeleteConfirmModal')}
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title>Xác nhận</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{messages.deleteConfirmMessage}</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => onClose('showDeleteConfirmModal')}
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="danger"
+              onClick={onConfirm}
+            >
+              Xóa
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {/* Delete Success Modal */}
+      {modals.showDeleteSuccessModal && (
+        <Modal
+          show={modals.showDeleteSuccessModal}
+          onHide={() => onClose('showDeleteSuccessModal')}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header>
+            <Modal.Title>Thành công</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{messages.deleteSuccessMessage}</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="primary"
+              onClick={() => {
+                onClose('showDeleteSuccessModal');
+                if (navigatePath) {
+                  onNavigate(navigatePath);
+                }
+              }}
+            >
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {/* Delete Error Modal */}
+      {modals.showDeleteErrorModal && (
+        <Modal
+          show={modals.showDeleteErrorModal}
+          onHide={() => onClose('showDeleteErrorModal')}
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title>Lỗi</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{messages.deleteErrorMessage}</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => onClose('showDeleteErrorModal')}
+            >
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </>
   );
 }
