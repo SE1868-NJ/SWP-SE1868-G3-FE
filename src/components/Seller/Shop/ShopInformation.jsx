@@ -78,8 +78,27 @@ function ShopInformation() {
       [name]: value
     }));
 
-    // Reset lỗi khi người dùng thay đổi giá trị
-    if (errors[name]) {
+    // Validate số điện thoại khi người dùng nhập
+    if (name === 'shop_phone') {
+      let phoneError = '';
+      
+      if (value.trim() === '') {
+        phoneError = 'Số điện thoại không được để trống';
+      } else if (!/^\d+$/.test(value.replace(/\s/g, ''))) {
+        phoneError = 'Số điện thoại không hợp lệ (chỉ được chứa chữ số)';
+      } else if (!value.startsWith('0')) {
+        phoneError = 'Số điện thoại phải bắt đầu bằng số 0';
+      } else if (value.replace(/\s/g, '').length < 10 || value.replace(/\s/g, '').length > 11) {
+        phoneError = 'Số điện thoại phải có 10-11 chữ số';
+      }
+      
+      setErrors(prev => ({
+        ...prev,
+        [name]: phoneError
+      }));
+    } 
+    // Reset lỗi cho các trường khác khi người dùng thay đổi giá trị
+    else if (errors[name]) {
       setErrors({
         ...errors,
         [name]: ''
@@ -162,8 +181,12 @@ function ShopInformation() {
       // Kiểm tra xem số điện thoại chỉ chứa các chữ số sau khi loại bỏ khoảng trắng
       tempErrors.shop_phone = 'Số điện thoại không hợp lệ (chỉ được chứa chữ số)';
       isValid = false;
-    } else if (!/^[0-9]{10,11}$/.test(shopData.shop_phone.replace(/\s/g, ''))) {
-      tempErrors.shop_phone = 'Số điện thoại không hợp lệ (cần 10-11 số)';
+    } else if (!shopData.shop_phone.startsWith('0')) {
+      // Kiểm tra số điện thoại bắt đầu bằng số 0
+      tempErrors.shop_phone = 'Số điện thoại phải bắt đầu bằng số 0';
+      isValid = false;
+    } else if (!/^0\d{9,10}$/.test(shopData.shop_phone.replace(/\s/g, ''))) {
+      tempErrors.shop_phone = 'Số điện thoại không hợp lệ (cần 10-11 số và bắt đầu bằng số 0)';
       isValid = false;
     }
 
@@ -367,7 +390,7 @@ function ShopInformation() {
               {renderFormField("Mô tả Shop", "shop_description", "Mô tả về gian hàng của bạn", "text", 5)}
               {renderFormField("Địa chỉ Shop", "shop_address", "Nhập địa chỉ gian hàng")}
               {renderFormField("Email", "shop_email", "example@domain.com", "email")}
-              {renderFormField("Số điện thoại", "shop_phone", "Nhập số điện thoại liên hệ", "tel")}
+              {renderFormField("Số điện thoại", "shop_phone", "Nhập số điện thoại bắt đầu bằng số 0", "tel")}
             </div>
 
             <div className="col-md-4">
