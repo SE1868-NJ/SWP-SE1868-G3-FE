@@ -35,17 +35,14 @@ const OrdersInDelivery = () => {
     setOrderDetails({ [orderId]: order.OrderDetails });
   };
 
-  // Xử lý tìm kiếm đơn hàng
   const handleSearch = (e) => {
     if (e) e.preventDefault();
 
     if (searchTerm.trim() === '') {
-      fetchOrders();  // Gọi lại API khi tìm kiếm trống
+      setOrders(orders);
     } else {
       const filtered = orders.filter(order =>
-        order.order_id.includes(searchTerm) ||
-        order.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.email.toLowerCase().includes(searchTerm.toLowerCase())
+        order.order_id == (searchTerm)
       );
       setOrders(filtered);
     }

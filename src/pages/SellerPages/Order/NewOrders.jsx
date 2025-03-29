@@ -12,7 +12,7 @@ const NewOrders = () => {
   const [orderDetails, setOrderDetails] = useState({});
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const {shop_id} = useAuth();
+  const { shop_id } = useAuth();
 
   useEffect(() => {
     Socket.emit('join-checkout', shop_id);
@@ -35,7 +35,7 @@ const NewOrders = () => {
       Socket.off('new_order');
     };
   }, []);
-  
+
   const fetchOrders = async () => {
     try {
       const data = await shopService.getNewOrderByShop(shop_id);
@@ -65,9 +65,7 @@ const NewOrders = () => {
       setOrders(orders);
     } else {
       const filtered = orders.filter(order =>
-        order.order_id.includes(searchTerm) ||
-        order.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.email.toLowerCase().includes(searchTerm.toLowerCase())
+        order.order_id == (searchTerm)
       );
       setOrders(filtered);
     }

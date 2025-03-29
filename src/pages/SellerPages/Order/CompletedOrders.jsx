@@ -41,12 +41,10 @@ const CompletedOrders = () => {
     if (e) e.preventDefault();
 
     if (searchTerm.trim() === '') {
-      setOrders(mockOrders);
+      setOrders(orders);
     } else {
-      const filtered = mockOrders.filter(order =>
-        order.order_id.includes(searchTerm) ||
-        order.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.email.toLowerCase().includes(searchTerm.toLowerCase())
+      const filtered = orders.filter(order =>
+        order.order_id == (searchTerm)
       );
       setOrders(filtered);
     }

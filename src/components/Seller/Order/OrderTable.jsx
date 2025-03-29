@@ -47,8 +47,8 @@ const OrderTable = ({
                 <td className="fw-medium">{order.order_id}</td>
                 <td className="d-none d-md-table-cell">{order.payment_method}</td>
                 <td>{order.full_name}</td>
-                <td className="d-none d-lg-table-cell">{order.phone}</td>
-                <td className="d-none d-lg-table-cell text-truncate" style={{ maxWidth: '150px' }} title={order.address}>{order.address}</td>
+                <td className="d-none d-lg-table-cell">{order.Address.phone_number}</td>
+                <td className="d-none d-lg-table-cell text-truncate" style={{ maxWidth: '150px' }} title={order.Address.street_address}>{order.Address.street_address}</td>
                 <td className="text-danger fw-medium">{order.total?.toLocaleString('vi-VN')}₫</td>
 
                 <td>
