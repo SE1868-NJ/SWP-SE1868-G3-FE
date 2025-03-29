@@ -9,10 +9,37 @@ function Header() {
 	const [userData, setUserData] = useState(user);
 	const [searchQuery, setSearchQuery] = useState('');
 	const navigate = useNavigate();
+	const [forceUpdate, setForceUpdate] = useState(Date.now());
 
 	useEffect(() => {
 		setUserData(user);
 	}, [user]);
+
+	// Add event listener for user data changes
+	useEffect(() => {
+		const handleUserDataChanged = () => {
+			try {
+				const storedUserData = JSON.parse(localStorage.getItem('userData'));
+				if (storedUserData) {
+					setUserData(prev => ({
+						...prev,
+						...storedUserData
+					}));
+					setForceUpdate(Date.now());
+				}
+			} catch (error) {
+				console.error('Error parsing userData from localStorage', error);
+			}
+		};
+
+		window.addEventListener('userDataChanged', handleUserDataChanged);
+		window.addEventListener('load', handleUserDataChanged);
+
+		return () => {
+			window.removeEventListener('userDataChanged', handleUserDataChanged);
+			window.removeEventListener('load', handleUserDataChanged);
+		};
+	}, []);
 
 	const handleLogout = (e) => {
 		e.preventDefault();
@@ -24,6 +51,18 @@ function Header() {
 		if (searchQuery.trim()) {
 			navigate(`/search?query=${searchQuery.trim()}`);
 		}
+	};
+
+	// Get user display name from userData or user
+	const getUserDisplayName = () => {
+		if (userData && userData.full_name) {
+			return userData.full_name;
+		} else if (user && user.name) {
+			return user.name;
+		} else if (user && user.full_name) {
+			return user.full_name;
+		}
+		return 'Tài khoản';
 	};
 
 	return (
@@ -50,7 +89,7 @@ function Header() {
 									role='button'
 									data-bs-toggle='dropdown'
 								>
-									{user?.name || 'Tài khoản'}
+									{getUserDisplayName()}
 								</a>
 								<ul className='dropdown-menu dropdown-menu-end border-0 shadow-sm bg-body-tertiary'>
 									<li>

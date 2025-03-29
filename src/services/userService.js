@@ -21,29 +21,44 @@ const userService = {
         }
     },
 
-    updateUser: async (id, userData, file = null) => {
+    updateUser: async (id, userData, avatarFile = null) => {
         try {
             const formData = new FormData();
-            
+
+            // Thêm các trường dữ liệu người dùng vào FormData
             Object.keys(userData).forEach(key => {
-                formData.append(key, userData[key]);
+                // Bỏ qua trường avatar từ userData vì sẽ sử dụng file
+                if (key !== 'avatar') {
+                    formData.append(key, userData[key] || '');
+                }
             });
-            
-            if (file) {
-                formData.append("avatar", file);
+
+            // Thêm file avatar nếu có
+            if (avatarFile) {
+                formData.append('avatar', avatarFile);
             }
-            const response = await api.put(`/user/update/${id}`, formData, {
-                headers: { "Content-Type": "multipart/form-data" }
+
+            // Gửi request với đúng định dạng URL và method như shop
+            const response = await api.post(`/user/${id}/update`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
-                        
-            return response.data;
+
+            // Đảm bảo trả về cấu trúc phản hồi chuẩn
+            return {
+                success: true,
+                data: response.data,
+                message: "Cập nhật thành công"
+            };
         } catch (error) {
-            console.error("Lỗi khi cập nhật thông tin người dùng và avatar:", error.message);
-            if (error.response) {
-                console.error("Status:", error.response.status);
-                console.error("Data:", error.response.data);
-            }
-            throw error;
+            console.error("Lỗi khi cập nhật thông tin người dùng:", error);
+
+            // Trả về cấu trúc lỗi chuẩn
+            return {
+                success: false,
+                message: error.response?.data?.message || "Đã xảy ra lỗi khi cập nhật"
+            };
         }
     }
 };
