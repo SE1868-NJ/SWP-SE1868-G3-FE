@@ -9,4 +9,13 @@ export const paymentService = {
             throw error;
         }
     },
+
+    handleResultPayment: async (payload) => {
+        try {
+            const response = await api.post('/payment/vnpay_ipn', payload);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
 };

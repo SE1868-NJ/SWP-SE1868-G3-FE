@@ -25,7 +25,7 @@ const Checkout = () => {
 
   const [selectedAddressId, setSelectedAddressId] = useState("1");
   const [shippingMethodId, setShippingMethodId] = useState("nhanh");
-  const [shippingFee, setShippingFee] = useState(20700);
+  const [shippingFee, setShippingFee] = useState(0);
   const [voucherId, setVoucherId] = useState(1);
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [note, setNote] = useState("");
