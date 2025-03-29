@@ -9,6 +9,9 @@ import NewOrders from '../../pages/SellerPages/Order/NewOrders';
 import ProcessingOrders from '../../pages/SellerPages/Order/ProcessingOrders';
 import CompletedOrders from '../../pages/SellerPages/Order/CompletedOrders';
 import CancelledOrders from '../../pages/SellerPages/Order/CancelledOrders';
+
+import DashboardPage from '../../pages/SellerPages/DashboardPage';
+
 import OrdersInDelivery from '../../pages/SellerPages/Order/OrdersInDelivery';
 
 import ShopChat from "../../pages/SellerPages/CustomerService/ShopChat";
@@ -17,7 +20,7 @@ import ShopRating from "../../pages/SellerPages/CustomerService/ShopRating";
 export const sellerRoutes = [
 	{
 		path: '/seller',
-		element: <span>Seller</span>,
+		element: <DashboardPage />,
 	},
 	{
 		path: 'shop-info',
