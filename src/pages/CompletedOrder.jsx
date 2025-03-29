@@ -28,9 +28,9 @@ const CompletedOrder = () => {
 				setOrders(completedOrders);
 			} else if (data.status === 'COMPLETED') {
 				setOrders([data]);
-			} else if (data.OrderDetails && Array.isArray(data.OrderDetails)) {
+			} else if (data.orderDetails && Array.isArray(data.orderDetails)) {
 				setOrders(
-					data.OrderDetails.filter(
+					data.orderDetails.filter(
 						(order) => String(order.status) === 'COMPLETED',
 					),
 				);
@@ -67,7 +67,7 @@ const CompletedOrder = () => {
 				<div className='order-list'>
 					{orders.map((order, index) => (
 						<OrderCard
-							key={order.order_id || index}
+							key={order.id || index}
 							order={order}
 							refreshOrders={refreshOrders}
 						/>

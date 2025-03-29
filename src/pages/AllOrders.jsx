@@ -23,8 +23,8 @@ const AllOrders = () => {
 
 			if (Array.isArray(data)) {
 				setOrders(data);
-			} else if (data.OrderDetails && Array.isArray(data.OrderDetails)) {
-				setOrders(data.OrderDetails);
+			} else if (data.orderDetails && Array.isArray(data.orderDetails)) {
+				setOrders(data.orderDetails);
 			} else {
 				setOrders([]);
 			}
@@ -58,7 +58,7 @@ const AllOrders = () => {
 				<div className='order-list'>
 					{orders.map((order, index) => (
 						<OrderCard
-							key={order.order_id || index}
+							key={order.id || index}
 							order={order}
 							refreshOrders={refreshOrders}
 							

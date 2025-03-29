@@ -48,8 +48,10 @@ const Checkout = () => {
     try {
       setIsProcessing(true);
       setOrderError(null);
+      const order_id = generateOrderId();
 
       const dataOrder = {
+        order_id: order_id,
         user_id: user.id,
         address_id: selectedAddressId,
         items: selectedProducts.map(item => ({
@@ -66,7 +68,7 @@ const Checkout = () => {
 
       const payload = {
         amount: totalAmount,
-        orderId: generateOrderId(),
+        orderId: order_id,
         orderDescription: "",
         bankCode: "",
         language: "en",
