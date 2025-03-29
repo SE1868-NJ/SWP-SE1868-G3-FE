@@ -12,7 +12,6 @@ export const shopService = {
         }
     },
 
-
     updateShop: async (shopId, formData) => {
         try {
             const response = await api.post(`/shop/${shopId}/update`, formData, {

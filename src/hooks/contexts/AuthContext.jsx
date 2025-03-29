@@ -20,10 +20,19 @@ export const AuthProvider = ({ children }) => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
             const storedUser = localStorage.getItem('user');
+            const userData = localStorage.getItem('userData');
 
             if (token) {
                 setIsAuthenticated(true);
-                if (storedUser) {
+                if (userData) {
+                    // Ưu tiên dùng userData từ localStorage nếu có
+                    const parsedUserData = JSON.parse(userData);
+                    setUser(prev => ({
+                        ...prev,
+                        ...JSON.parse(storedUser || '{}'),
+                        ...parsedUserData
+                    }));
+                } else if (storedUser) {
                     setUser(JSON.parse(storedUser));
                 } else {
                     try {
@@ -55,6 +64,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setUser(null);
         setCartCount(0);
+        localStorage.removeItem('userData'); // Xóa cả userData khi logout
     };
 
     const getCountCart = async (userId) => {
@@ -73,9 +83,28 @@ export const AuthProvider = ({ children }) => {
                 getCountCart(user.id);
             }
         };
+
+        const handleUserDataChanged = () => {
+            try {
+                const storedUserData = localStorage.getItem('userData');
+                if (storedUserData) {
+                    const parsedUserData = JSON.parse(storedUserData);
+                    setUser(prev => ({
+                        ...prev,
+                        ...parsedUserData
+                    }));
+                }
+            } catch (error) {
+                console.error('Error parsing userData:', error);
+            }
+        };
+
         window.addEventListener('cart-updated', handleCartUpdated);
+        window.addEventListener('userDataChanged', handleUserDataChanged);
+
         return () => {
             window.removeEventListener('cart-updated', handleCartUpdated);
+            window.removeEventListener('userDataChanged', handleUserDataChanged);
         };
     }, [user]);
 
@@ -122,6 +151,7 @@ export const AuthProvider = ({ children }) => {
             toastVariant,
             setShowToast,
             user,
+            setUser, // Expose setUser so Profile component can update it
             loading,
             login,
             logout,
