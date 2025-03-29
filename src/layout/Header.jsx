@@ -49,7 +49,7 @@ function Header() {
 	const handleSearch = (e) => {
 		e.preventDefault();
 		if (searchQuery.trim()) {
-			navigate(`/search?query=${searchQuery.trim()}`);
+			navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
 		}
 	};
 
@@ -66,17 +66,17 @@ function Header() {
 	};
 
 	return (
-		<div className='shadow-sm'>
+		<div className='shadow'>
 			<nav className='bg-danger'>
 				<div className='container d-flex py-2 flex-wrap border-bottom border-light'>
 					<ul className='nav me-auto'>
 						<li className='nav-item'>
 							<Link
 								to='/seller'
-								className='nav-link link-body-emphasis px-2 ps-0 active text-light'
+								className='nav-link link-body-emphasis px-2 ps-0 text-light hover-opacity'
 								aria-current='page'
 							>
-								Kênh người bán
+								<i className="bi bi-shop me-1"></i> Kênh người bán
 							</Link>
 						</li>
 					</ul>
@@ -89,24 +89,24 @@ function Header() {
 									role='button'
 									data-bs-toggle='dropdown'
 								>
-									{getUserDisplayName()}
+									<i className="bi bi-person-circle me-1"></i> {getUserDisplayName()}
 								</a>
-								<ul className='dropdown-menu dropdown-menu-end border-0 shadow-sm bg-body-tertiary'>
+								<ul className='dropdown-menu dropdown-menu-end border-0 shadow-sm bg-body-tertiary rounded-3'>
 									<li>
 										<Link to='/orders/all' className='dropdown-item'>
-											Đơn mua
+											<i className="bi bi-bag me-2"></i> Đơn mua
 										</Link>
 									</li>
 									<li><hr className='dropdown-divider m-0 p-0' /></li>
 									<li>
 										<Link to='/profile' className='dropdown-item'>
-											Tài khoản của tôi
+											<i className="bi bi-person me-2"></i> Tài khoản của tôi
 										</Link>
 									</li>
 									<li><hr className='dropdown-divider m-0 p-0' /></li>
 									<li>
-										<a onClick={handleLogout} className='dropdown-item' href="#">
-											Đăng xuất
+										<a onClick={handleLogout} className='dropdown-item text-danger' href="#">
+											<i className="bi bi-box-arrow-right me-2"></i> Đăng xuất
 										</a>
 									</li>
 								</ul>
@@ -119,7 +119,7 @@ function Header() {
 										to='/login'
 										className='nav-link link-body-emphasis px-2 text-light'
 									>
-										Đăng nhập
+										<i className="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
 									</Link>
 								</li>
 								<li className='nav-link px-0 text-light'>|</li>
@@ -128,54 +128,71 @@ function Header() {
 										to='/signup'
 										className='nav-link link-body-emphasis px-2 pe-0 text-light'
 									>
-										Đăng ký
+										<i className="bi bi-person-plus me-1"></i> Đăng ký
 									</Link>
 								</li>
 							</>
 						)}
 					</ul>
 				</div>
-			</nav >
+			</nav>
 			<header className='py-3 border-bottom bg-danger'>
-				<div className='container d-flex flex-wrap justify-content-center'>
+				<div className='container d-flex flex-wrap justify-content-between align-items-center'>
 					<Link
 						to='/'
-						className='d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none text-light'
+						className='d-flex align-items-center mb-md-0 me-md-auto text-decoration-none text-light'
 					>
 						<i
 							className='bi bi-bag-heart-fill me-2'
-							style={{ fontSize: '1.5rem' }}
+							style={{ fontSize: '1.8rem' }}
 						/>
-						<span className='fs-4 fw-bold'>Chợ Làng</span>
+						<span className='fs-3 fw-bold'>Chợ Làng</span>
 					</Link>
 					<form
-						className='col-12 col-lg-auto mb-3 mb-lg-0'
+						className='col-12 col-md-6 col-lg-7 mb-2 mb-md-0 mt-3 mt-md-0'
 						role='search'
 						onSubmit={handleSearch}
 					>
-						<div className='hstack gap-2'>
+						<div className='d-flex align-items-center'>
 							<div className='input-group'>
 								<input
 									type='search'
-									className='form-control border-0'
-									style={{ boxShadow: 'none' }}
-									placeholder='Tìm kiếm...'
+									className='form-control py-2 border-0 shadow-none'
+									style={{ fontSize: '1.1rem' }}
+									placeholder='Tìm kiếm sản phẩm...'
 									aria-label='Search'
 									value={searchQuery}
 									onChange={(e) => setSearchQuery(e.target.value)}
 								/>
-								<button type='submit' className='btn bg-white border-0'>
-									<i className='bi bi-search' />
+								<button type='submit' className='btn bg-white border-0 px-3'>
+									<i className='bi bi-search fs-5' />
 								</button>
 							</div>
 
-							<MiniCartModal />
+							<div className="ms-3">
+								<MiniCartModal />
+							</div>
 						</div>
 					</form>
 				</div>
 			</header>
-		</div >
+		</div>
 	);
 }
+
+// Add custom CSS for hover effects
+const styleTag = document.createElement('style');
+styleTag.textContent = `
+  .hover-opacity:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+  
+  /* Add smooth transition for dropdown */
+  .dropdown-menu {
+    transition: all 0.2s ease;
+  }
+`;
+document.head.appendChild(styleTag);
 
 export default Header;
