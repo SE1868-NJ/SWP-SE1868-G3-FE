@@ -1,18 +1,15 @@
-// src/pages/PaymentResultPage.js
-
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom'; // Sử dụng hook từ react-router-dom v6
-// Import biểu tượng Bootstrap Icons nếu muốn dùng (cần cài đặt: npm install bootstrap-icons)
-// import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useSearchParams, Link } from 'react-router-dom';
+import { paymentService } from '../services/paymentService';
 
 const PaymentResultPage = () => {
     const [searchParams] = useSearchParams();
     const [paymentResult, setPaymentResult] = useState({
-        status: 'loading', // 'loading', 'success', 'error'
+        status: 'loading',
         message: 'Đang xử lý kết quả thanh toán...',
         orderId: null,
         amount: null,
-        responseCode: null, // Thêm để lưu mã lỗi VNPay nếu có
+        responseCode: null,
     });
 
     useEffect(() => {
@@ -20,10 +17,21 @@ const PaymentResultPage = () => {
         const message = searchParams.get('message');
         const orderId = searchParams.get('orderId');
         const amount = searchParams.get('amount');
-        // Lấy thêm mã lỗi từ message nếu có (ví dụ format: "...(Mã lỗi: XX)")
-        const errorCodeMatch = message?.match(/\(Mã lỗi: (\w+)\)/);
-        const responseCode = errorCodeMatch ? errorCodeMatch[1] : null;
+        const responseCode = searchParams.get('responseCode');
 
+        const handleResultPayment = async (payload) => {
+            await paymentService.handleResultPayment(payload);
+        }
+        const errorCodeMatch = message?.match(/\(Mã lỗi: (\w+)\)/);
+        // const responseCode = errorCodeMatch ? errorCodeMatch[1] : null;
+
+        const payload = {
+            orderId: orderId,
+            responseCode: responseCode,
+            amount: amount,
+        }
+
+        handleResultPayment(payload);
         if (success !== null) {
             if (success === 'true') {
                 setPaymentResult({
@@ -31,7 +39,7 @@ const PaymentResultPage = () => {
                     message: message || 'Thanh toán thành công!',
                     orderId: orderId,
                     amount: amount ? parseFloat(amount) : null,
-                    responseCode: '00', // Mã thành công của VNPay
+                    responseCode: '00',
                 });
             } else {
                 setPaymentResult({
@@ -50,17 +58,13 @@ const PaymentResultPage = () => {
                 amount: null,
                 responseCode: null,
             });
-            console.error('Missing "success" query parameter in payment result URL.');
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const formatCurrency = (value) => {
         if (value === null || isNaN(value)) return '';
         return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     };
-
-    // Hàm lấy mô tả lỗi VNPay (ví dụ - bạn có thể mở rộng)
     const getVnpayErrorMessage = (code) => {
         switch (code) {
             case '07': return 'Trừ tiền thành công. Giao dịch bị nghi ngờ (liên hệ VNPAY).';
@@ -94,10 +98,8 @@ const PaymentResultPage = () => {
                 <div className="col-11 col-md-8 col-lg-6">
                     <div className="card text-center shadow-sm border-top border-5 border-success">
                         <div className="card-body p-5">
-                            {/* Biểu tượng thành công (Bootstrap Icons) */}
                             <i className="bi bi-check-circle-fill text-success" style={{ fontSize: '4rem' }}></i>
-                            {/* Hoặc dùng SVG */}
-                            {/* <svg className="text-success mb-3" width="64" height="64" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> */}
+
 
                             <h2 className="card-title text-success mt-3">Thanh toán thành công!</h2>
                             <p className="card-text text-muted mb-3">{paymentResult.message}</p>
@@ -117,20 +119,16 @@ const PaymentResultPage = () => {
             )}
 
             {paymentResult.status === 'error' && (
-                 <div className="col-11 col-md-8 col-lg-6">
+                <div className="col-11 col-md-8 col-lg-6">
                     <div className="card text-center shadow-sm border-top border-5 border-danger">
-                         <div className="card-body p-5">
-                            {/* Biểu tượng lỗi (Bootstrap Icons) */}
+                        <div className="card-body p-5">
                             <i className="bi bi-x-octagon-fill text-danger" style={{ fontSize: '4rem' }}></i>
-                             {/* Hoặc dùng SVG */}
-                            {/* <svg className="text-danger mb-3" width="64" height="64" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> */}
-
                             <h2 className="card-title text-danger mt-3">Thanh toán thất bại!</h2>
                             <p className="card-text text-danger mb-3">
                                 {paymentResult.message}
                                 {paymentResult.responseCode && paymentResult.responseCode !== '00' && ` - ${getVnpayErrorMessage(paymentResult.responseCode)}`}
                             </p>
-                             {paymentResult.orderId && paymentResult.orderId !== 'unknown' && <p className="card-text text-muted">Mã tham chiếu: <strong>{paymentResult.orderId}</strong></p>}
+                            {paymentResult.orderId && paymentResult.orderId !== 'unknown' && <p className="card-text text-muted">Mã tham chiếu: <strong>{paymentResult.orderId}</strong></p>}
 
                             <div className="mt-4">
                                 <Link to="/cart" className="btn btn-secondary mx-2">Quay lại giỏ hàng</Link>

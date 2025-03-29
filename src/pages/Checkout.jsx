@@ -10,6 +10,7 @@ import { useAuth } from "../hooks/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Socket } from '../services/socket';
 import { toast } from 'react-toastify';
+import { paymentService } from "../services/paymentService";
 
 const Checkout = () => {
   const location = useLocation();
@@ -24,7 +25,7 @@ const Checkout = () => {
 
   const [selectedAddressId, setSelectedAddressId] = useState("1");
   const [shippingMethodId, setShippingMethodId] = useState("nhanh");
-  const [shippingFee, setShippingFee] = useState(20700);
+  const [shippingFee, setShippingFee] = useState(0);
   const [voucherId, setVoucherId] = useState(1);
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [note, setNote] = useState("");
@@ -38,12 +39,19 @@ const Checkout = () => {
   const totalProductPrice = selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalAmount = totalProductPrice + shippingFee - voucherDiscount;
 
+  const generateOrderId = () => {
+    const timestamp = Date.now();
+    return timestamp; 
+  };
+
   const handlePlaceOrder = async () => {
     try {
       setIsProcessing(true);
       setOrderError(null);
+      const order_id = generateOrderId();
 
       const dataOrder = {
+        order_id: order_id,
         user_id: user.id,
         address_id: selectedAddressId,
         items: selectedProducts.map(item => ({
@@ -58,14 +66,28 @@ const Checkout = () => {
         voucher_id: voucherId || null,
       }
 
-      // const response = await orderService.createOrder(dataOrder);
+      const payload = {
+        amount: totalAmount,
+        orderId: order_id,
+        orderDescription: "",
+        bankCode: "",
+        language: "en",
+      };
 
       Socket.emit('order_placed', dataOrder);
-      
+      // console.log('paymentMethodId:', payload);
+
       if (paymentMethodId === "cod") {
         navigate(`/orders/pending`);
       } else if (paymentMethodId === "bank") {
-        //navigate(`/payment/${response.data.data.id}`);
+        const response = await paymentService.getUrlVNPay(payload);
+        console.log('response:', response);
+        if (response && response.paymentUrl) {
+          window.location.href = response.paymentUrl;
+        } else {
+          setError('Không nhận được URL thanh toán từ server.');
+          console.error('Server response missing paymentUrl:', response.data);
+        }
       }
 
     } catch (error) {

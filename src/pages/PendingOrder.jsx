@@ -13,6 +13,7 @@ function PendingOrder() {
 	const fetchPendingOrder = async () => {
 		try {
 			const data = await orderService.getPendingPaymentOrders(userId);
+			console.log(data);
 			setOrders(data);
 		} catch (error) {
 			console.error(
@@ -35,7 +36,7 @@ function PendingOrder() {
 						{orders.length > 0 ? (
 							orders.map((order) => (
 								<OrderCard
-									key={order.order_id}
+									key={order.id}
 									order={order}
 									activeTab='pending'
 								/>
