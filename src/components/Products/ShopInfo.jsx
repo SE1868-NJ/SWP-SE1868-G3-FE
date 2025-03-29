@@ -44,8 +44,8 @@ const ShopInfo = ({ shop }) => {
                 </div>
             </div>
 
-            <hr />
-            <div className="d-flex flex-wrap justify-content-between text-center">
+            {/* <hr /> */}
+            {/* <div className="d-flex flex-wrap justify-content-between text-center">
                 <div className="flex-grow-1">
                     <p className="text-muted mb-1">Đánh Giá</p>
                     <span className="fw-bold text-danger">{shop.reviews}</span>
@@ -70,7 +70,7 @@ const ShopInfo = ({ shop }) => {
                     <p className="text-muted mb-1">Người Theo Dõi</p>
                     <span className="fw-bold text-danger">{shop.followers}</span>
                 </div>
-            </div>
+            </div> */}
         </Card>
     );
 };
