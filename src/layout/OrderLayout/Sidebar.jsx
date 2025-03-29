@@ -41,14 +41,11 @@ const Sidebar = () => {
 					{ key: 'notification', icon: 'bi-bell', label: 'Thông Báo' },
 					{ key: 'account', icon: 'bi-person', label: 'Tài Khoản Của Tôi' },
 					{ key: 'order', icon: 'bi-file-earmark-text', label: 'Đơn Mua' },
-					{ key: 'voucher', icon: 'bi-gift', label: 'Kho Voucher' },
-					{ key: 'coin', icon: 'bi-coin', label: 'Shop Xu' },
 				].map((item) => (
 					<div
 						key={item.key}
-						className={`sidebar-item d-flex align-items-center mb-3 ${
-							status === item.key ? 'text-danger' : ''
-						}`}
+						className={`sidebar-item d-flex align-items-center mb-3 ${status === item.key ? 'text-danger' : ''
+							}`}
 						onClick={() => handleItemClick(item.key)}
 						style={{
 							cursor: 'pointer',

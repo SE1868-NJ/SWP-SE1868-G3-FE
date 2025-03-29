@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import ShopChatList from '../components/Chats/ShopChatList';
-import ShopChatWindow from '../components/Chats/ShopChatWindow';
-import { chatService } from '../services/chatService';
-import { Socket } from '../services/socket';
+import ShopChatList from '../../../components/Seller/CustomerService/Chat/ShopChatList';
+import ShopChatWindow from '../../../components/Seller/CustomerService/Chat/ShopChatWindow';
+import { chatService } from '../../../services/chatService';
+import { Socket } from '../../../services/socket';
 
 const ShopChat = () => {
     const shopId = 1; // From authentication

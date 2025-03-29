@@ -2,25 +2,30 @@ import { useState, useEffect } from 'react';
 import { orderService } from '../services/orderService';
 import OrderCard from '../layout/OrderLayout/OrderCard';
 import { useAuth } from '../hooks/contexts/AuthContext';
+import { useLocation } from 'react-router-dom';
 
 function PendingOrder() {
 	const [orders, setOrders] = useState([]);
-	const {user} = useAuth();
+	const { user } = useAuth();
 	const userId = user?.id;
+	const location = useLocation();
+
+	const fetchPendingOrder = async () => {
+		try {
+			const data = await orderService.getPendingPaymentOrders(userId);
+			setOrders(data);
+		} catch (error) {
+			console.error(
+				'Error fetching pending order:',
+				error.response?.data || error.message,
+			);
+		}
+	};
+
+
 	useEffect(() => {
-		const fetchPendingOrder = async () => {
-			try {
-				const data = await orderService.getPendingPaymentOrders(userId);
-				setOrders(data);
-			} catch (error) {
-				console.error(
-					'Error fetching pending order:',
-					error.response?.data || error.message,
-				);
-			}
-		};
 		fetchPendingOrder();
-	}, [userId]);
+	}, []);	
 
 	return (
 		<div className='container-fluid p-0'>

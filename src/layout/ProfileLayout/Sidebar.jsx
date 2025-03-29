@@ -8,7 +8,7 @@ const Sidebar = () => {
 	const navigate = useNavigate();
 	const [userData, setUserData] = useState(user);
 
-	useEffect(() => {		
+	useEffect(() => {
 		const updateUserData = () => {
 			try {
 				const storedUserData = JSON.parse(localStorage.getItem('userData'));
@@ -72,14 +72,11 @@ const Sidebar = () => {
 					{ key: 'notification', icon: 'bi-bell', label: 'Thông Báo' },
 					{ key: 'account', icon: 'bi-person', label: 'Tài Khoản Của Tôi' },
 					{ key: 'order', icon: 'bi-file-earmark-text', label: 'Đơn Mua' },
-					{ key: 'voucher', icon: 'bi-gift', label: 'Kho Voucher' },
-					{ key: 'coin', icon: 'bi-coin', label: 'Shop Xu' },
 				].map((item) => (
 					<div
 						key={item.key}
-						className={`px-3 py-2 d-flex align-items-center mb-1 w-100 ${
-							status === item.key ? 'text-danger' : ''
-						}`}
+						className={`px-3 py-2 d-flex align-items-center mb-1 w-100 ${status === item.key ? 'text-danger' : ''
+							}`}
 						onClick={() => handleItemClick(item.key)}
 						style={{
 							cursor: 'pointer',

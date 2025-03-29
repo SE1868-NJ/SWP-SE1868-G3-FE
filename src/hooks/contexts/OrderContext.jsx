@@ -19,14 +19,13 @@ export const OrderProvider = ({ children }) => {
 		// Giả lập dữ liệu từ server theo trạng thái
 		const allOrders = {
 			all: [{ id: 1, name: 'Tất cả đơn hàng' }],
-			pending: [{ id: 2, name: 'Đơn chờ thanh toán' }],
+			PENDING: [{ id: 2, name: 'Đơn chờ thanh toán' }],
 			shipping: [{ id: 3, name: 'Đơn vận chuyển' }],
 			delivery: [{ id: 4, name: 'Đơn chờ giao hàng' }],
-			completed: [{ id: 5, name: 'Đơn đã hoàn thành' }],
-			cancelled: [{ id: 6, name: 'Đơn đã hủy' }],
+			COMPLETED: [{ id: 5, name: 'Đơn đã hoàn thành' }],
+			CANCELLED: [{ id: 6, name: 'Đơn đã hủy' }],
 			refund: [{ id: 7, name: 'Đơn trả hàng/hoàn tiền' }],
 		};
-		console.log('Fetched orders:', allOrders[status]);
 		setOrders(allOrders[status] || []);
 	};
 
@@ -36,16 +35,16 @@ export const OrderProvider = ({ children }) => {
 			if (newStatus === 'account') {
 				navigate('/profile');
 			}
-			if (newStatus === 'cancelled') {
+			if (newStatus === 'CANCELLED') {
 				navigate('/orders/cancelled');
 			}
 			if(newStatus === 'all') {
 				navigate('/orders/all');
 			}
-			if (newStatus === 'pending') {
+			if (newStatus === 'PENDING') {
 				navigate('/orders/pending');
 			}
-			if (newStatus === 'completed') {
+			if (newStatus === 'COMPLETED') {
 				navigate('/orders/completed');
 			}
 		}

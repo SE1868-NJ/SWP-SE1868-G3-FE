@@ -1,38 +1,23 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks/contexts/AuthContext';
+import { useAuth, useAuthActions } from '../hooks/contexts/AuthContext';
 import MiniCartModal from '../components/Modals/MiniCartModal';
 
 function Header() {
-	const { cartCount, user } = useAuth();
+	const { cartCount, user, isAuthenticated } = useAuth();
+	const { logoutAndRedirect } = useAuthActions();
 	const [userData, setUserData] = useState(user);
 	const [searchQuery, setSearchQuery] = useState('');
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const updateUserData = () => {
-			try {
-				const storedUserData = JSON.parse(localStorage.getItem('userData'));
-				if (storedUserData && storedUserData.avatar) {
-					setUserData(storedUserData);
-				} else if (user && user.avatar) {
-					setUserData(user);
-				}
-			} catch (error) {
-				console.error('Error parsing userData from localStorage', error);
-			}
-		};
-
-		updateUserData();
-
-		window.addEventListener('userDataChanged', updateUserData);
-		window.addEventListener('load', updateUserData);
-
-		return () => {
-			window.removeEventListener('userDataChanged', updateUserData);
-			window.removeEventListener('load', updateUserData);
-		};
+		setUserData(user);
 	}, [user]);
+
+	const handleLogout = (e) => {
+		e.preventDefault();
+		logoutAndRedirect('/login');
+	};
 
 	const handleSearch = (e) => {
 		e.preventDefault();
@@ -48,83 +33,70 @@ function Header() {
 					<ul className='nav me-auto'>
 						<li className='nav-item'>
 							<Link
-								to='/home'
+								to='/seller'
 								className='nav-link link-body-emphasis px-2 ps-0 active text-light'
 								aria-current='page'
 							>
 								Kênh người bán
 							</Link>
 						</li>
-						<li className='nav-link px-0 text-light'>|</li>
-						<li className='nav-item'>
-							<Link
-								to='/feature'
-								className='nav-link link-body-emphasis px-2 text-light'
-							>
-								Trở thành người bán
-							</Link>
-						</li>
 					</ul>
 					<ul className='nav'>
-						<li className='nav-item'>
-							<a
-								className='nav-link dropdown-toggle link-body-emphasis px-2 text-light'
-								role='button'
-								data-bs-toggle='dropdown'
-							>
-								<img
-									src={userData.avatar || 'https://via.placeholder.com/40'}
-									alt='Avatar'
-									className='rounded-circle me-2'
-									style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-								/>
-								{userData.full_name || 'Tài khoản'}
-							</a>
-							<ul className='dropdown-menu dropdown-menu-end border-0 shadow-sm bg-body-tertiary'>
-								<li>
-									<Link to='/purchase' className='dropdown-item'>
-										Đơn mua
+						{isAuthenticated ? (
+							// Hiển thị khi đã đăng nhập
+							<li className='nav-item dropdown'>
+								<a
+									className='nav-link dropdown-toggle link-body-emphasis px-2 text-light'
+									role='button'
+									data-bs-toggle='dropdown'
+								>
+									{user?.name || 'Tài khoản'}
+								</a>
+								<ul className='dropdown-menu dropdown-menu-end border-0 shadow-sm bg-body-tertiary'>
+									<li>
+										<Link to='/orders/all' className='dropdown-item'>
+											Đơn mua
+										</Link>
+									</li>
+									<li><hr className='dropdown-divider m-0 p-0' /></li>
+									<li>
+										<Link to='/profile' className='dropdown-item'>
+											Tài khoản của tôi
+										</Link>
+									</li>
+									<li><hr className='dropdown-divider m-0 p-0' /></li>
+									<li>
+										<a onClick={handleLogout} className='dropdown-item' href="#">
+											Đăng xuất
+										</a>
+									</li>
+								</ul>
+							</li>
+						) : (
+							// Hiển thị khi chưa đăng nhập
+							<>
+								<li className='nav-item'>
+									<Link
+										to='/login'
+										className='nav-link link-body-emphasis px-2 text-light'
+									>
+										Đăng nhập
 									</Link>
 								</li>
-								<li className='dropdown-item'>
-									<hr className='m-0 p-0' />
-								</li>
-								<li>
-									<Link to='profile' className='dropdown-item'>
-										Tài khoản của tôi
+								<li className='nav-link px-0 text-light'>|</li>
+								<li className='nav-item'>
+									<Link
+										to='/signup'
+										className='nav-link link-body-emphasis px-2 pe-0 text-light'
+									>
+										Đăng ký
 									</Link>
 								</li>
-								<li className='dropdown-item'>
-									<hr className='m-0 p-0' />
-								</li>
-								<li>
-									<Link to='/logout' className='dropdown-item'>
-										Đăng xuất
-									</Link>
-								</li>
-							</ul>
-						</li>
-						<li className='nav-link px-0 text-light'>|</li>
-						<li className='nav-item'>
-							<Link
-								to='/login'
-								className='nav-link link-body-emphasis px-2 text-light'
-							>
-								Đăng nhập
-							</Link>
-						</li>
-						<li className='nav-link px-0 text-light'>|</li>
-						<li className='nav-item'>
-							<Link
-								to='/signup'
-								className='nav-link link-body-emphasis px-2 pe-0 text-light'
-							>
-								Đăng ký
-							</Link>
-						</li>
+							</>
+						)}
 					</ul>
 				</div>
-			</nav>
+			</nav >
 			<header className='py-3 border-bottom bg-danger'>
 				<div className='container d-flex flex-wrap justify-content-center'>
 					<Link
@@ -137,34 +109,34 @@ function Header() {
 						/>
 						<span className='fs-4 fw-bold'>Chợ Làng</span>
 					</Link>
-          <form
-            className='col-12 col-lg-auto mb-3 mb-lg-0'
-            role='search'
-            onSubmit={handleSearch}
-          >
-            <div className='hstack gap-2'>
-              <div className='input-group'>
-                <input
-                  type='search'
-                  className='form-control border-0'
-                  style={{ boxShadow: 'none' }}
-                  placeholder='Tìm kiếm...'
-                  aria-label='Search'
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button type='button' className='btn bg-white border-0'>
-                  <i className='bi bi-search' />
-                </button>
-              </div>
+					<form
+						className='col-12 col-lg-auto mb-3 mb-lg-0'
+						role='search'
+						onSubmit={handleSearch}
+					>
+						<div className='hstack gap-2'>
+							<div className='input-group'>
+								<input
+									type='search'
+									className='form-control border-0'
+									style={{ boxShadow: 'none' }}
+									placeholder='Tìm kiếm...'
+									aria-label='Search'
+									value={searchQuery}
+									onChange={(e) => setSearchQuery(e.target.value)}
+								/>
+								<button type='submit' className='btn bg-white border-0'>
+									<i className='bi bi-search' />
+								</button>
+							</div>
 
-              <MiniCartModal />
-            </div>
-          </form>
-        </div>
-      </header>
-    </div>
-  );
+							<MiniCartModal />
+						</div>
+					</form>
+				</div>
+			</header>
+		</div >
+	);
 }
 
 export default Header;

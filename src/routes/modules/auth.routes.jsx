@@ -1,5 +1,5 @@
-import Login from '../../pages/Login';
-import Signup from '../../pages/Signup';
+import Login from '../../pages/AuthPages/Login';
+import Signup from '../../pages/AuthPages/Signup';
 
 export const authRoutes = [
 	{

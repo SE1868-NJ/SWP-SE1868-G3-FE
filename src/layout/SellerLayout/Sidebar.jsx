@@ -190,6 +190,11 @@ function Sidebar() {
 										</Link>
 									</li>
 									<li className='list-group-item px-0'>
+										<Link to={'/seller/orders/ship'} className={`nav-link ${isActive('/seller/orders/completed') ? 'fw-bold' : ''}`}>
+											Đơn hàng đang được giao
+										</Link>
+									</li>
+									<li className='list-group-item px-0'>
 										<Link to={'/seller/orders/completed'} className={`nav-link ${isActive('/seller/orders/completed') ? 'fw-bold' : ''}`}>
 											Đơn hàng đã hoàn thành
 										</Link>

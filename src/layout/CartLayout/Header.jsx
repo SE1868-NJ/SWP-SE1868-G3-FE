@@ -1,29 +1,45 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth, useAuthActions } from "../../hooks/contexts/AuthContext";
 
 function Header() {
+  const { user, isAuthenticated } = useAuth();
+  const { logoutAndRedirect } = useAuthActions();
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logoutAndRedirect('/login');
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${searchQuery.trim()}`);
+    }
+  };
+
   return (
     <div className="shadow-sm">
       {/* Thanh trên cùng */}
       <nav className="bg-danger">
-        <div className="container d-flex py-2 flex-wrap">
+        <div className="container d-flex py-2 flex-wrap border-bottom border-light">
           <ul className="nav me-auto">
             <li className="nav-item">
-              <Link to="/home" className="nav-link text-light px-2 ps-0 active">
+              <Link to="/seller" className="nav-link text-light px-2 ps-0 active">
                 Kênh người bán
-              </Link>
-            </li>
-            <li className="nav-link px-0 text-light">|</li>
-            <li className="nav-item">
-              <Link to="/feature" className="nav-link text-light px-2">
-                Trở thành người bán
               </Link>
             </li>
           </ul>
           <ul className="nav">
-            <li className="nav-item">
-              <a className="nav-link text-light px-2 dropdown-toggle" role="button" data-bs-toggle="dropdown">
-                Tài khoản
+            <li className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle text-light px-2"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                {user?.name || 'Tài khoản'}
               </a>
               <ul className="dropdown-menu dropdown-menu-end border-0 shadow-sm bg-body-tertiary">
                 <li>
@@ -31,64 +47,50 @@ function Header() {
                     Đơn mua
                   </Link>
                 </li>
-                <li className="dropdown-item">
-                  <hr className="m-0 p-0" />
-                </li>
+                <li><hr className="dropdown-divider m-0 p-0" /></li>
                 <li>
                   <Link to="/profile" className="dropdown-item">
                     Tài khoản của tôi
                   </Link>
                 </li>
-                <li className="dropdown-item">
-                  <hr className="m-0 p-0" />
-                </li>
+                <li><hr className="dropdown-divider m-0 p-0" /></li>
                 <li>
-                  <Link to="/logout" className="dropdown-item">
+                  <a onClick={handleLogout} className="dropdown-item" href="#">
                     Đăng xuất
-                  </Link>
+                  </a>
                 </li>
               </ul>
-            </li>
-            <li className="nav-link px-0 text-light">|</li>
-            <li className="nav-item">
-              <Link to="/login" className="nav-link text-light px-2">
-                Đăng nhập
-              </Link>
-            </li>
-            <li className="nav-link px-0 text-light">|</li>
-            <li className="nav-item">
-              <Link to="/signup" className="nav-link text-light px-2 pe-0">
-                Đăng ký
-              </Link>
             </li>
           </ul>
         </div>
       </nav>
+
       {/* Thanh logo + tìm kiếm */}
-      <div className="container py-3 d-flex align-items-center justify-content-between">
-        <div className="d-flex align-items-center">
-          <Link to="/" className="text-decoration-none text-dark d-flex align-items-center">
-            <i className="bi bi-bag-heart-fill text-danger me-2 fs-3"></i>
-            <h4 className="fw-bold text-danger mb-0">Chợ Làng</h4>
-          </Link>
-          <h5 className="ms-3 mb-0 text-muted">| Giỏ Hàng</h5>
-        </div>
-        <div className="input-group" style={{ maxWidth: "600px" }}>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Tìm sản phẩm, thương hiệu, và tên shop..."
-            aria-label="Search"
-            style={{
-              border: "1px solid red",
-              // borderRadius: "5px", 
-              outline: "none",
-              padding: "8px"
-            }}
-          />
-          <button className="btn btn-danger">
-            <i className="bi bi-search"></i>
-          </button>
+      <div className="py-3 border-bottom bg-danger">
+        <div className="container d-flex align-items-center justify-content-between">
+          <div className="d-flex align-items-center">
+            <Link to="/" className="text-decoration-none d-flex align-items-center">
+              <i className="bi bi-bag-heart-fill text-light me-2" style={{ fontSize: '1.5rem' }}></i>
+              <span className="fs-4 fw-bold text-light">Chợ Làng</span>
+            </Link>
+            <h5 className="ms-3 mb-0 text-light">| Giỏ Hàng</h5>
+          </div>
+          <form className="col-12 col-lg-auto mb-lg-0" role="search" onSubmit={handleSearch} style={{ maxWidth: "600px" }}>
+            <div className="input-group">
+              <input
+                type="search"
+                className="form-control border-0"
+                style={{ boxShadow: 'none' }}
+                placeholder="Tìm sản phẩm, tên shop..."
+                aria-label="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button type="submit" className="btn bg-white border-0">
+                <i className="bi bi-search text-danger"></i>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

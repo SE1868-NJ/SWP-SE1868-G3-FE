@@ -1,9 +1,8 @@
-import React from "react";
-import ShopChat from "../../pages/ShopChat";
+import ShopPage from "../../pages/Shop";
 
-export const shopRoutes = [
+export const shopRoute = [
   {
-    path: "/seller/chat",
-    element: <ShopChat />,
+    path: ":id/homepage",
+    element: <ShopPage />,
   },
 ];

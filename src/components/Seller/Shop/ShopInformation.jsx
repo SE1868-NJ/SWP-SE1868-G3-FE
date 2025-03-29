@@ -20,6 +20,13 @@ function ShopInformation() {
   const [previewImage, setPreviewImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [saveMessage, setSaveMessage] = useState({ type: '', text: '' });
+  const [errors, setErrors] = useState({
+    shop_name: '',
+    shop_address: '',
+    shop_email: '',
+    shop_phone: '',
+    shop_description: ''
+  });
 
   const updateShopData = (shop) => {
     if (!shop) return;
@@ -40,6 +47,13 @@ function ShopInformation() {
     setPreviewImage(null);
     setSelectedFile(null);
     setSaveMessage({ type: '', text: '' });
+    setErrors({
+      shop_name: '',
+      shop_address: '',
+      shop_email: '',
+      shop_phone: '',
+      shop_description: ''
+    });
   };
 
   useEffect(() => {
@@ -63,6 +77,14 @@ function ShopInformation() {
       ...prev,
       [name]: value
     }));
+
+    // Reset lỗi khi người dùng thay đổi giá trị
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
 
   const handleImageChange = (e) => {
@@ -92,28 +114,98 @@ function ShopInformation() {
     setSaveMessage({ type: '', text: '' });
   };
 
-  const handleSave = async () => {
+  const validateForm = () => {
+    let tempErrors = {
+      shop_name: '',
+      shop_address: '',
+      shop_email: '',
+      shop_phone: '',
+      shop_description: ''
+    };
+    let isValid = true;
+
+    // Validate tên shop
     if (!shopData.shop_name.trim()) {
-      setSaveMessage({ type: 'danger', text: 'Tên shop không được để trống' });
+      tempErrors.shop_name = 'Tên shop không được để trống';
+      isValid = false;
+    } else if (shopData.shop_name.trim().length > 50) {
+      tempErrors.shop_name = 'Tên shop không được quá 50 ký tự';
+      isValid = false;
+    }
+
+    // Validate địa chỉ (bắt buộc)
+    if (!shopData.shop_address.trim()) {
+      tempErrors.shop_address = 'Địa chỉ shop không được để trống';
+      isValid = false;
+    } else if (shopData.shop_address.trim().length > 200) {
+      tempErrors.shop_address = 'Địa chỉ không được quá 200 ký tự';
+      isValid = false;
+    }
+
+    // Validate email (bắt buộc)
+    if (!shopData.shop_email.trim()) {
+      tempErrors.shop_email = 'Email không được để trống';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(shopData.shop_email)) {
+      tempErrors.shop_email = 'Email không hợp lệ';
+      isValid = false;
+    } else if (shopData.shop_email.length > 100) {
+      tempErrors.shop_email = 'Email không được quá 100 ký tự';
+      isValid = false;
+    }
+
+    // Validate số điện thoại (bắt buộc)
+    if (!shopData.shop_phone.trim()) {
+      tempErrors.shop_phone = 'Số điện thoại không được để trống';
+      isValid = false;
+    } else if (!/^\d+$/.test(shopData.shop_phone.replace(/\s/g, ''))) {
+      // Kiểm tra xem số điện thoại chỉ chứa các chữ số sau khi loại bỏ khoảng trắng
+      tempErrors.shop_phone = 'Số điện thoại không hợp lệ (chỉ được chứa chữ số)';
+      isValid = false;
+    } else if (!/^[0-9]{10,11}$/.test(shopData.shop_phone.replace(/\s/g, ''))) {
+      tempErrors.shop_phone = 'Số điện thoại không hợp lệ (cần 10-11 số)';
+      isValid = false;
+    }
+
+    // Validate description (không bắt buộc nhưng giới hạn độ dài)
+    if (shopData.shop_description && shopData.shop_description.length > 500) {
+      tempErrors.shop_description = 'Mô tả không được quá 500 ký tự';
+      isValid = false;
+    }
+
+    setErrors(tempErrors);
+    return isValid;
+  };
+
+  const handleSave = async () => {
+    if (!validateForm()) {
+      setSaveMessage({ type: 'danger', text: 'Vui lòng kiểm tra lại thông tin' });
       return;
     }
+
     try {
       setIsLoading(true);
       const formData = new FormData();
-      Object.entries(shopData).forEach(([key, value]) => {
-        if (key !== 'shop_logo') {
-          formData.append(key, value || '');
-        }
-      });
+
+      formData.append('shop_name', shopData.shop_name || '');
+      formData.append('shop_description', shopData.shop_description || '');
+      formData.append('shop_address', shopData.shop_address || '');
+      formData.append('shop_email', shopData.shop_email || '');
+      formData.append('shop_phone', shopData.shop_phone || '');
+
       if (selectedFile) {
         formData.append('shop_logo', selectedFile);
       }
-      const updatedShop = await shopService.updateShop(selectedShopId, formData);
+
+      const response = await shopService.updateShop(selectedShopId, formData);
+      const updatedShop = response.data || response;
+
       setIsLoading(false);
       setIsEditing(false);
       setPreviewImage(null);
       setSelectedFile(null);
       setShopDetails(updatedShop);
+
       setShopData({
         shop_name: updatedShop.shop_name || '',
         shop_description: updatedShop.shop_description || '',
@@ -122,8 +214,10 @@ function ShopInformation() {
         shop_email: updatedShop.shop_email || '',
         shop_phone: updatedShop.shop_phone || ''
       });
+
       setSaveMessage({ type: 'success', text: 'Cập nhật thông tin thành công!' });
     } catch (error) {
+      console.error("Lỗi khi cập nhật shop:", error);
       setIsLoading(false);
       setSaveMessage({ type: 'danger', text: 'Đã xảy ra lỗi, vui lòng thử lại sau' });
     }
@@ -136,57 +230,43 @@ function ShopInformation() {
     }
   };
 
-  if (isLoading && !shopDetails) {
-    return (
-      <div className="container mt-4 text-center">
-        <div className="spinner-border text-danger" role="status">
-          <span className="visually-hidden">Đang tải...</span>
-        </div>
-        <p className="mt-2">Đang tải thông tin gian hàng...</p>
-      </div>
-    );
-  }
-
-  // if (!shopDetails && shops.length === 0) {
-  //   return (
-  //     <div className="container mt-4">
-  //       <div className="alert alert-warning">
-  //         <i className="bi bi-exclamation-triangle me-2"></i>
-  //         Không tìm thấy gian hàng nào. Vui lòng tạo gian hàng mới.
-  //       </div>
-  //       <Link to="/seller/shop/create" className="btn btn-danger">
-  //         <i className="bi bi-plus-circle me-2"></i>
-  //         Tạo gian hàng mới
-  //       </Link>
-  //     </div>
-  //   );
-  // }
-
   const renderFormField = (label, name, placeholder, type = "text", rows = null) => {
     return (
       <div className="row mb-3">
-        <label className="col-sm-3 col-form-label fw-bold">{label}:</label>
+        <label className="col-sm-3 col-form-label fw-bold">
+          {label}:
+          {(name === 'shop_name' || name === 'shop_address' || name === 'shop_email' || name === 'shop_phone') && (
+            <span className="text-danger ms-1">*</span>
+          )}
+        </label>
         <div className="col-sm-9">
           {isEditing ? (
-            rows ? (
-              <textarea
-                className="form-control"
-                name={name}
-                value={shopData[name]}
-                onChange={handleInputChange}
-                rows={rows}
-                placeholder={placeholder}
-              ></textarea>
-            ) : (
-              <input
-                type={type}
-                className="form-control"
-                name={name}
-                value={shopData[name]}
-                onChange={handleInputChange}
-                placeholder={placeholder}
-              />
-            )
+            <div>
+              {rows ? (
+                <textarea
+                  className={`form-control ${errors[name] ? 'is-invalid' : ''}`}
+                  name={name}
+                  value={shopData[name]}
+                  onChange={handleInputChange}
+                  rows={rows}
+                  placeholder={placeholder}
+                ></textarea>
+              ) : (
+                <input
+                  type={type}
+                  className={`form-control ${errors[name] ? 'is-invalid' : ''}`}
+                  name={name}
+                  value={shopData[name]}
+                  onChange={handleInputChange}
+                  placeholder={placeholder}
+                />
+              )}
+              {errors[name] && (
+                <div className="invalid-feedback">
+                  {errors[name]}
+                </div>
+              )}
+            </div>
           ) : (
             <div className="form-control-plaintext">
               {shopData[name] || `Chưa có ${label.toLowerCase()}`}
@@ -237,6 +317,19 @@ function ShopInformation() {
     );
   };
 
+  // Hàm giúp lấy đúng URL hình ảnh
+  const getImageUrl = (path) => {
+    if (!path) return null;
+
+    // Nếu là URL đầy đủ (bắt đầu bằng http)
+    if (path.startsWith('http')) {
+      return path;
+    }
+
+    // Nếu là đường dẫn tương đối
+    return `http://localhost:4000${path}`;
+  };
+
   return (
     <div className="container-fluid py-4 px-0">
       {saveMessage.text && (
@@ -265,6 +358,11 @@ function ShopInformation() {
         <div className="card-body p-4">
           <div className="row g-4">
             <div className="col-md-8">
+              {isEditing && (
+                <p className="text-muted mb-3">
+                  <span className="text-danger">*</span> Trường bắt buộc
+                </p>
+              )}
               {renderFormField("Tên Shop", "shop_name", "Nhập tên gian hàng")}
               {renderFormField("Mô tả Shop", "shop_description", "Mô tả về gian hàng của bạn", "text", 5)}
               {renderFormField("Địa chỉ Shop", "shop_address", "Nhập địa chỉ gian hàng")}
@@ -276,18 +374,32 @@ function ShopInformation() {
               <div className="text-center">
                 <p className="fw-bold mb-2">Logo của Shop</p>
                 <div className="d-flex justify-content-center align-items-center mb-3">
-                  <img
-                    src={previewImage ||
-                      (shopData.shop_logo ? `http://localhost:4000${shopData.shop_logo}` : "https://via.placeholder.com/300")}
-                    alt="Shop logo"
-                    className="img-fluid rounded-circle border"
-                    style={{ width: '120px', height: '120px', objectFit: 'cover' }}
-                    onError={(e) => {
-                      console.error("Lỗi tải ảnh:", e);
-                      e.target.onerror = null;
-                      e.target.src = "https://via.placeholder.com/300";
-                    }}
-                  />
+                  {previewImage ? (
+                    <img
+                      src={previewImage}
+                      alt="Preview logo"
+                      className="img-fluid rounded-circle border"
+                      style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                    />
+                  ) : shopData.shop_logo ? (
+                    <img
+                      src={getImageUrl(shopData.shop_logo)}
+                      alt="Shop logo"
+                      className="img-fluid rounded-circle border"
+                      style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://via.placeholder.com/300";
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="rounded-circle border d-flex justify-content-center align-items-center bg-light"
+                      style={{ width: '120px', height: '120px' }}
+                    >
+                      <i className="bi bi-shop text-secondary" style={{ fontSize: '48px' }}></i>
+                    </div>
+                  )}
                 </div>
                 {isEditing && (
                   <div className="mb-3">

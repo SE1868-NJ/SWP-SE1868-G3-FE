@@ -8,7 +8,6 @@ function Products() {
 	useEffect(() => {
 		getProducts().then((response) => {
 			setProducts(response.data.products);
-			// console.log(response.data);
 		});
 	}, []);
 

@@ -2,7 +2,6 @@ import React, { createContext, useState, useContext } from 'react';
 import { useAuth } from './AuthContext';
 import { chatService } from '../../services/chatService';
 
-
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {

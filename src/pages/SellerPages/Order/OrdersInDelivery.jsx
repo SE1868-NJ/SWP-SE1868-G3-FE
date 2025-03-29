@@ -1,27 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
-import OrderTable from '../../../components/Seller/Order/OrderTable';
+import DeliveryTable from '../../../components/Seller/Order/DeliveryTable';
 import { shopService } from '../../../services/shopService';
 
-const ProcessingOrders = () => {
+const OrdersInDelivery = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [orderDetails, setOrderDetails] = useState({});
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
   const fetchOrders = async () => {
     try {
-      const data = await shopService.getProcessingOrderByShop(1);
+      const data = await shopService.getDeliveryOrders(1); 
       setOrders(data.data);
       setLoading(false);
     } catch (error) {
       setError(error.message);
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     fetchOrders();
@@ -34,20 +33,14 @@ const ProcessingOrders = () => {
     setOrderDetails({ [orderId]: order.OrderDetails });
   };
 
-  const handleStatusChange = async (orderId, status) => {
-    const response = await shopService.updateStatus(orderId, status);
-    if (response) {
-      fetchOrders();
-    }
-  }
-
+  // Xử lý tìm kiếm đơn hàng
   const handleSearch = (e) => {
     if (e) e.preventDefault();
 
     if (searchTerm.trim() === '') {
-      setOrders(mockOrders);
+      fetchOrders();  // Gọi lại API khi tìm kiếm trống
     } else {
-      const filtered = mockOrders.filter(order =>
+      const filtered = orders.filter(order =>
         order.order_id.includes(searchTerm) ||
         order.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -56,11 +49,23 @@ const ProcessingOrders = () => {
     }
   };
 
+  // Cập nhật trạng thái của đơn hàng (Đang giao)
+  const handleStatusChange = async (orderId, status) => {
+    try {
+      const response = await shopService.updateStatus(orderId, status);
+      if (response) {
+        fetchOrders(); // Load lại danh sách đơn hàng sau khi cập nhật trạng thái
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
+
   return (
     <div className="container-fluid p-4">
       <OrderHeader
-        title="Đơn hàng đang xử lý"
-        subtitle="Quản lý thông tin liên quan đến đơn hàng. Chỉ có quyền Quản lý mới có thể truy cập tính năng này."
+        title="Đơn hàng đang giao"
+        subtitle="Quản lý thông tin liên quan đến các đơn hàng mà shipper đang giao."
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         handleSearch={handleSearch}
@@ -68,15 +73,14 @@ const ProcessingOrders = () => {
 
       <div className="card">
         <div className="card-body">
-          <OrderTable
+          <DeliveryTable
             orders={orders}
             loading={loading}
             error={error}
             selectedOrderId={selectedOrderId}
             toggleOrderDetails={toggleOrderDetails}
-            handleStatusChange={handleStatusChange}
-            orderType="processing"
             orderDetails={orderDetails}
+            handleStatusChange={handleStatusChange}
           />
         </div>
       </div>
@@ -84,4 +88,4 @@ const ProcessingOrders = () => {
   );
 };
 
-export default ProcessingOrders;
+export default OrdersInDelivery;

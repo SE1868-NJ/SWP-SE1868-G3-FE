@@ -47,7 +47,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 					}}>
 						{shopInfo.shop_logo ? (
 							<img
-								src={`http://localhost:4000${shopInfo.shop_logo}`}
+								src={shopInfo.shop_logo}
 								alt={`${shopInfo.shop_name} logo`}
 								style={{
 									width: '100%',
@@ -168,7 +168,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 					}}>
 						Giới Thiệu Cửa Hàng:
 					</h4>
-					{shopInfo.shop_description || 'Cửa hàng thời trang và gia dụng chất lượng cao'}
+					{shopInfo.shop_description || 'Đang cập nhập'}
 				</div>
 			</div>
 

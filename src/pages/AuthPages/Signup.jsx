@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
-import Stack from '../components/Stack';
-import { Row, Col } from '../components/Grid';
-import Card from '../components/Card';
+import Stack from '../../components/Stack';
+import { Row, Col } from '../../components/Grid';
+import Card from '../../components/Card';
 import { InputGroup, Button } from 'react-bootstrap';
-import { authService } from '../services/authService';
+import { authService } from '../../services/authService';
 
 function Signup() {
 	const navigate = useNavigate();
@@ -25,7 +25,6 @@ function Signup() {
 			...user,
 			[name]: value,
 		});
-		console.log(user);
 	};
 
 	const handleBlur = (e) => {
@@ -34,14 +33,12 @@ function Signup() {
 			...prevUser,
 			[name]: value,
 		}));
-		console.log(user);
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		try {
 			const response = authService.register(user);
-			console.log(response);
 			navigate('/login');
 		} catch (error) {
 			console.log(error);

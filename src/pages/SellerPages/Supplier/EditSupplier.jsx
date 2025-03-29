@@ -1,11 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import Card from '../../components/Card';
-import SupplierHeader from '../../components/Supplier/SupplierHeader';
-import SupplierInfoTable from '../../components/Supplier/SupplierInfoTable';
-import SupplierNotificationModal from '../../components/Modals/SupplierNotificationModal';
-import supplierService from '../../services/supplierService';
-import { validateField, validateForm } from '../../utils/validation';
+import Card from '../../../components/Card';
+import SupplierHeader from '../../../components/Seller/Supplier/SupplierHeader';
+import SupplierInfoTable from '../../../components/Seller/Supplier/SupplierInfoTable';
+import SupplierNotificationModal from '../../../components/Modals/Seller/SupplierNotificationModal';
+import supplierService from '../../../services/SellerServices/supplierService';
+import { validateField, validateForm } from '../../../utils/validation';
 
 function EditSupplier() {
   const { id } = useParams();
@@ -17,7 +17,6 @@ function EditSupplier() {
   const errorRefs = useRef({});
   const originalSupplierRef = useRef(null);
 
-  // Modal states
   const [modalStates, setModalStates] = useState({
     showSuccessModal: false,
     showErrorModal: false,
@@ -25,7 +24,6 @@ function EditSupplier() {
     showNotFoundModal: false
   });
 
-  // Modal messages
   const modalMessages = {
     successMessage: 'Cập nhật nhà cung cấp thành công!',
     errorMessage: 'Lỗi khi cập nhật nhà cung cấp!',
@@ -52,7 +50,6 @@ function EditSupplier() {
     fetchSupplier();
   }, [id]);
 
-  // Function to handle modal visibility
   const toggleModal = (modalName, isOpen = true) => {
     setModalStates(prev => ({ ...prev, [modalName]: isOpen }));
   };
@@ -78,33 +75,24 @@ function EditSupplier() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Không cho phép thay đổi mã nhà cung cấp
     if (name === 'supplier_code') {
       return;
     }
-
     setSupplier({ ...supplier, [name]: value });
-
     const error = validateField(name, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
-
     if (error) errorRefs.current[name] = e.target;
     else delete errorRefs.current[name];
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Đảm bảo giữ nguyên mã nhà cung cấp gốc
     const supplierToSubmit = {
       ...supplier,
       supplier_code: originalSupplierRef.current.supplier_code
     };
-
     const newErrors = validateForm(supplierToSubmit);
     setErrors(newErrors);
-
     if (Object.keys(newErrors).length > 0) {
       const firstErrorField = Object.keys(newErrors)[0];
       if (firstErrorField) {
@@ -119,9 +107,7 @@ function EditSupplier() {
     try {
       setSaving(true);
       const result = await supplierService.updateSupplier(id, supplierToSubmit);
-
       if (result) {
-        // Lưu ID nhà cung cấp vừa sửa vào sessionStorage
         sessionStorage.setItem('editedSupplierId', id.toString());
         toggleModal('showSuccessModal', true);
       } else {
@@ -155,7 +141,6 @@ function EditSupplier() {
         </Card.Body>
       </Card>
 
-      {/* Supplier Modals */}
       <SupplierNotificationModal
         modals={modalStates}
         messages={modalMessages}

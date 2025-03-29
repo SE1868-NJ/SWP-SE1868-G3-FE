@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ImageModal from '../Modals/ImageModal';
+import ImageModal from '../../../Modals/ImageModal';
 
 const Message = ({ message, isOwnMessage }) => {
   const [showModal, setShowModal] = useState(false);

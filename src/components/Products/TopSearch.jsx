@@ -3,7 +3,6 @@ import { Col, Row } from 'react-bootstrap';
 import ProductCard from './ProductCard';
 
 const TopSearch = ({ topSearchProducts = [], onPrev, onNext }) => {
-	console.log('TopSearch products:', topSearchProducts); // Kiểm tra dữ liệu
 
 	return (
 		<>

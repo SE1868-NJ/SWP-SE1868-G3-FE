@@ -26,7 +26,6 @@ const AddressNewModal = ({ show, onHide, onSave }) => {
       try {
         setLoading(true);
         const response = await addressService.getAllProvince();
-        console.log(response);
         if (response.status === 'success') {
           setProvinces(response.data);
         }

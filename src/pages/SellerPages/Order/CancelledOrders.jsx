@@ -1,73 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import OrderTable from '../../../components/Seller/Order/OrderTable';
+import { shopService } from '../../../services/shopService';
+import { useAuth } from '../../../hooks/contexts/AuthContext';
 
 const CancelledOrders = () => {
   const [orders, setOrders] = useState([]);
+  const {shop_id} = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [orderDetails, setOrderDetails] = useState({});
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const mockOrders = [
-    {
-      order_id: "7",
-      user_id: "7",
-      payment_method: "THANH TOÁN KHI NHẬN HÀNG",
-      name: "Trần Văn Khoa",
-      phone: "0967890123",
-      address: "404 Đường Trần Hưng Đạo, Quận 1, TP.HCM",
-      pincode: "700000",
-      total: 3699000,
-      email: "tranvankhoa@gmail.com",
-      status: "cancelled",
-      created_at: "2025-03-12"
-    },
-    {
-      order_id: "8",
-      user_id: "8",
-      payment_method: "THẺ TÍN DỤNG",
-      name: "Lê Thị Mai",
-      phone: "0978901234",
-      address: "505 Đường Hai Bà Trưng, Quận 3, TP.HCM",
-      pincode: "700000",
-      total: 1499000,
-      email: "lethimai@gmail.com",
-      status: "cancelled",
-      created_at: "2025-03-11"
+  const fetchOrders = async () => {
+    try {
+      console.log(shop_id);
+      const data = await shopService.getCancelledOrderByShop(shop_id);
+      setOrders(data.data);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
     }
-  ];
-
-  const mockOrderDetails = [
-    {
-      id: 1,
-      order_id: "7",
-      product_id: "15",
-      product_name: "Đồng hồ thông minh",
-      image: "https://via.placeholder.com/80x80",
-      quantity: 1,
-      price: 3699000,
-      subtotal: 3699000
-    }
-  ];
+  }
 
   useEffect(() => {
-    setOrders(mockOrders);
-    setLoading(false);
+    fetchOrders();
   }, []);
 
+
   const toggleOrderDetails = (orderId) => {
-    setSelectedOrderId(selectedOrderId === orderId ? null : orderId);
+    setSelectedOrderId(orderId);
 
-    if (orderId && !orderDetails[orderId]) {
-      setOrderDetails(prevDetails => ({
-        ...prevDetails,
-        [orderId]: mockOrderDetails
-      }));
-    }
+    const order = orders.find(order => order.order_id === orderId);
+    setOrderDetails({ [orderId]: order.OrderDetails });
   };
-
   const handleSearch = (e) => {
     if (e) e.preventDefault();
 
@@ -105,27 +73,6 @@ const CancelledOrders = () => {
             orderType="cancelled"
             orderDetails={orderDetails}
           />
-
-          {/* Phân trang đơn giản */}
-          {/* {!loading && !error && orders.length > 0 && (
-            <nav className="mt-4">
-              <ul className="pagination justify-content-center">
-                <li className="page-item disabled">
-                  <button className="page-link">
-                    <i className="bi bi-chevron-left"></i>
-                  </button>
-                </li>
-                <li className="page-item active">
-                  <button className="page-link">1</button>
-                </li>
-                <li className="page-item disabled">
-                  <button className="page-link">
-                    <i className="bi bi-chevron-right"></i>
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          )} */}
         </div>
       </div>
     </div>
