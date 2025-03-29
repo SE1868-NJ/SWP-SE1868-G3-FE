@@ -1,18 +1,18 @@
 import api from './axios';
 
 export const addressService = {
-    getAll: async () => {
-        const response = await api.get('/addresses');
-        return response.data.data;
+    getAddressesByUserId: async (userId) => {
+        const response = await api.get(`/address/addresses/${userId}`);
+        return response;
     },
 
-    addNew: async (newAddress) => {
-        const response = await api.post('/addresses', newAddress);
+    createAddress: async (newAddress) => {
+        const response = await api.post('/address/create-address', newAddress);
         return response;
     },
 
     update: async (addressId, updatedAddress) => {
-        const response = await api.put(`/addresses/${addressId}`, updatedAddress);
+        const response = await api.put(`/address/${addressId}`, updatedAddress);
         return response;
     },
 

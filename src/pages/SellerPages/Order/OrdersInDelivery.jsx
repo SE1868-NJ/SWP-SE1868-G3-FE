@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import DeliveryTable from '../../../components/Seller/Order/DeliveryTable';
 import { shopService } from '../../../services/shopService';
+import { useAuth } from '../../../hooks/contexts/AuthContext';
 
 const OrdersInDelivery = () => {
   const [orders, setOrders] = useState([]);
@@ -10,10 +11,11 @@ const OrdersInDelivery = () => {
   const [orderDetails, setOrderDetails] = useState({});
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const {shop_id} = useAuth();
 
   const fetchOrders = async () => {
     try {
-      const data = await shopService.getDeliveryOrders(1); 
+      const data = await shopService.getDeliveryOrders(shop_id); 
       setOrders(data.data);
       setLoading(false);
     } catch (error) {
@@ -49,12 +51,11 @@ const OrdersInDelivery = () => {
     }
   };
 
-  // Cập nhật trạng thái của đơn hàng (Đang giao)
   const handleStatusChange = async (orderId, status) => {
     try {
       const response = await shopService.updateStatus(orderId, status);
       if (response) {
-        fetchOrders(); // Load lại danh sách đơn hàng sau khi cập nhật trạng thái
+        fetchOrders(); 
       }
     } catch (error) {
       console.error('Error updating status:', error);

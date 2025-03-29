@@ -15,7 +15,6 @@ const CancelledOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      console.log(shop_id);
       const data = await shopService.getCancelledOrderByShop(shop_id);
       setOrders(data.data);
       setLoading(false);

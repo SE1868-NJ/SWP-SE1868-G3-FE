@@ -3,6 +3,7 @@ import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import OrderTable from '../../../components/Seller/Order/OrderTable';
 import { Socket } from '../../../services/socket';
 import { shopService } from '../../../services/shopService';
+import { useAuth } from '../../../hooks/contexts/AuthContext';
 
 const NewOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -11,9 +12,10 @@ const NewOrders = () => {
   const [orderDetails, setOrderDetails] = useState({});
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const {shop_id} = useAuth();
 
   useEffect(() => {
-    Socket.emit('join-checkout', 1);
+    Socket.emit('join-checkout', shop_id);
 
     Socket.on('new_order', (newOrder) => {
       setOrders(prevOrders => [...prevOrders, newOrder]);
@@ -36,7 +38,7 @@ const NewOrders = () => {
   
   const fetchOrders = async () => {
     try {
-      const data = await shopService.getNewOrderByShop(1);
+      const data = await shopService.getNewOrderByShop(shop_id);
       setOrders(data.data);
       setLoading(false);
     } catch (error) {

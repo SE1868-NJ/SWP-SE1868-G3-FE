@@ -7,50 +7,27 @@ const OrderTable = ({
   error,
   selectedOrderId,
   toggleOrderDetails,
-  orderDetails,
   handleStatusChange
 }) => {
-  if (loading) {
-    return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Đang tải...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-5 text-danger">
-        <p>{error}</p>
-      </div>
-    );
-  }
-
-  if (!orders || orders.length === 0) {
-    return (
-      <div className="text-center py-5">
-        <p className="h5 text-muted">Không có đơn hàng nào</p>
-      </div>
-    );
-  }
 
   return (
     <div className="table-responsive">
-      <table className="table table-hover">
+      <table className="table table-hover align-middle">
         <thead className="table-light">
           <tr>
-            <th></th>
-            <th>MÃ ĐƠN HÀNG</th>
-            <th>PHƯƠNG THỨC</th>
-            <th>TÊN KHÁCH HÀNG</th>
-            <th>SĐT</th>
-            <th>ĐỊA CHỈ</th>
+            <th style={{ width: '50px' }}></th>
+
+            <th>MÃ ĐH</th>
+            <th className="d-none d-md-table-cell">PHƯƠNG THỨC</th>
+
+            <th>TÊN KH</th>
+            <th className="d-none d-lg-table-cell">SĐT</th>
+            <th className="d-none d-lg-table-cell text-truncate" style={{ maxWidth: '150px' }}>ĐỊA CHỈ</th>
             <th>TỔNG TIỀN</th>
-            <th>TRẠNG THÁI</th>
-            <th>NGÀY TẠO</th>
-            <th>HÀNH ĐỘNG</th>
+            <th>TRẠNG THÁI ĐH</th>
+            <th className="d-none d-md-table-cell">TRẠNG THÁI TT</th>
+            <th className="d-none d-sm-table-cell">NGÀY TẠO</th>
+            <th style={{ minWidth: '120px' }}>HÀNH ĐỘNG</th>
           </tr>
         </thead>
         <tbody>
@@ -59,69 +36,97 @@ const OrderTable = ({
               <tr>
                 <td>
                   <button
-                    className="btn btn-sm btn-outline-secondary rounded-circle"
+                    className="btn btn-sm btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center"
+                    style={{ width: '28px', height: '28px' }}
                     onClick={() => toggleOrderDetails(order.order_id)}
+                    aria-label={selectedOrderId === order.order_id ? 'Ẩn chi tiết' : 'Hiện chi tiết'}
                   >
                     <i className={`bi ${selectedOrderId === order.order_id ? 'bi-chevron-up' : 'bi-chevron-down'}`}></i>
                   </button>
                 </td>
-                <td>{order.order_id}</td>
-                <td>{order.payment_method}</td>
+                <td className="fw-medium">{order.order_id}</td>
+                <td className="d-none d-md-table-cell">{order.payment_method}</td>
                 <td>{order.full_name}</td>
-                <td>{order.phone}</td>
-                <td className="text-truncate" style={{ maxWidth: '150px' }}>{order.address}</td>
-                <td>{order.total}₫</td>
+                <td className="d-none d-lg-table-cell">{order.phone}</td>
+                <td className="d-none d-lg-table-cell text-truncate" style={{ maxWidth: '150px' }} title={order.address}>{order.address}</td>
+                <td className="text-danger fw-medium">{order.total?.toLocaleString('vi-VN')}₫</td>
+
                 <td>
-                  <span className={`badge ${order.status === 'PENDING' ? 'bg-warning' :
-                    order.status === 'PROCESSING' ? 'bg-primary' :
-                      order.status === 'COMPLETED' ? 'bg-success' :
-                        'bg-danger'
+                  <span className={`badge fs-xs ${order.status === 'PENDING' ? 'text-bg-warning' :
+                    order.status === 'PROCESSING' ? 'text-bg-primary' :
+                      order.status === 'SHIPPING' ? 'text-bg-info' :
+                        order.status === 'COMPLETED' ? 'text-bg-success' :
+                          order.status === 'CANCELLED' ? 'text-bg-danger' :
+                            'text-bg-secondary'
                     }`}>
                     {order.status === 'PENDING' ? 'Chờ xử lý' :
                       order.status === 'PROCESSING' ? 'Đang xử lý' :
-                        order.status === 'COMPLETED' ? 'Hoàn thành' :
-                          'Đã hủy'}
+                        order.status === 'SHIPPING' ? 'Đang giao' :
+                          order.status === 'COMPLETED' ? 'Hoàn thành' :
+                            order.status === 'CANCELLED' ? 'Đã hủy' :
+                              order.status
+                    }
                   </span>
                 </td>
-                <td>{order.created_at}</td>
+
+                <td className="d-none d-md-table-cell">
+                  <span className={`badge ${order.payment_status == 0 ? 'text-bg-secondary' : 'text-bg-success'}`}>
+                    {order.payment_status == 0 ? "Chưa TT" : "Đã TT"}
+                  </span>
+                </td>
+
+                <td className="d-none d-sm-table-cell small text-muted">
+                  {new Date(order.created_at).toLocaleDateString('vi-VN')}
+                </td>
+
                 <td>
-                  <div className="dropdown">
-                    <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                      <span>Xác nhận</span>
-                    </button>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => handleStatusChange(order.order_id, 'PROCESSING')}
-                        >
-                          Xử lý đơn hàng
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => handleStatusChange(order.order_id, 'COMPLETED')}
-                        >
-                          Hoàn thành đơn hàng
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item text-danger"
-                          onClick={() => handleStatusChange(order.order_id, 'CANCELLED')}
-                        >
-                          Hủy đơn hàng
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
+                  {(order.status !== 'COMPLETED' && order.status !== 'CANCELLED') ? (
+                    <div className="dropdown">
+                      <button className="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Xác nhận
+                      </button>
+                      <ul className="dropdown-menu dropdown-menu-end">
+                        {order.status === 'PENDING' && (
+                          <li>
+                            <button
+                              className="dropdown-item"
+                              onClick={() => handleStatusChange(order.order_id, 'PROCESSING')}
+                            >
+                              <i className="bi bi-arrow-repeat me-2"></i> Xử lý đơn
+                            </button>
+                          </li>
+                        )}
+                        {(order.status === 'PROCESSING' || order.status === 'SHIPPING') && (
+                          <li>
+                            <button
+                              className="dropdown-item"
+                              onClick={() => handleStatusChange(order.order_id, 'COMPLETED')}
+                            >
+                              <i className="bi bi-check-circle me-2"></i> Hoàn thành
+                            </button>
+                          </li>
+                        )}
+                        <li><hr className="dropdown-divider" /></li>
+                        <li>
+                          <button
+                            className="dropdown-item text-danger"
+                            onClick={() => handleStatusChange(order.order_id, 'CANCELLED')}
+                          >
+                            <i className="bi bi-x-circle me-2"></i> Hủy đơn hàng
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  ) : (
+                    <span className='text-muted fst-italic'>-</span>
+                  )}
                 </td>
               </tr>
               {selectedOrderId === order.order_id && (
                 <tr>
-                  <td colSpan="11" className="border-0 p-0">
-                    <div className="px-4 py-3 bg-light">
+                  <td colSpan="11" className="p-0 border-0">
+                    <div className="p-3 bg-light border-top border-bottom">
+                      <h6 className="mb-3">Chi tiết sản phẩm:</h6>
                       <OrderProductDetails
                         orderDetails={order.OrderDetails || []}
                         orderId={order.order_id}
