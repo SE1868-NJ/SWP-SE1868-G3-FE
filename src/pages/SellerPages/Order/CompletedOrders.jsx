@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import OrderHeader from '../../../components/Seller/Order/OrderHeader';
 import OrderTable from '../../../components/Seller/Order/OrderTable';
 import { shopService } from '../../../services/shopService';
+import { useAuth } from '../../../hooks/contexts/AuthContext';
 
 const CompletedOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -10,10 +11,11 @@ const CompletedOrders = () => {
   const [orderDetails, setOrderDetails] = useState({});
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const {shop_id} = useAuth();
 
   const fetchOrders = async () => {
     try {
-      const data = await shopService.getCompletedOrderByShop(1);
+      const data = await shopService.getCompletedOrderByShop(shop_id);
       setOrders(data.data);
       setLoading(false);
     } catch (error) {
