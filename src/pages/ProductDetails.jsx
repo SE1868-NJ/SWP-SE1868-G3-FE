@@ -40,7 +40,7 @@ const ProductDetail = () => {
 						quantity={quantity}
 						onSizeSelect={setSelectedSize}
 						onQuantityChange={(value) =>
-							setQuantity(Math.min(value, product.stock))
+							setQuantity(Math.min(value, product.stock_quantity))
 						}
 					/>
 				</Col>

@@ -45,7 +45,7 @@ const ShopChatWindow = React.memo(({
             <Card.Header className="flex-shrink-0">
                 <h5 className="mb-0 text-truncate"> 
                     {selectedUserDetails
-                        ? `Trò chuyện với ${selectedUserDetails.name || 'User'}` 
+                        ? `Trò chuyện với ${selectedUserDetails.full_name || 'User'}` 
                         : selectedConversationId ? 'Đang tải...' : 'Chọn cuộc trò chuyện'
                     }
                 </h5>
