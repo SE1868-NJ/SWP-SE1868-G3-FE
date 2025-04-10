@@ -17,6 +17,9 @@ import OrdersInDelivery from '../../pages/SellerPages/Order/OrdersInDelivery';
 import ShopChat from "../../pages/SellerPages/CustomerService/ShopChat";
 import ShopRating from "../../pages/SellerPages/CustomerService/ShopRating";
 
+
+import SellerAllProducts from '../../pages/SellerPages/SellerAllProducts';
+
 export const sellerRoutes = [
 	{
 		path: '/seller',
@@ -69,5 +72,9 @@ export const sellerRoutes = [
 	{
 		path: '/seller/ratting/:shopId',
 		element: <ShopRating />
+	},
+	{
+		path: '/seller/products/:shopId',
+		element: <SellerAllProducts />,
 	},
 ];
