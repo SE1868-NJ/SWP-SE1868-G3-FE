@@ -89,4 +89,16 @@ export const orderService = {
 			throw error;
 		}
 	},
+	// sendOrderSuccessEmail: async (orderId) => {
+	// 	try {
+	// 		const response = await api.post('/email/send-order-success-email', {
+	// 			order_id: orderId,
+	// 		});
+	// 		return response.data;
+	// 	} catch (error) {
+	// 		console.error("Lỗi gửi email xác nhận:", error.response?.data || error.message);
+	// 		throw error;
+	// 	}
+	// },
+	
 };
