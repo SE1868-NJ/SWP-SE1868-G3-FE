@@ -14,8 +14,8 @@ import DashboardPage from '../../pages/SellerPages/DashboardPage';
 
 import OrdersInDelivery from '../../pages/SellerPages/Order/OrdersInDelivery';
 
-import ShopChat from "../../pages/SellerPages/CustomerService/ShopChat";
-import ShopRating from "../../pages/SellerPages/CustomerService/ShopRating";
+import ShopChat from '../../pages/SellerPages/CustomerService/ShopChat';
+import ShopRating from '../../pages/SellerPages/CustomerService/ShopRating';
 
 export const sellerRoutes = [
 	{
@@ -27,19 +27,19 @@ export const sellerRoutes = [
 		element: <ShopInfoPage />,
 	},
 	{
-		path: "/seller/suppliers",
+		path: '/seller/suppliers',
 		element: <Suppliers />,
 	},
 	{
-		path: "/seller/suppliers/add",
+		path: '/seller/suppliers/add',
 		element: <AddSupplier />,
 	},
 	{
-		path: "/seller/suppliers/edit/:id",
+		path: '/seller/suppliers/edit/:id',
 		element: <EditSupplier />,
 	},
 	{
-		path: "/seller/suppliers/view/:id",
+		path: '/seller/suppliers/view/:id',
 		element: <ViewSupplier />,
 	},
 	{
@@ -63,11 +63,11 @@ export const sellerRoutes = [
 		element: <OrdersInDelivery />,
 	},
 	{
-		path: "/seller/chat",
+		path: '/seller/chat',
 		element: <ShopChat />,
 	},
 	{
-		path: '/seller/ratting/:shopId',
-		element: <ShopRating />
+		path: '/seller/ratting/:shop_id',
+		element: <ShopRating />,
 	},
 ];
