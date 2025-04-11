@@ -155,8 +155,8 @@ function Sidebar({ isVisible, sidebarClass }) {
 								<ul className='list-group list-group-flush'>
 									<li className='list-group-item px-0 py-2'>
 										<Link
-											to={'/seller/products'}
-											className={`nav-link ${isActive('/seller/products') ? 'fw-bold text-primary' : ''}`}
+											to={'/seller/products/:shop_id'}
+											className={`nav-link ${isActive('/seller/products/:shop_id') ? 'fw-bold text-primary' : ''}`}
 										>
 											Sản phẩm
 										</Link>
