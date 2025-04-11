@@ -133,6 +133,86 @@ export const shopService = {
         } catch (error) {
             throw error;
         }
-    }
+    },
+
+	getSellerProducts: async (shopId, params) => {
+		try {
+			if (!shopId) {
+				return { products: [] };
+			}
+
+			const response = await api.get(`/shop/all_products/${shopId}`, { params });
+
+			const result = {
+				products: response.data.products || [],
+				total: response.data.total || 0
+			};
+
+			return result;
+		} catch (error) {
+			console.error('API error:', error.response || error);
+			throw new Error(`Error getting seller products: ${error.message}`);
+		}
+	},
+
+	createProduct: async (productData) => {
+		try {
+			const response = await api.post('/shop/product/create', productData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			});
+			return response.data;
+		} catch (error) {
+			throw error;
+		}
+	},
+
+	// Cập nhật sản phẩm
+	updateProduct: async (productId, formData) => {
+		try {
+			const response = await api.put(`/shop/product/update/${productId}`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			});
+			return response.data;
+		} catch (error) {
+			throw error;
+		}
+	},
+
+	// Xóa sản phẩm
+	deleteProduct: async (productId) => {
+		try {
+			const response = await api.post(`/shop/product/delete/${productId}`);
+			return response.data;
+		} catch (error) {
+			throw error;
+		}
+	},
+
+	getCategory: async () => {
+		try {
+			const response = await api.get('/shop/category/get_list_category');
+			return response.data;
+		} catch (error) {
+			throw error;
+		}
+	},
+
+	getAllSuppliers: async () => {
+		try {
+		  const token = localStorage.getItem('token'); // hoặc từ context
+		  const response = await api.get('/supplier/get_list_supplier', {
+			headers: {
+			  Authorization: `Bearer ${token}`,
+			},
+		  });
+		  return response.data;
+		} catch (error) {
+		  throw error;
+		}
+	  }
 
 };
