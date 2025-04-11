@@ -134,6 +134,27 @@ export const shopService = {
             throw error;
         }
     },
+    // follower
+    toggleFollowShop: async (shopId, userId) => {
+        try {
+            const response = await api.post(`/shop/followers/toggle`, {
+                shop_id: shopId,
+                user_id: userId,
+            });
+            return response.data; // { message, following }
+        } catch (error) {
+            throw error;
+        }
+    },
+    getFollowersByShopId: async (shopId) => {
+        try {
+          const response = await api.get(`/shop/${shopId}/followers`);
+          return response.data;
+        } catch (error) {
+          console.error('Error fetching followers:', error);
+          throw error.response?.data || { status: 'error', message: 'Unknown error' };
+        }
+      },
 
 	getSellerProducts: async (shopId, params) => {
 		try {

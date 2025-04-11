@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/contexts/AuthContext';
+import { shopService } from '../../services/shopService';
+
 
 const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [] }) => {
 	const [isFollowing, setIsFollowing] = useState(false);
+	const { user } = useAuth();
+	const userId = user?.id;
+	const shopId = shopInfo?.shop_id;
 
 	const allProductsOption = 'TẤT CẢ SẢN PHẨM';
 	const visibleCategories = [allProductsOption, ...categories.map(cat => cat.name)];
@@ -74,6 +80,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 						}}>{shopInfo.shop_name}</h1>
 						<div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
 							<button
+								onClick={handleToggleFollow}
 								style={{
 									padding: '8px 15px',
 									borderRadius: '5px',
