@@ -7,6 +7,7 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 	const [isFollowing, setIsFollowing] = useState(false);
 	const { user } = useAuth();
 	const userId = user?.id;
+	const shopId = shopInfo?.shop_id;
 
 	const allProductsOption = 'TẤT CẢ SẢN PHẨM';
 	const visibleCategories = [allProductsOption, ...categories.map(cat => cat.name)];
@@ -18,21 +19,27 @@ const ShopHeader = ({ activeCategory, onCategoryChange, shopInfo, categories = [
 			categorySection.scrollIntoView({ behavior: 'smooth' });
 		}
 	};
+	console.log('shopId:', shopId); // cần là 1 số hoặc chuỗi hợp lệ
+console.log('userId:', userId); // cần là 1 số hoặc chuỗi hợp lệ
 
-	const handleToggleFollow = async () => {
-		try {
-				const res = await shopService.toggleFollowShop(shopId);
+
+const handleToggleFollow = async () => {
+	try {
+			const res = await shopService.toggleFollowShop(shopId, userId);
+			if (res && res.following !== undefined) {
 				setIsFollowing(res.following);
-				setMessage(res.message);
-		} catch (error) {
-				console.error('Lỗi khi theo dõi/hủy theo dõi:', error);
+		} else {
+				console.error("Dữ liệu trả về không hợp lệ:", res);
 		}
+	} catch (error) {
+			console.error('Lỗi khi theo dõi/hủy theo dõi:', error);
+	}
 };
 
 	// useEffect(() => {
 	// 	const checkFollowStatus = async () => {
 	// 		try {
-	// 			const res = await axios.get(`/api/shop/followers/check`, {
+	// 			const res = await axios.get(/api/shop/followers/check, {
 	// 				params: {
 	// 					user_id: user.id,
 	// 					shop_id: shopInfo.shop_id,
