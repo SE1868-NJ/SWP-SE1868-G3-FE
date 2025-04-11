@@ -16,6 +16,7 @@ import OrdersInDelivery from '../../pages/SellerPages/Order/OrdersInDelivery';
 
 import ShopChat from '../../pages/SellerPages/CustomerService/ShopChat';
 import ShopRating from '../../pages/SellerPages/CustomerService/ShopRating';
+import ManagementEmail from '../../pages/SellerPages/CustomerService/ManagementEmail';
 
 export const sellerRoutes = [
 	{
@@ -70,4 +71,8 @@ export const sellerRoutes = [
 		path: '/seller/ratting/:shop_id',
 		element: <ShopRating />,
 	},
+	{
+		path:'/seller/management-email',
+		element: <ManagementEmail />,
+	}
 ];

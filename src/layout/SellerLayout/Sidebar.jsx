@@ -293,6 +293,16 @@ function Sidebar({ isVisible, sidebarClass }) {
 											Quản lý đánh giá
 										</Link>
 									</li>
+
+									<li className='list-group-item px-0 py-2'>
+										<Link
+											to={'/seller/management-email'}
+											className={`nav-link ${isActive('/seller/management-email') ? 'fw-bold text-primary' : ''}`}
+										>
+											Email
+										</Link>
+									</li>
+
 								</ul>
 							</div>
 						</div>
