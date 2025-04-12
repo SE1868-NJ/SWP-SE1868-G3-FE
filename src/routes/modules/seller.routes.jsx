@@ -75,7 +75,8 @@ export const sellerRoutes = [
 	{
 		path:'/seller/management-email',
 		element: <ManagementEmail />,
-	}
+	},
+	{
 		path: '/seller/products/:shop_id',
 		element: <SellerAllProducts />,
 	}
