@@ -234,6 +234,67 @@ export const shopService = {
 		} catch (error) {
 		  throw error;
 		}
-	  }
+	  },
+    
+      // Gửi email theo mẫu (template)
+      sendTemplateEmailToFollowers: async (shopId, templateType) => {
+        try {
+          const response = await api.post(`/email/send-template-email-to-followers`, {
+            shop_id: shopId,
+            template_type: templateType,
+          });
+          return response.data;
+        } catch (error) {
+          throw error;
+        }
+      },
+      
+      getAllEmailTemplates: async () => {
+        try {
+          const response = await api.get('/email/templates');
+          return response.data;
+        } catch (error) {
+          throw error;
+        }
+      },
+       // Tạo email template mới
+    createEmailTemplate: async (templateData) => {
+        try {
+            const response = await api.post('/email/templates', templateData);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    // Cập nhật email template
+    updateEmailTemplate: async (templateId, templateData) => {
+        try {
+            const response = await api.put(`/email/templates/${templateId}`, templateData);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    // Xóa email template
+    deleteEmailTemplate: async (templateId) => {
+        try {
+            const response = await api.delete(`/email/templates/${templateId}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    // lấy danh sách loại email
+    getEmailTypes: async () => {
+        try {
+          const response = await api.get('/email/email-types');
+          return response.data;
+        } catch (error) {
+          throw error;
+        }
+      },
 
 };

@@ -177,6 +177,16 @@ function Sidebar({ isVisible, sidebarClass }) {
 											Khuyến mại
 										</Link>
 									</li>
+
+									<li className='list-group-item px-0 py-2'>
+										<Link
+											to={'/seller/email-template-manager'}
+											className={`nav-link ${isActive('/seller/email-template-manager') ? 'fw-bold text-primary' : ''}`}
+										>
+											Email TemplateManagement
+										</Link>
+									</li>
+
 								</ul>
 							</div>
 						</div>
