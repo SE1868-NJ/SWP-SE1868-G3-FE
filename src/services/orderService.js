@@ -79,7 +79,6 @@ export const orderService = {
 	getOrderCountByShopId: async (shopId) => {
 		try {
 			const response = await api.get(`/order/shop/count/${shopId}`);
-			console.log('API response for shop order count:', response.data);
 			return response.data.count || 0;
 		} catch (error) {
 			console.error(
@@ -89,6 +88,57 @@ export const orderService = {
 			throw error;
 		}
 	},
+	getRecentOrdersByShop: async (shopId) => {
+		try {
+			const response = await api.get(`/order/shop/order_recent/${shopId}`);
+			console.log("Đơn hàng gần đây: ", response);
+			return response;
+		} catch (error) {
+			console.error(
+				'Lỗi khi lấy đơn hàng và thống kê theo shop:',
+				error.response?.data || error.message
+			);
+			throw error;
+		}
+	},
+
+	getDailyStatsInMonth: async (shopId, date) => {
+		try {
+			const response = await api.get(`/order/shop/${shopId}/daily-stats-in-month`, {
+				params: { date },
+			});
+			return response.data;
+		} catch (error) {
+			console.error('Lỗi khi lấy thống kê theo ngày trong tháng:', error.response?.data || error.message);
+			throw error;
+		}
+	},
+
+
+
+	getDashboardStats: async (shopId, timeRange) => {
+		try {
+			const response = await api.get(`/order/shop/${shopId}/dashboard`, {
+				params: { timeRange }
+			});
+			return response.data;
+		} catch (error) {
+			console.error('Lỗi khi lấy thống kê dashboard:', error.response?.data || error.message);
+			throw error;
+		}
+	},
+
+	getRevenueSummary: async (shopId, period) => {
+		try {
+			const response = await api.get(`/order/shop/${shopId}/revenue-summary`, {
+				params: { period }
+			});
+			return response.data;
+		} catch (error) {
+			console.error('Lỗi khi lấy tổng quan doanh thu:', error.response?.data || error.message);
+			throw error;
+		}
+	}
 	// sendOrderSuccessEmail: async (orderId) => {
 	// 	try {
 	// 		const response = await api.post('/email/send-order-success-email', {
@@ -100,5 +150,5 @@ export const orderService = {
 	// 		throw error;
 	// 	}
 	// },
-	
+
 };
